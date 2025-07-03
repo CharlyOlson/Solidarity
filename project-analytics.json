@@ -1,0 +1,133 @@
+{
+  "project_analytics": {
+    "metadata": {
+      "analysis_date": "2025-07-02",
+      "description": "Project performance analytics with scope, deadline, slip, and conflict metrics",
+      "version": "1.0.0"
+    },
+    "core_metrics": {
+      "median_scope": 20.253,
+      "iqr_scope": 12.955,
+      "median_deadline": 0,
+      "median_slip": 5.021,
+      "iqr_slip": 3.926,
+      "median_conflict": 0
+    },
+    "harmonic_analysis": {
+      "fit_scope_harmonic": 3,
+      "fit_slip_harmonic": 3,
+      "description": "Timbre compression using odd-harmonic fit"
+    },
+    "protected_ranges": {
+      "special_ranges": [[10, 11], [12, 16]],
+      "description": "Numeric bands to keep intact during analysis"
+    },
+    "statistical_outliers": {
+      "outliers_scope": [
+        -6.197, 47.202, 58.527, -12.413, 50.789,
+        -6.969, -6.510, 46.324
+      ],
+      "outliers_slip": [
+        12.933, 14.413, -3.821, -4.059, 13.279,
+        14.330, 13.847, 13.956, -2.907
+      ],
+      "threshold": "Values >|1.5 IQR| from Q1 or Q3"
+    },
+    "high_risk_combinations": {
+      "special_occasions": [
+        [23.614, 1, 9.177, 2], [3.873, 1, 7.813, 2], [37.655, 1, 8.181, 2],
+        [11.728, 1, 9.470, 2], [21.833, 1, 8.420, 2], [41.898, 1, 9.742, 2],
+        [35.512, 1, 7.159, 2], [19.445, 1, 8.964, 2], [26.697, 1, 7.372, 2],
+        [17.790, 1, 9.533, 2], [29.262, 1, 7.350, 2], [13.494, 1, 10.217, 2],
+        [32.716, 1, 7.662, 2], [36.965, 1, 7.440, 2], [26.748, 1, 7.094, 2],
+        [41.633, 1, 9.294, 2], [21.866, 1, 8.071, 2], [24.400, 1, 10.862, 2]
+      ],
+      "format": "[scope_%, deadline_type, slip_days, conflict_level]",
+      "description": "Hard deadline + high conflict + significant slip combinations"
+    },
+    "system_performance": {
+      "battery_metrics": {
+        "capacity_retention": 85.7,
+        "charge_cycles": 432,
+        "temperature_avg": 42.3,
+        "voltage_stability": 98.2,
+        "discharge_rate": 2.1,
+        "health_score": 87.4
+      },
+      "processor_metrics": {
+        "cpu_utilization": 68.5,
+        "core_temperature": 58.9,
+        "clock_speed_ghz": 3.2,
+        "cache_hit_ratio": 94.8,
+        "instruction_throughput": 2847.6,
+        "power_consumption_watts": 45.2,
+        "thermal_throttling_events": 3
+      },
+      "memory_metrics": {
+        "ram_usage_percent": 72.4,
+        "swap_usage_mb": 1024,
+        "cache_efficiency": 91.3,
+        "page_faults_per_sec": 12.7
+      }
+    },
+    "project_execution": {
+      "all_projects_summary": {
+        "total_active_projects": 18,
+        "completed_this_quarter": 7,
+        "on_schedule": 12,
+        "behind_schedule": 4,
+        "ahead_of_schedule": 2,
+        "budget_variance_percent": -3.2,
+        "resource_utilization": 89.6
+      },
+      "project_categories": {
+        "infrastructure": {
+          "count": 5,
+          "avg_completion": 78.3,
+          "risk_level": "medium"
+        },
+        "development": {
+          "count": 8,
+          "avg_completion": 65.7,
+          "risk_level": "high"
+        },
+        "maintenance": {
+          "count": 3,
+          "avg_completion": 92.1,
+          "risk_level": "low"
+        },
+        "research": {
+          "count": 2,
+          "avg_completion": 45.8,
+          "risk_level": "high"
+        }
+      }
+    },
+    "chat_integration": {
+      "communication_metrics": {
+        "messages_per_day": 147,
+        "response_time_avg_minutes": 8.3,
+        "thread_resolution_rate": 84.2,
+        "escalation_rate": 5.7,
+        "satisfaction_score": 4.2
+      },
+      "collaboration_data": {
+        "active_participants": 23,
+        "cross_team_interactions": 67,
+        "knowledge_sharing_events": 12,
+        "decision_velocity_days": 2.8
+      }
+    },
+    "value_definitions": {
+      "scope": "Percentage of new work added to project",
+      "deadline": "0 = negotiable, 1 = hard deadline",
+      "slip": "Days behind schedule",
+      "conflict": "0 = none, 1 = low, 2 = high conflict level",
+      "battery_capacity": "Percentage of original battery capacity retained",
+      "cpu_utilization": "Percentage of processor capacity being used",
+      "response_time": "Average time to respond in chat communications",
+      "project_completion": "Percentage of project tasks completed",
+      "risk_level": "low/medium/high risk assessment for project category"
+    }
+  }
+}

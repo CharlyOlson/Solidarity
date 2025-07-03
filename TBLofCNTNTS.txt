@@ -1,0 +1,61 @@
+<script>
+// Build Table of Contents
+(function() {
+  const tocList = document.getElementById('toc-list');
+  document.querySelectorAll('h2.collapsible').forEach(h2 => {
+    const id = h2.id;
+    const txt = h2.textContent.replace(/\s+Changes.*$/, '');
+    const li = document.createElement('li');
+    li.innerHTML = `<a href="#${id}">${txt}</a>`;
+    tocList.appendChild(li);
+  });
+})();
+
+// Example: Populate Functions/Boundaries tables (add more as needed)
+(function() {
+  const functions = [
+    {release: "v2.49.0", features: "OpenSSH v9.9, PCRE2 v10.45, --name-hash-version=2, git backfill"},
+    {release: "v2.46.0", features: "Last Win7/8 support, FSMonitor stable, OpenSSH server removed"},
+    // ...add more rows as needed
+  ];
+  const boundaries = [
+    {release: "v2.46.0", boundary: "Last version for Windows 7/8"},
+    {release: "v2.48.1", boundary: "Last 32-bit installer"},
+    {release: "v2.49.0", boundary: "git svn deprecated"},
+    // ...add more rows as needed
+  ];
+  const fTable = document.getElementById('functions-table').querySelector('tbody');
+  functions.forEach(f => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${f.release}</td><td>${f.features}</td>`;
+    fTable.appendChild(tr);
+  });
+  const bTable = document.getElementById('boundaries-table').querySelector('tbody');
+  boundaries.forEach(b => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${b.release}</td><td>${b.boundary}</td>`;
+    bTable.appendChild(tr);
+  });
+})();
+
+// Search and Copilot Answer
+function runSearch() {
+  const q = document.getElementById('search-box').value.toLowerCase();
+  let found = false;
+  let answer = '';
+  document.querySelectorAll('h2.collapsible').forEach(h2 => {
+    const div = h2.nextElementSibling;
+    const txt = h2.textContent + ' ' + div.textContent;
+    if (txt.toLowerCase().includes(q)) {
+      h2.style.background = '#ffe082';
+      if (!found) {
+        answer = `<strong>${h2.textContent}</strong><br>${div.textContent.split('\n').slice(0,3).join(' ')}...`;
+        found = true;
+      }
+    } else {
+      h2.style.background = '';
+    }
+  });
+  document.getElementById('copilot-answer').innerHTML = found ? answer : 'No matching release found.';
+}
+</script>

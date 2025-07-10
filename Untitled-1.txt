@@ -1,0 +1,15 @@
+// Audio Processing
+POST /api/audio/process          # Process audio with ZIP phrases
+GET  /api/audio/commands         # Get available commands
+GET  /api/audio/status           # System status
+GET  /api/audio/visualization    # 3D spatial data
+POST /api/audio/batch           # Batch processing
+
+// Authentication
+POST /api/auth/login            # User authentication
+POST /api/auth/refresh          # Token refresh
+GET  /api/auth/me              # Current user info
+
+// System
+GET  /health                   # Health check
+GET  /api/docs                # API documentation

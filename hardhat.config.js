@@ -46,6 +46,20 @@ module.exports = {
       accounts: process.env.ETHEREUM_PRIVATE_KEY ? [process.env.ETHEREUM_PRIVATE_KEY] : [],
       chainId: 56,
     },
+    zkSync: {
+      url: "https://mainnet.era.zksync.io",
+      accounts: process.env.ETHEREUM_PRIVATE_KEY ? [process.env.ETHEREUM_PRIVATE_KEY] : [],
+      chainId: 324,
+      ethNetwork: "mainnet",
+      zksync: true,
+    },
+    zkSyncTestnet: {
+      url: "https://testnet.era.zksync.dev",
+      accounts: process.env.ETHEREUM_PRIVATE_KEY ? [process.env.ETHEREUM_PRIVATE_KEY] : [],
+      chainId: 280,
+      ethNetwork: "goerli",
+      zksync: true,
+    },
   },
   etherscan: {
     apiKey: {

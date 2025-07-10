@@ -1,73 +1,199 @@
 {
   "name": "solidarity-platform",
   "version": "2.41.0",
-  "description": "Full scale system for commerce - Solidity Platform by Scott Charles Olson",
-  "main": "src/index.js",
+  "description": "Professional Audio Processing & Financial Commerce Platform",
+  "main": "src/api/server.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js",
-    "test": "jest",
+    "start": "node src/api/server.js",
+    "dev": "nodemon src/api/server.js --watch src",
+    "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "build": "npm run compile-contracts",
-    "compile-contracts": "hardhat compile",
-    "deploy-contracts": "hardhat run scripts/deploy.js",
-    "migrate-db": "node scripts/migrate.js",
-    "seed-db": "node scripts/seed.js",
-    "lint": "eslint src/",
-    "lint:fix": "eslint src/ --fix"
+    "test:audio": "python3 src/solidarityAudioProcessor.py",
+    "test:advanced": "python3 test_advanced_audio.py",
+    "test:api": "jest --testPathPattern=tests/api",
+    "test:unit": "jest --testPathPattern=tests/unit",
+    "test:integration": "jest --testPathPattern=tests/integration",
+    "test:e2e": "jest --testPathPattern=tests/e2e",
+    "build": "npm run build:frontend && npm run build:docs",
+    "build:frontend": "cd frontend && npm run build",
+    "build:docs": "node scripts/generateDocs.js",
+    "setup": "node scripts/setup.js",
+    "setup:dev": "node scripts/setupDev.js",
+    "setup:prod": "node scripts/setupProd.js",
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js",
+    "deploy": "node scripts/deploy.js",
+    "sync:coul-curve": "node scripts/syncCoulCurve.js",
+    "link:coul-curve": "node scripts/linkRepositories.js",
+    "test:cross-repo": "npm test && cd ../Coul-Curve && npm test",
+    "deploy:staging": "NODE_ENV=staging node scripts/deploy.js",
+    "deploy:production": "NODE_ENV=production node scripts/deploy.js",
+    "lint": "eslint src/ --ext .js,.jsx --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx,json,md}\"",
+    "validate": "npm run lint && npm run test && npm run build",
+    "health": "node scripts/healthCheck.js",
+    "monitor": "node scripts/monitor.js",
+    "backup": "node scripts/backup.js",
+    "restore": "node scripts/restore.js",
+    "clean": "rimraf node_modules/ frontend/node_modules/ frontend/build/ coverage/ logs/",
+    "reset": "npm run clean && npm install",
+    "docker:build": "docker build -t solidarity-platform .",
+    "docker:run": "docker run -p 3000:3000 --env-file .env solidarity-platform",
+    "docker:compose": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "security:audit": "npm audit --audit-level=high",
+    "security:fix": "npm audit fix",
+    "performance:test": "node scripts/performanceTest.js",
+    "load:test": "node scripts/loadTest.js",
+    "stress:test": "node scripts/stressTest.js",
+    "docs:serve": "node scripts/serveDocs.js",
+    "api:docs": "node scripts/generateApiDocs.js",
+    "frontend:install": "cd frontend && npm install",
+    "frontend:dev": "cd frontend && npm start",
+    "frontend:build": "cd frontend && npm run build",
+    "frontend:test": "cd frontend && npm test",
+    "office:start": "node start-office-suite.js",
+    "office:demo": "node demo-office-client.js",
+    "office:setup": "node mock-office-suite-manager.js",
+    "hidden:init": "node mock-office-suite-manager.js",
+    "hidden:start": "node start-office-suite.js",
+    "hidden:demo": "node demo-office-client.js",
+    "hidden:test": "node demo-office-client.js && echo 'Hidden system test complete'"
   },
   "keywords": [
+    "audio-processing",
+    "financial-commerce",
     "blockchain",
-    "defi",
-    "solidarity",
-    "treasury-management",
-    "governance",
-    "stability-metrics"
+    "spatial-audio",
+    "professional-studio",
+    "harmonic-analysis",
+    "real-time-processing",
+    "secure-transactions",
+    "api-server",
+    "frontend-ready"
   ],
-  "author": "Scott Charles Olson (Charly)",
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "helmet": "^7.0.0",
-    "dotenv": "^16.3.1",
-    "pg": "^8.11.3",
-    "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.2",
-    "ethers": "^6.7.1",
-    "web3": "^4.1.1",
-    "express-rate-limit": "^6.10.0",
-    "express-validator": "^7.0.1",
-    "winston": "^3.10.0",
-    "redis": "^4.6.7",
-    "socket.io": "^4.7.2",
-    "multer": "^1.4.5-lts.1",
-    "compression": "^1.7.4",
-    "swagger-ui-express": "^5.0.0",
-    "swagger-jsdoc": "^6.2.8"
+  "author": {
+    "name": "Scott Charles Olson",
+    "email": "contact@solidarity.com",
+    "url": "https://solidarity.com"
   },
-  "devDependencies": {
-    "nodemon": "^3.0.1",
-    "jest": "^29.6.2",
-    "supertest": "^6.3.3",
-    "eslint": "^8.46.0",
-    "eslint-config-prettier": "^9.0.0",
-    "prettier": "^3.0.1",
-    "@hardhat/hardhat-toolbox": "^3.0.2",
-    "hardhat": "^2.17.1",
-    "@openzeppelin/contracts": "^4.9.3",
-    "@openzeppelin/hardhat-upgrades": "^1.28.0"
-  },
-  "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=7.0.0"
-  },
+  "contributors": [
+    {
+      "name": "Charles H. Dykes",
+      "role": "Framework Concept Designer"
+    }
+  ],
+  "license": "SEE LICENSE IN LICENSE.md",
   "repository": {
     "type": "git",
-    "url": "https://github.com/solidarity-io/solidarity.git"
+    "url": "https://github.com/solidarity-platform/solidarity.git"
   },
   "bugs": {
-    "url": "https://github.com/solidarity-io/solidarity/issues"
+    "url": "https://github.com/solidarity-platform/solidarity/issues"
   },
-  "homepage": "https://github.com/solidarity-io/solidarity#readme"
+  "homepage": "https://solidarity.com",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0",
+    "python": ">=3.8.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.7.0",
+    "express-validator": "^6.15.0",
+    "helmet": "^6.1.5",
+    "joi": "^17.9.1",
+    "jsonwebtoken": "^9.0.0",
+    "multer": "^1.4.5-lts.1",
+    "morgan": "^1.10.0",
+    "pg": "^8.10.0",
+    "redis": "^4.6.5",
+    "sequelize": "^6.31.0",
+    "sharp": "^0.32.0",
+    "socket.io": "^4.6.1",
+    "ws": "^8.13.0",
+    "artillery": "^2.0.4",
+    "axios": "^1.4.0",
+    "crypto": "^1.0.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "node-cron": "^3.0.2",
+    "pm2": "^5.3.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.1",
+    "cross-env": "^7.0.3",
+    "docker-compose": "^0.24.6",
+    "eslint": "^8.39.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-security": "^1.7.1",
+    "husky": "^8.0.3",
+    "jest": "^29.5.0",
+    "lint-staged": "^13.2.1",
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.8",
+    "rimraf": "^5.0.0",
+    "supertest": "^6.3.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.2",
+    "wait-on": "^7.0.1",
+    "nyc": "^15.1.0",
+    "artillery": "^2.0.4"
+  },
+  "peerDependencies": {
+    "numpy": ">=1.20.0",
+    "scipy": ">=1.7.0",
+    "matplotlib": ">=3.5.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/api/server.js",
+      "!src/config/**",
+      "!src/**/*.test.js"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.js",
+      "**/tests/**/*.spec.js"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
+    "testTimeout": 10000
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.json": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test"
+    }
+  },
+  "config": {
+    "port": 3000,
+    "logLevel": "info",
+    "apiVersion": "v1"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://solidarity.com/funding"
+  },
+  "publishConfig": {
+    "registry": "https://npm.solidarity.com"
+  }
 }

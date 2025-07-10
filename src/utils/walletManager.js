@@ -7,11 +7,15 @@
 
 const { ethers } = require('ethers');
 const winston = require('winston');
+// Add Solana web3 for Phantom integration
+const { Connection, PublicKey, clusterApiUrl } = require('@solana/web3.js');
 
 class WalletManager {
   constructor(config = {}) {
     this.providers = new Map();
     this.contracts = new Map();
+    this.solanaConnection = null;
+    this.phantomWallet = null;
     this.logger = winston.createLogger({
       level: 'info',
       format: winston.format.json(),
@@ -23,6 +27,7 @@ class WalletManager {
     
     // Initialize providers for different networks
     this.initializeProviders(config);
+    this.initializeSolanaConnection(config);
   }
 
   /**
@@ -50,6 +55,16 @@ class WalletManager {
         chainId: 56,
         rpcUrl: 'https://bsc-dataseed1.binance.org/'
       },
+      zkSync: {
+        name: 'zkSync Era Mainnet',
+        chainId: 324,
+        rpcUrl: 'https://mainnet.era.zksync.io'
+      },
+      zkSyncTestnet: {
+        name: 'zkSync Era Testnet',
+        chainId: 280,
+        rpcUrl: 'https://testnet.era.zksync.dev'
+      },
       localhost: {
         name: 'Localhost',
         chainId: 1337,
@@ -70,20 +85,70 @@ class WalletManager {
   }
 
   /**
-   * Create a wallet instance from private key (for server operations only)
+   * Initialize Solana connection for Phantom wallet
    */
-  createServerWallet(network = 'mainnet') {
-    const provider = this.providers.get(network);
-    if (!provider) {
-      throw new Error(`Provider not found for network: ${network}`);
+  initializeSolanaConnection(config) {
+    try {
+      // Use custom RPC or default to mainnet
+      const rpcUrl = process.env.SOLANA_RPC_URL || config.solanaRpc || clusterApiUrl('mainnet-beta');
+      this.solanaConnection = new Connection(rpcUrl, 'confirmed');
+      this.logger.info('Initialized Solana connection');
+    } catch (error) {
+      this.logger.error('Failed to initialize Solana connection:', error);
     }
+  }
 
-    const privateKey = process.env.ETHEREUM_PRIVATE_KEY;
-    if (!privateKey || privateKey === 'your_private_key_here') {
-      throw new Error('Server private key not configured');
+  /**
+   * Connect to Phantom wallet (client-side method)
+   */
+  async connectPhantomWallet() {
+    try {
+      // Check if Phantom is installed
+      if (!window.solana || !window.solana.isPhantom) {
+        throw new Error('Phantom wallet not detected. Please install Phantom wallet.');
+      }
+
+      // Request connection
+      const response = await window.solana.connect();
+      const publicKey = response.publicKey.toString();
+      
+      this.phantomWallet = {
+        publicKey: publicKey,
+        isConnected: true,
+        wallet: window.solana
+      };
+
+      this.logger.info(`Connected to Phantom wallet: ${publicKey}`);
+      return {
+        success: true,
+        publicKey: publicKey,
+        walletName: 'Phantom'
+      };
+    } catch (error) {
+      this.logger.error('Failed to connect to Phantom wallet:', error);
+      return {
+        success: false,
+        error: error.message
+      };
     }
+  }
 
-    return new ethers.Wallet(privateKey, provider);
+  /**
+   * Disconnect from Phantom wallet
+   */
+  async disconnectPhantomWallet() {
+    try {
+      if (this.phantomWallet && window.solana) {
+        await window.solana.disconnect();
+        this.phantomWallet = null;
+        this.logger.info('Disconnected from Phantom wallet');
+        return { success: true };
+      }
+      return { success: false, error: 'No wallet connected' };
+    } catch (error) {
+      this.logger.error('Failed to disconnect from Phantom wallet:', error);
+      return { success: false, error: error.message };
+    }
   }
 
   /**
@@ -197,7 +262,7 @@ class WalletManager {
         if (block && block.transactions) {
           for (const tx of block.transactions) {
             if ((tx.from && tx.from.toLowerCase() === walletAddress.toLowerCase()) ||
-                (tx.to && tx.to.toLowerCase() === walletAddress.toLowerCase())) {
+                (tx.to && tx.to.lowerCase() === walletAddress.toLowerCase())) {
               transactions.push({
                 hash: tx.hash,
                 from: tx.from,
@@ -304,6 +369,119 @@ class WalletManager {
     // In production, these would be updated in the database/config
     this.logger.info('Treasury addresses updated:', validAddresses);
     return validAddresses;
+  }
+
+  /**
+   * Connect to Phantom wallet (Solana)
+   */
+  async connectPhantom() {
+    if (!window.solana) {
+      throw new Error('Phantom wallet not found');
+    }
+
+    try {
+      // Request connection to Phantom wallet
+      const response = await window.solana.connect();
+      this.phantomWallet = response.publicKey.toString();
+      
+      this.logger.info(`Connected to Phantom wallet: ${this.phantomWallet}`);
+      return this.phantomWallet;
+    } catch (error) {
+      this.logger.error('Failed to connect to Phantom wallet:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get Solana wallet balance
+   */
+  async getSolanaBalance(publicKey) {
+    try {
+      if (!this.solanaConnection) {
+        throw new Error('Solana connection not initialized');
+      }
+
+      const pubKey = new PublicKey(publicKey);
+      const balance = await this.solanaConnection.getBalance(pubKey);
+      
+      // Convert lamports to SOL (1 SOL = 1,000,000,000 lamports)
+      const solBalance = balance / 1000000000;
+      
+      return {
+        balance: solBalance,
+        lamports: balance,
+        formatted: `${solBalance.toFixed(4)} SOL`
+      };
+    } catch (error) {
+      this.logger.error('Failed to get Solana balance:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get Phantom wallet info
+   */
+  getPhantomWalletInfo() {
+    if (!this.phantomWallet) {
+      return { connected: false };
+    }
+
+    return {
+      connected: true,
+      publicKey: this.phantomWallet.publicKey,
+      walletName: 'Phantom',
+      network: 'Solana'
+    };
+  }
+
+  /**
+   * Check if Phantom wallet is available
+   */
+  isPhantomAvailable() {
+    return typeof window !== 'undefined' && window.solana && window.solana.isPhantom;
+  }
+
+  /**
+   * Sign message with Phantom wallet
+   */
+  async signMessageWithPhantom(message) {
+    try {
+      if (!this.phantomWallet || !window.solana) {
+        throw new Error('Phantom wallet not connected');
+      }
+
+      const encodedMessage = new TextEncoder().encode(message);
+      const signedMessage = await window.solana.signMessage(encodedMessage);
+      
+      return {
+        success: true,
+        signature: signedMessage.signature,
+        publicKey: signedMessage.publicKey.toString()
+      };
+    } catch (error) {
+      this.logger.error('Failed to sign message with Phantom:', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Multi-chain wallet connection status
+   */
+  getWalletConnectionStatus() {
+    return {
+      ethereum: {
+        connected: this.providers.size > 0,
+        networks: Array.from(this.providers.keys())
+      },
+      solana: {
+        connected: this.phantomWallet?.isConnected || false,
+        publicKey: this.phantomWallet?.publicKey || null,
+        phantom: this.isPhantomAvailable()
+      }
+    };
   }
 }
 

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Wallet Integration - Solidarity Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .wallet-info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .button {
+            background: #007cba;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+        .button:hover {
+            background: #005a8b;
+        }
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .error {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #2e7d32;
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            white-space: pre-line;
+        }
+        .info {
+            color: #1565c0;
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .network-selector {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        .network-selector select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+        .account-input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .wallet-selector {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f0f8ff;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+        .wallet-option {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 15px;
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .wallet-option:hover {
+            border-color: #007cba;
+            background: #f8f9fa;
+        }
+        .wallet-option.active {
+            border-color: #007cba;
+            background: #e8f4fd;
+        }
+        .wallet-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f5f5f5;
+        }
+        .wallet-status {
+            font-size: 12px;
+            color: #666;
+            margin-block-start: 5px;
+        }
+        .account-result {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 Multi-Wallet Integration</h1>
+        <h2>Solidarity Platform - Ethereum & Solana Support</h2>
+        
+        <div class="wallet-selector">
+            <h3>Choose Wallet Type</h3>
+            <div class="wallet-option" id="metamaskOption" onclick="selectWallet('metamask')">
+                <div>🦊 MetaMask</div>
+                <div class="wallet-status" id="metamaskStatus">Checking...</div>
+            </div>
+            <div class="wallet-option" id="phantomOption" onclick="selectWallet('phantom')">
+                <div>👻 Phantom</div>
+                <div class="wallet-status" id="phantomStatus">Checking...</div>
+            </div>
+        </div>
+        
+        <div id="status"></div>
+        
+        <div class="wallet-info">
+            <h3>Wallet Status</h3>
+            <p><strong>Active Wallet:</strong> <span id="activeWallet">None Selected</span></p>
+            <p><strong>Connected:</strong> <span id="connectionStatus">Not Connected</span></p>
+            <p><strong>Address:</strong> <span id="walletAddress">-</span></p>
+            <p><strong>Balance:</strong> <span id="balance">-</span></p>
+            <p><strong>Network:</strong> <span id="currentNetwork">-</span></p>
+        </div>
+        
+        <div class="network-selector hidden" id="networkSelector">
+            <label for="networkSelect"><strong>Network:</strong></label>
+            <select id="networkSelect" onchange="changeNetwork()">
+                <!-- Options will be populated based on wallet type -->
+            </select>
+        </div>
+        
+        <div>
+            <button class="button" id="connectBtn" onclick="connectWallet()">Select Wallet First</button>
+            <button class="button" id="disconnectBtn" onclick="disconnectWallet()" disabled>Disconnect</button>
+            <button class="button" id="balanceBtn" onclick="getBalance()" disabled>Get Balance</button>
+            <button class="button" id="signBtn" onclick="signMessage()" disabled>Sign Message</button>
+        </div>
+        
+        <div class="wallet-info hidden" id="accountLookup">
+            <h3>Account Lookup</h3>
+            <input type="text" id="accountInput" class="account-input" placeholder="Enter address (0x... for Ethereum or Base58 for Solana)">
+            <button class="button" onclick="lookupAccount()">Lookup Account</button>
+            <button class="button" onclick="validateAddress()">Validate Address</button>
+            <div id="accountResult"></div>
+        </div>
+        
+        <div id="messages"></div>
+        
+        <div class="wallet-info">
+            <h3>How This Works</h3>
+            <ul>
+                <li>✅ <strong>Secure:</strong> Your seed phrase never leaves your Phantom wallet</li>
+                <li>✅ <strong>Private:</strong> Only your public key is shared with the website</li>
+                <li>✅ <strong>Controlled:</strong> You approve each transaction in Phantom</li>
+                <li>✅ <strong>Safe:</strong> No sensitive data is stored in our code</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Initialize wallet manager (simplified version for client-side)
+        class SimpleWalletManager {
+            constructor() {
+                this.phantomWallet = null;
+                this.network = 'mainnet-beta'; // Can be 'mainnet-beta', 'devnet', 'testnet'
+                this.rpcEndpoints = {
+                    'mainnet-beta': 'https://api.mainnet-beta.solana.com',
+                    'devnet': 'https://api.devnet.solana.com',
+                    'testnet': 'https://api.testnet.solana.com'
+                };
+                this.checkPhantomAvailability();
+                this.checkAutoConnect();
+            }
+
+            checkPhantomAvailability() {
+                const isAvailable = window.solana && window.solana.isPhantom;
+                document.getElementById('phantomStatus').textContent = isAvailable ? 'Yes ✅' : 'No ❌';
+                
+                if (!isAvailable) {
+                    this.showMessage('Phantom wallet not detected. Please install Phantom wallet extension from https://phantom.app/', 'error');
+                    document.getElementById('connectBtn').disabled = true;
+                } else {
+                    this.showMessage('Phantom wallet detected and ready to connect!', 'success');
+                }
+            }
+
+            async checkAutoConnect() {
+                try {
+                    if (window.solana && window.solana.isPhantom) {
+                        // Check if wallet is already connected
+                        const response = await window.solana.connect({ onlyIfTrusted: true });
+                        if (response.publicKey) {
+                            this.phantomWallet = {
+                                publicKey: response.publicKey.toString(),
+                                isConnected: true
+                            };
+                            this.updateUI();
+                            this.showMessage('Auto-connected to previously authorized wallet', 'success');
+                        }
+                    }
+                } catch (error) {
+                    // Silent fail for auto-connect
+                    console.log('Auto-connect failed:', error.message);
+                }
+            }
+
+            async connectPhantomWallet() {
+                try {
+                    if (!window.solana || !window.solana.isPhantom) {
+                        throw new Error('Phantom wallet not detected. Please install it from https://phantom.app/');
+                    }
+
+                    this.showMessage('Connecting to Phantom wallet...', 'info');
+                    const response = await window.solana.connect();
+                    
+                    if (!response.publicKey) {
+                        throw new Error('Failed to get public key from wallet');
+                    }
+                    
+                    const publicKey = response.publicKey.toString();
+                    
+                    this.phantomWallet = {
+                        publicKey: publicKey,
+                        isConnected: true
+                    };
+
+                    this.updateUI();
+                    this.showMessage(`Successfully connected to Phantom wallet!\nPublic Key: ${publicKey.slice(0, 8)}...${publicKey.slice(-8)}`, 'success');
+                    
+                    // Auto-fetch balance after connection
+                    setTimeout(() => this.getSolanaBalance(), 1000);
+                    
+                    return { success: true, publicKey };
+                } catch (error) {
+                    console.error('Connection error:', error);
+                    this.showMessage(`Failed to connect: ${error.message}`, 'error');
+                    return { success: false, error: error.message };
+                }
+            }
+
+            async disconnectPhantomWallet() {
+                try {
+                    if (window.solana) {
+                        await window.solana.disconnect();
+                    }
+                    this.phantomWallet = null;
+                    this.updateUI();
+                    this.showMessage('Disconnected from Phantom wallet', 'success');
+                } catch (error) {
+                    this.showMessage(`Failed to disconnect: ${error.message}`, 'error');
+                }
+            }
+
+            async getSolanaBalance() {
+                try {
+                    if (!this.phantomWallet) {
+                        throw new Error('Wallet not connected');
+                    }
+
+                    this.showMessage('Fetching balance...', 'info');
+                    
+                    // Using the appropriate RPC endpoint based on network
+                    const rpcUrl = this.rpcEndpoints[this.network];
+                    const response = await fetch(rpcUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            jsonrpc: '2.0',
+                            id: 1,
+                            method: 'getBalance',
+                            params: [this.phantomWallet.publicKey]
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        throw new Error(`RPC error: ${data.error.message}`);
+                    }
+                    
+                    const lamports = data.result.value;
+                    const sol = lamports / 1000000000;
+                    
+                    document.getElementById('balance').textContent = `${sol.toFixed(6)} SOL`;
+                    this.showMessage(`Balance updated: ${sol.toFixed(6)} SOL (${lamports} lamports)`, 'success');
+                    
+                    return { balance: sol, lamports };
+                } catch (error) {
+                    console.error('Balance fetch error:', error);
+                    this.showMessage(`Failed to get balance: ${error.message}`, 'error');
+                    document.getElementById('balance').textContent = 'Error';
+                }
+            }
+
+            async signMessage() {
+                try {
+                    if (!this.phantomWallet || !window.solana) {
+                        throw new Error('Wallet not connected');
+                    }
+
+                    const message = `Solidarity Platform Authentication\nTimestamp: ${new Date().toISOString()}\nWallet: ${this.phantomWallet.publicKey}\nNetwork: ${this.network}`;
+                    const encodedMessage = new TextEncoder().encode(message);
+                    
+                    this.showMessage('Please approve the signature request in your Phantom wallet...', 'info');
+                    const signedMessage = await window.solana.signMessage(encodedMessage);
+                    
+                    if (!signedMessage.signature) {
+                        throw new Error('No signature received');
+                    }
+                    
+                    const signatureString = Array.from(signedMessage.signature).map(b => b.toString(16).padStart(2, '0')).join('');
+                    
+                    this.showMessage(`Message signed successfully!\nSignature: ${signatureString.slice(0, 16)}...${signatureString.slice(-16)}`, 'success');
+                    
+                    return { success: true, signature: signedMessage.signature, message };
+                } catch (error) {
+                    console.error('Signing error:', error);
+                    if (error.message.includes('User rejected')) {
+                        this.showMessage('Signature request was rejected by user', 'error');
+                    } else {
+                        this.showMessage(`Failed to sign message: ${error.message}`, 'error');
+                    }
+                }
+            }
+
+            updateUI() {
+                const connected = this.phantomWallet && this.phantomWallet.isConnected;
+                
+                document.getElementById('connectionStatus').textContent = connected ? 'Connected ✅' : 'Not Connected ❌';
+                document.getElementById('publicKey').textContent = connected ? this.phantomWallet.publicKey : '-';
+                
+                document.getElementById('connectBtn').disabled = connected;
+                document.getElementById('disconnectBtn').disabled = !connected;
+                document.getElementById('balanceBtn').disabled = !connected;
+                document.getElementById('signBtn').disabled = !connected;
+                
+                if (!connected) {
+                    document.getElementById('balance').textContent = '-';
+                }
+            }
+
+            showMessage(message, type = 'info') {
+                const messagesDiv = document.getElementById('messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = type;
+                
+                // Handle multi-line messages
+                if (message.includes('\n')) {
+                    const lines = message.split('\n');
+                    lines.forEach((line, index) => {
+                        if (index > 0) messageDiv.appendChild(document.createElement('br'));
+                        messageDiv.appendChild(document.createTextNode(line));
+                    });
+                } else {
+                    messageDiv.textContent = message;
+                }
+                
+                messagesDiv.appendChild(messageDiv);
+                
+                // Auto-remove after 8 seconds (increased for longer messages)
+                setTimeout(() => {
+                    if (messageDiv.parentNode) {
+                        messageDiv.parentNode.removeChild(messageDiv);
+                    }
+                }, 8000);
+                
+                // Scroll to show the latest message
+                messageDiv.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Validate Solana address format
+            isValidSolanaAddress(address) {
+                try {
+                    // Basic validation - Solana addresses are base58 encoded and typically 32-44 characters
+                    const base58Regex = /^[1-9A-HJ-NP-Za-km-z]+$/;
+                    if (!base58Regex.test(address)) {
+                        return false;
+                    }
+                    
+                    // Length check (most Solana addresses are 32-44 characters)
+                    if (address.length < 32 || address.length > 44) {
+                        return false;
+                    }
+                    
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            }
+
+            // Get account information for any Solana address
+            async getAccountInfo(address) {
+                try {
+                    const rpcUrl = this.rpcEndpoints[this.network];
+                    const response = await fetch(rpcUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            jsonrpc: '2.0',
+                            id: 1,
+                            method: 'getAccountInfo',
+                            params: [
+                                address,
+                                {
+                                    encoding: 'base64'
+                                }
+                            ]
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        throw new Error(`RPC error: ${data.error.message}`);
+                    }
+                    
+                    return data.result;
+                } catch (error) {
+                    console.error('Account info fetch error:', error);
+                    throw error;
+                }
+            }
+
+            // Get balance for any address
+            async getAddressBalance(address) {
+                try {
+                    const rpcUrl = this.rpcEndpoints[this.network];
+                    const response = await fetch(rpcUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            jsonrpc: '2.0',
+                            id: 1,
+                            method: 'getBalance',
+                            params: [address]
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        throw new Error(`RPC error: ${data.error.message}`);
+                    }
+                    
+                    return data.result.value;
+                } catch (error) {
+                    console.error('Balance fetch error:', error);
+                    throw error;
+                }
+            }
+        }
+
+        // Initialize the wallet manager
+        const walletManager = new SimpleWalletManager();
+
+        // Button event handlers
+        async function connectWallet() {
+            await walletManager.connectPhantomWallet();
+        }
+
+        async function disconnectWallet() {
+            await walletManager.disconnectPhantomWallet();
+        }
+
+        async function getBalance() {
+            await walletManager.getSolanaBalance();
+        }
+
+        async function signMessage() {
+            await walletManager.signMessage();
+        }
+
+        function changeNetwork() {
+            const networkSelect = document.getElementById('networkSelect');
+            const newNetwork = networkSelect.value;
+            walletManager.network = newNetwork;
+            walletManager.showMessage(`Network changed to ${newNetwork}`, 'info');
+            
+            // Clear balance when network changes
+            document.getElementById('balance').textContent = '-';
+            
+            // Refetch balance if connected
+            if (walletManager.phantomWallet && walletManager.phantomWallet.isConnected) {
+                setTimeout(() => walletManager.getSolanaBalance(), 500);
+            }
+        }
+
+        async function validateAddress() {
+            const accountInput = document.getElementById('accountInput');
+            const address = accountInput.value.trim();
+            
+            if (!address) {
+                walletManager.showMessage('Please enter a Solana address to validate', 'error');
+                return;
+            }
+            
+            const isValid = walletManager.isValidSolanaAddress(address);
+            const resultDiv = document.getElementById('accountResult');
+            
+            if (isValid) {
+                resultDiv.innerHTML = `<div class="success">✅ Valid Solana address format</div>`;
+                walletManager.showMessage(`Address validation: Valid format`, 'success');
+            } else {
+                resultDiv.innerHTML = `<div class="error">❌ Invalid Solana address format</div>`;
+                walletManager.showMessage(`Address validation: Invalid format`, 'error');
+            }
+        }
+
+        async function lookupAccount() {
+            const accountInput = document.getElementById('accountInput');
+            const address = accountInput.value.trim();
+            
+            if (!address) {
+                walletManager.showMessage('Please enter a Solana address to lookup', 'error');
+                return;
+            }
+            
+            // Pre-fill with the address from your message if empty
+            if (address === '' || address === '7o9akSbnC69eN5VR4KWZX-P7dCiLV5cpMNArd1vyMQRyP') {
+                accountInput.value = '7o9akSbnC69eN5VR4KWZX-P7dCiLV5cpMNArd1vyMQRyP';
+            }
+            
+            const actualAddress = accountInput.value.trim();
+            
+            if (!walletManager.isValidSolanaAddress(actualAddress)) {
+                walletManager.showMessage('Invalid Solana address format', 'error');
+                return;
+            }
+            
+            walletManager.showMessage(`Looking up account: ${actualAddress.slice(0, 8)}...${actualAddress.slice(-8)}`, 'info');
+            
+            try {
+                const [accountInfo, balance] = await Promise.all([
+                    walletManager.getAccountInfo(actualAddress),
+                    walletManager.getAddressBalance(actualAddress)
+                ]);
+                
+                const solBalance = balance / 1000000000;
+                const resultDiv = document.getElementById('accountResult');
+                
+                let resultHTML = `<div class="account-result">
+                    <h4>Account Information</h4>
+                    <p><strong>Address:</strong> ${actualAddress}</p>
+                    <p><strong>Balance:</strong> ${solBalance.toFixed(6)} SOL (${balance} lamports)</p>
+                    <p><strong>Network:</strong> ${walletManager.network}</p>`;
+                
+                if (accountInfo.value) {
+                    resultHTML += `
+                    <p><strong>Account exists:</strong> ✅ Yes</p>
+                    <p><strong>Owner:</strong> ${accountInfo.value.owner}</p>
+                    <p><strong>Executable:</strong> ${accountInfo.value.executable ? '✅ Yes' : '❌ No'}</p>
+                    <p><strong>Rent Epoch:</strong> ${accountInfo.value.rentEpoch}</p>
+                    <p><strong>Data Length:</strong> ${accountInfo.value.data ? accountInfo.value.data[0].length : 0} bytes</p>`;
+                } else {
+                    resultHTML += `<p><strong>Account exists:</strong> ❌ No (may be a new/empty account)</p>`;
+                }
+                
+                resultHTML += `</div>`;
+                resultDiv.innerHTML = resultHTML;
+                
+                walletManager.showMessage(`Account lookup completed successfully`, 'success');
+                
+            } catch (error) {
+                const resultDiv = document.getElementById('accountResult');
+                resultDiv.innerHTML = `<div class="error">Failed to lookup account: ${error.message}</div>`;
+                walletManager.showMessage(`Account lookup failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Check wallet connection on page load
+        window.addEventListener('load', () => {
+            if (window.solana && window.solana.isPhantom) {
+                // Set up event listeners for wallet events
+                window.solana.on('connect', (publicKey) => {
+                    console.log('Phantom wallet connected:', publicKey.toString());
+                    if (!walletManager.phantomWallet) {
+                        walletManager.phantomWallet = {
+                            publicKey: publicKey.toString(),
+                            isConnected: true
+                        };
+                    }
+                    walletManager.updateUI();
+                });
+
+                window.solana.on('disconnect', () => {
+                    console.log('Phantom wallet disconnected');
+                    walletManager.phantomWallet = null;
+                    walletManager.updateUI();
+                    walletManager.showMessage('Wallet disconnected', 'info');
+                });
+
+                window.solana.on('accountChanged', (publicKey) => {
+                    console.log('Account changed:', publicKey ? publicKey.toString() : 'null');
+                    if (publicKey) {
+                        walletManager.phantomWallet = {
+                            publicKey: publicKey.toString(),
+                            isConnected: true
+                        };
+                        walletManager.updateUI();
+                        walletManager.showMessage('Account changed', 'info');
+                    } else {
+                        walletManager.phantomWallet = null;
+                        walletManager.updateUI();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

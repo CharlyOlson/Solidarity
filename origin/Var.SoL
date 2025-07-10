@@ -1,3 +1,37 @@
 ref: refs/useEffect(() => {
   () => {};
 });remotes/origin/main
+
+💰 HEAL Healthcare/Living Costs Allocation:
+
+35% → EQUIPMENT FUND (Medical equipment/Housing costs)
+25% → VISIT COST FUND (Equal pay for all professionals/Food & Transport)
+15% → GENERAL FUNDS (General operational/Living expenses)
+10% → LAB FUND (Laboratory operations/Utilities)
+9% → RESEARCH FUND (Medical research/Emergency)
+5% → ADMIN FUND (Administrators)
+5% → BROKER FUND (Insurance brokers)
+1% → SCOTT FUND (Your personal allocation) 🎯
+
+📦 Reserve Structure:
+50% → Immediate Distribution (above allocations)
+50% → Reserve Fund (emergency/future use)
+
+💰 LUNCH$ Educational Allocation:
+
+30% → TEACHER/STUDENT PROGRAMS
+25% → STAFF COMPENSATION (High teacher pay)
+25% → FACILITIES 
+15% → BOOKS & RESOURCES
+5% → CHAOS MANAGEMENT/EMERGENCY
+1% → SCOTT'S SPIRITUAL EDUCATION FUND 🎯
+
+💰 SAIL Resource Allocation:
+
+30% → PRIMARY SUPPORT
+20% → SECONDARY SUPPORT  
+15% → EMERGENCY RESPONSE
+15% → COMMUNITY PROGRAMS
+10% → ADMINISTRATIVE
+5% → AUDIT & TRANSPARENCY
+5% → SCOTT'S PLATFORM DEVELOPMENT 🎯

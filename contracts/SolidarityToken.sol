@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
+import "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
+import "../lib/openzeppelin-contracts/contracts/security/ReentrancyGuard.sol";
 
 /**
  * @title SolidarityToken
@@ -37,7 +37,7 @@ contract SolidarityToken is ERC20, Ownable, ReentrancyGuard {
     event MetricsUpdated(uint256 indexed day, uint256 stabilityScore);
     event TreasuryDistribution(uint256 communityAmount, uint256 payrollAmount, uint256 operationalAmount);
     
-    constructor(
+    conductor(
         string memory name,
         string memory symbol,
         uint256 initialSupply,

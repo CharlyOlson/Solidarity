@@ -1,0 +1,26 @@
+{
+  "name": "solidarity-sync-stone-protocol",
+  "version": "1.0.0",
+  "description": "Sync Stone Protocol™ & Soul.Ed.Xchange - Complete function set implementation",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test tests/*.test.js",
+    "build": "node scripts/build.js",
+    "lint": "node scripts/lint.js"
+  },
+  "keywords": [
+    "sync-stone-protocol",
+    "soul-ed-xchange",
+    "solidarity",
+    "blockchain",
+    "cryptocurrency",
+    "harmonic-compression",
+    "pythagorean-error-correction"
+  ],
+  "author": "Scott Charles Olson (Charly)",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {}
+}

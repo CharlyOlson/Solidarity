@@ -1,0 +1,27 @@
+{
+  "primary": {
+    "solidarity_blue": "#1B4D8C",
+    "community_green": "#2E7D32", 
+    "innovation_orange": "#FF6F00"
+  },
+  "secondary": {
+    "light_gray": "#F5F5F5",
+    "dark_gray": "#212121",
+    "accent_gold": "#FFD700"
+  },
+  "status": {
+    "success": "#4CAF50",
+    "warning": "#FF9800",
+    "error": "#F44336", 
+    "info": "#2196F3"
+  },
+  "gradients": {
+    "primary_gradient": "linear-gradient(135deg, #1B4D8C 0%, #2E7D32 100%)",
+    "warm_gradient": "linear-gradient(135deg, #FF6F00 0%, #FFD700 100%)"
+  },
+  "opacity": {
+    "light": 0.1,
+    "medium": 0.5,
+    "heavy": 0.8
+  }
+}

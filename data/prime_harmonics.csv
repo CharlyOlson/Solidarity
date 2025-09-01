@@ -1,0 +1,12 @@
+Prime_Harmonic,Frequency_Ratio,Cents_Deviation_From_Equal_Temperament,Microtonal_Interval_Name,Musical_Application
+2,2:1,0.0,Octave,Standard octave in all music systems
+3,3:1,701.96,Perfect Fifth,Perfect fifth - foundation of harmony
+5,5:1,386.31,Major Third,Pure major third - just intonation
+7,7:1,968.83,Harmonic Seventh,"Blues seventh, barbershop harmony"
+11,11:1,551.32,Harmonic Eleventh,"Quartertone music, microtonal composition"
+13,13:1,840.53,Harmonic Thirteenth,"Extended jazz harmony, xenharmonic music"
+17,17:1,104.96,Harmonic Seventeenth,Persian and Arabic maqam systems
+19,19:1,297.51,Harmonic Nineteenth,"Indian classical music, complex polyrhythms"
+23,23:1,628.27,Harmonic Twenty-Third,Experimental microtonal composition
+29,29:1,1029.58,Harmonic Twenty-Ninth,"Highly dissonant, used in spectral music"
+31,31:1,1145.04,Harmonic Thirty-First,Extended just intonation systems

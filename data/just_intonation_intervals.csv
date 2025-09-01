@@ -1,0 +1,14 @@
+Interval_Name,Ratio,Ratio_Decimal,Cents,Mathematical_Description
+Unison,1:1,1.0000,0.0,Perfect unison - same frequency
+Minor 2Nd,16:15,1.0667,111.7,Minor second - small half-step
+Major 2Nd,9:8,1.1250,203.9,Major second - whole tone
+Minor 3Rd,6:5,1.2000,315.6,Minor third - small third
+Major 3Rd,5:4,1.2500,386.3,Major third - pure third from 5th harmonic
+Perfect 4Th,4:3,1.3333,498.0,Perfect fourth - fourth harmonic ratio
+Tritone,11:8,1.3750,551.3,Tritone - augmented fourth from 11th harmonic
+Perfect 5Th,3:2,1.5000,702.0,Perfect fifth - third harmonic ratio
+Minor 6Th,8:5,1.6000,813.7,Minor sixth - inverted major third
+Major 6Th,5:3,1.6667,884.4,Major sixth - fifth harmonic compound
+Minor 7Th,7:4,1.7500,968.8,Minor seventh - seventh harmonic
+Major 7Th,15:8,1.8750,1088.3,Major seventh - compound interval
+Octave,2:1,2.0000,1200.0,Perfect octave - frequency doubling

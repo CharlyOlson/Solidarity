@@ -21,6 +21,22 @@ export {
     directional_reversal
 } from './security/index.js';
 
+// Phase 2: Node Architecture Functions
+export {
+    alpha_node_ingest,
+    beta_node_process,
+    gamma_node_store,
+    delta_node_orchestrate
+} from './nodes/index.js';
+
+// Phase 2: Communication Protocol Functions
+export {
+    sync_stone_handshake,
+    bluetooth_integration_layer,
+    protocol_negotiation,
+    backwards_compatibility_check
+} from './communication/index.js';
+
 // System information
 export const SYNC_STONE_PROTOCOL_VERSION = '1.0.0';
 export const SOUL_ED_XCHANGE_VERSION = '1.0.0';
@@ -34,8 +50,8 @@ export function initializeSyncStoneProtocol(config = {}) {
     const defaultConfig = {
         enableDataManagement: true,
         enableSecurity: true,
-        enableNodeArchitecture: false, // Phase 2
-        enableCommunication: false,    // Phase 2
+        enableNodeArchitecture: true,  // Phase 2 - now available
+        enableCommunication: true,     // Phase 2 - now available
         enableFinancial: false,        // Phase 3
         enableIntegration: false,      // Phase 3
         enableUtilities: false,        // Phase 4
@@ -95,6 +111,24 @@ export function initializeSyncStoneProtocol(config = {}) {
                     'plugin_security_manager',
                     'adaptive_failover_detect',
                     'directional_reversal'
+                );
+            }
+            
+            if (systemConfig.enableNodeArchitecture) {
+                functions.push(
+                    'alpha_node_ingest',
+                    'beta_node_process',
+                    'gamma_node_store',
+                    'delta_node_orchestrate'
+                );
+            }
+            
+            if (systemConfig.enableCommunication) {
+                functions.push(
+                    'sync_stone_handshake',
+                    'bluetooth_integration_layer',
+                    'protocol_negotiation',
+                    'backwards_compatibility_check'
                 );
             }
             

@@ -1,0 +1,37 @@
+{
+  "name": "solidarity-platform",
+  "version": "1.0.0",
+  "description": "Solidarity Platform implementing the Henry 7 Step 14 Shoe Waltz numerological system",
+  "type": "module",
+  "main": "src/solidarity-platform.js",
+  "scripts": {
+    "start": "node examples/demo.js",
+    "test": "node tests/run-tests.js",
+    "validate": "node examples/validation.js",
+    "demo": "node examples/demo.js"
+  },
+  "keywords": [
+    "solidarity",
+    "numerology",
+    "sacred-geometry",
+    "henry-7-step",
+    "cubit-calculation",
+    "harmonic-progression"
+  ],
+  "authors": [
+    "Scott Charles Olson (Charly)",
+    "Charles H. Dykes (Hank)"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CharlyOlson/Solidarity.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CharlyOlson/Solidarity/issues"
+  },
+  "homepage": "https://github.com/CharlyOlson/Solidarity#readme"
+}

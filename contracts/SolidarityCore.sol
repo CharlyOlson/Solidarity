@@ -14,6 +14,7 @@ contract SolidarityCore {
     
     struct User {
         address walletAddress;
+        bool isRegistered;
         bool isVerified;
         uint256 joinedAt;
         uint256 lastActivity;
@@ -41,7 +42,13 @@ contract SolidarityCore {
     }
     
     modifier onlyVerifiedUser() {
+        require(users[msg.sender].isRegistered, "User must be registered");
         require(users[msg.sender].isVerified, "User must be verified");
+        _;
+    }
+    
+    modifier onlyRegisteredUser() {
+        require(users[msg.sender].isRegistered, "User must be registered");
         _;
     }
     
@@ -53,10 +60,11 @@ contract SolidarityCore {
      * @dev Register a new user on the platform
      */
     function registerUser() external {
-        require(users[msg.sender].walletAddress == address(0), "User already registered");
+        require(!users[msg.sender].isRegistered, "User already registered");
         
         users[msg.sender] = User({
             walletAddress: msg.sender,
+            isRegistered: true,
             isVerified: false,
             joinedAt: block.timestamp,
             lastActivity: block.timestamp
@@ -69,7 +77,7 @@ contract SolidarityCore {
      * @dev Verify a user (only owner can verify)
      */
     function verifyUser(address userAddress) external onlyOwner {
-        require(users[userAddress].walletAddress != address(0), "User not registered");
+        require(users[userAddress].isRegistered, "User not registered");
         users[userAddress].isVerified = true;
     }
     
@@ -103,5 +111,20 @@ contract SolidarityCore {
      */
     function getPlatformInfo() external pure returns (string memory, string memory) {
         return (NAME, VERSION);
+    }
+    
+    /**
+     * @dev Check if a user is registered
+     */
+    function isUserRegistered(address userAddress) external view returns (bool) {
+        return users[userAddress].isRegistered;
+    }
+    
+    /**
+     * @dev Get user registration status and verification status
+     */
+    function getUserStatus(address userAddress) external view returns (bool registered, bool verified, uint256 joinedAt) {
+        User memory user = users[userAddress];
+        return (user.isRegistered, user.isVerified, user.joinedAt);
     }
 }

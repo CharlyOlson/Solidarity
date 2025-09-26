@@ -42,7 +42,14 @@ app.use('*', (req, res) => {
 // Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+  if (process.env.NODE_ENV !== 'production') {
+    res.status(500).json({
+      error: err.message || 'Internal Server Error',
+      stack: err.stack
+    });
+  } else {
+    res.status(500).json({ error: 'Something went wrong!' });
+  }
 });
 
 // Start server

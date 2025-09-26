@@ -34,6 +34,7 @@ CREATE TABLE transactions (
 CREATE TABLE smart_contracts (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
+    -- Ethereum addresses are 42 characters: '0x' + 40 hex chars
     address VARCHAR(42) UNIQUE NOT NULL,
     network VARCHAR(50) NOT NULL,
     abi JSONB,

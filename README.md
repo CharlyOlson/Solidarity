@@ -4,7 +4,7 @@ Full scale system for commerce
 # Solidarity.Soul.Ed.Xchange.Fi
 A Financial Focus on how we work.
 
-# Solidarity – Platform by "Charly" = Scott Charles Olson and framework concept design, creative input and all around genuine, "Hank" Charles H. Dykes, and other contributors and founding investors.
+# Solidarity – Platform by "Charly" = Scott Charles Olson with framework concept design, creative input and genuine collaboration by "Hank" Charles H. Dykes, and other contributors and founding investors.
 
 Welcome to the official repository for Solidarity, architected and trademarked by Scott Charles Olson (Charly).  
 This platform is dedicated to security, longevity, and community understanding.

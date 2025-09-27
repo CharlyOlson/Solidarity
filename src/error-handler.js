@@ -38,8 +38,7 @@ export class ErrorHandler {
         }
         
         // Check for production indicators
-        if (process.env.PRODUCTION || 
-            process.env.NODE_ENV === 'production' ||
+        if (process.env.PRODUCTION ||
             process.argv.includes('--prod') ||
             process.argv.includes('--production')) {
             return 'production';

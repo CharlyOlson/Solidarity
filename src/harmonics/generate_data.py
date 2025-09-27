@@ -15,6 +15,10 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'harmonics'))
 from core_harmonics import HarmonicProcessor
 
+# Add the parent directory to path for error_utils
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from error_utils import log_error
+
 
 def generate_complete_harmonic_series_csv():
     """Generate complete harmonic series CSV file"""
@@ -261,6 +265,4 @@ if __name__ == "__main__":
             print(f"  - {file_path}")
             
     except Exception as e:
-        print(f"Error generating data files: {e}")
-        import traceback
-        traceback.print_exc()
+        log_error(e, "Error generating data files")

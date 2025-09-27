@@ -62,7 +62,7 @@ class SolidarityCoreTest {
         let user = this.mockUserStruct();
         user.isRegistered = true;
         user.isVerified = false;
-        user.joinedAt = Date.now();
+        user.joinedAt = Math.floor(Date.now() / 1000);
         
         // Mock getUserStatus function
         let status = {

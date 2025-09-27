@@ -6,6 +6,12 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
 # Environment files
 .env
 .env.local

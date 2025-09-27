@@ -4,6 +4,10 @@
  */
 
 import SolidarityPlatform from '../src/solidarity-platform.js';
+import ErrorHandler from '../src/error-handler.js';
+
+// Initialize error handler for demo
+const errorHandler = new ErrorHandler();
 
 async function runDemo() {
     console.log('🎭 Solidarity Platform Demo - Henry 7 Step 14 Shoe Waltz');
@@ -137,14 +141,13 @@ async function runDemo() {
         await platform.shutdown();
         
     } catch (error) {
-        console.error('❌ Demo failed:', error.message);
-        console.error(error.stack);
+        // Use environment-aware error handling
+        errorHandler.logError(error, 'Demo execution');
         process.exit(1);
     }
 }
 
 // Run the demo
 runDemo().catch(error => {
-    console.error('Fatal error:', error);
-    process.exit(1);
+    errorHandler.handleFatalError(error, 'Demo startup');
 });

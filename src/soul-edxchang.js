@@ -5,6 +5,8 @@
  * @author Scott Charles Olson (Charly) & Charles H. Dykes (Hank)
  */
 
+import ErrorHandler from './error-handler.js';
+
 export class SoulEdXchang {
     constructor(config = {}) {
         this.config = {
@@ -13,6 +15,8 @@ export class SoulEdXchang {
             requireMutualCertification: config.requireMutualCertification ?? true,
             ...config
         };
+        
+        this.errorHandler = new ErrorHandler(config);
         
         this.sessions = new Map();
         this.activeNegotiations = new Map();
@@ -114,6 +118,9 @@ export class SoulEdXchang {
             session.phases.negotiation.status = 'failed';
             session.phases.negotiation.duration = Date.now() - negotiationStart;
             
+            // Log error with context
+            this.errorHandler.logError(error, 'negotiation phase');
+            
             throw error;
         }
     }
@@ -148,6 +155,10 @@ export class SoulEdXchang {
         } catch (error) {
             session.phases.exchange.status = 'failed';
             session.phases.exchange.duration = Date.now() - exchangeStart;
+            
+            // Log error with context
+            this.errorHandler.logError(error, 'exchange phase');
+            
             throw error;
         }
     }
@@ -198,6 +209,10 @@ export class SoulEdXchang {
         } catch (error) {
             session.phases.certification.status = 'failed';
             session.phases.certification.duration = Date.now() - certificationStart;
+            
+            // Log error with context
+            this.errorHandler.logError(error, 'certification phase');
+            
             throw error;
         }
     }

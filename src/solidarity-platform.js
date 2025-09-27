@@ -11,6 +11,7 @@ import SolidarityProcessor from './processor.js';
 import SoulEdXchang from './soul-edxchang.js';
 import StonenSync from './stonensync.js';
 import CubitCalculationSystem from './cubit-calculation.js';
+import ErrorHandler from './error-handler.js';
 
 export class SolidarityPlatform {
     constructor(config = {}) {
@@ -21,6 +22,9 @@ export class SolidarityPlatform {
             autoStartSync: config.autoStartSync ?? false,
             ...config
         };
+
+        // Initialize error handler first
+        this.errorHandler = new ErrorHandler(this.config);
 
         // Initialize core components
         this.waltz = new Henry7Step14ShoeWaltz();
@@ -104,6 +108,13 @@ export class SolidarityPlatform {
             };
 
         } catch (error) {
+            // Log error appropriately based on environment
+            this.errorHandler.logError(error, `integrated session ${sessionId}`);
+            
+            const errorResponse = this.errorHandler.createErrorResponse(error, {
+                sessionId
+            });
+            
             const errorSession = {
                 id: sessionId,
                 state: 'error',
@@ -113,12 +124,7 @@ export class SolidarityPlatform {
             
             this.integratedSessions.set(sessionId, errorSession);
             
-            return {
-                sessionId,
-                success: false,
-                error: error.message,
-                timestamp: new Date().toISOString()
-            };
+            return errorResponse;
         }
     }
 

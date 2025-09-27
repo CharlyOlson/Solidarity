@@ -6,6 +6,7 @@
  */
 
 import Henry7Step14ShoeWaltz from './henry-7-step-14-shoe-waltz.js';
+import ErrorHandler from './error-handler.js';
 
 export class SolidarityProcessor {
     constructor(config = {}) {
@@ -20,6 +21,7 @@ export class SolidarityProcessor {
         this.waltz = new Henry7Step14ShoeWaltz();
         this.state = 'idle';
         this.currentPhase = null;
+        this.errorHandler = new ErrorHandler(config);
     }
 
     /**
@@ -95,12 +97,13 @@ export class SolidarityProcessor {
             this.state = 'error';
             this.currentPhase = 'error';
             
-            return {
-                success: false,
-                error: error.message,
+            // Log the error appropriately based on environment
+            this.errorHandler.logError(error, 'processWithStaging');
+            
+            return this.errorHandler.createErrorResponse(error, {
                 phase: this.currentPhase,
-                timestamp: new Date().toISOString()
-            };
+                state: this.state
+            });
         }
     }
 

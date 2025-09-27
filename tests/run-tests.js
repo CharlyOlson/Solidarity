@@ -8,6 +8,7 @@ import SoulEdXchang from '../src/soul-edxchang.js';
 import StonenSync from '../src/stonensync.js';
 import CubitCalculationSystem from '../src/cubit-calculation.js';
 import SolidarityPlatform from '../src/solidarity-platform.js';
+import { logFatalError } from '../src/error-utils.js';
 
 class TestRunner {
     constructor() {
@@ -228,6 +229,5 @@ runner.run().then(results => {
         process.exit(1);
     }
 }).catch(error => {
-    console.error('Test runner error:', error);
-    process.exit(1);
+    logFatalError(error, 'Test runner error:');
 });

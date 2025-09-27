@@ -89,7 +89,7 @@ contract SolidarityCore {
         uint256 amount,
         string memory transactionType
     ) external onlyVerifiedUser returns (bytes32) {
-        bytes32 txId = keccak256(abi.encodePacked(msg.sender, to, amount, block.timestamp, block.number));
+        bytes32 txId = keccak256(abi.encode(msg.sender, to, amount, block.timestamp, block.number));
         
         transactions[txId] = Transaction({
             from: msg.sender,

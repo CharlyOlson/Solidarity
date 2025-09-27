@@ -24,9 +24,15 @@ export class ErrorHandler {
      * Detect current environment
      */
     detectEnvironment() {
+        // Whitelist of allowed environments
+        const allowedEnvironments = ['production', 'development', 'test', 'staging'];
         // Check NODE_ENV first
         if (process.env.NODE_ENV) {
-            return process.env.NODE_ENV.toLowerCase();
+            const env = process.env.NODE_ENV.toLowerCase();
+            if (allowedEnvironments.includes(env)) {
+                return env;
+            }
+            // If not allowed, continue with other detection
         }
         
         // Check for development indicators

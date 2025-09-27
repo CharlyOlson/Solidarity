@@ -8,7 +8,7 @@
 export class ErrorHandler {
     constructor(config = {}) {
         this.config = {
-            environment: config.environment ?? this.detectEnvironment(),
+            environment: config.environment ?? (() => this.detectEnvironment())(),
             enableStackTraces: config.enableStackTraces ?? null, // null = auto-detect based on env
             logLevel: config.logLevel ?? 'info',
             ...config

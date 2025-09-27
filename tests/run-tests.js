@@ -9,6 +9,7 @@ import StonenSync from '../src/stonensync.js';
 import CubitCalculationSystem from '../src/cubit-calculation.js';
 import SolidarityPlatform from '../src/solidarity-platform.js';
 import { logFatalError } from '../src/error-utils.js';
+import ContractValidator from '../contracts/test-contracts.js';
 
 class TestRunner {
     constructor() {
@@ -221,6 +222,26 @@ runner.test('Harmonic Calculations', () => {
     runner.assertApproximately(harmonics.doubleToSquare, 3.5); // 49/14
     runner.assertEqual(harmonics.baseToSquare, 7); // 49/7
     runner.assertApproximately(harmonics.meanOf3And4, 3.5); // (3+4)/2
+});
+
+// Smart Contract Security Tests
+runner.test('Smart Contract Security - abi.encodePacked Fix', () => {
+    const validator = new ContractValidator();
+    
+    // Suppress output for test run by capturing console.log temporarily
+    const originalLog = console.log;
+    console.log = () => {};
+    
+    let validationResults;
+    try {
+        validationResults = validator.validate();
+    } finally {
+        console.log = originalLog; // Restore console.log
+    }
+    
+    runner.assertEqual(validationResults.vulnerable, 0, 'No vulnerable contracts should exist');
+    runner.assert(validationResults.secure > 0, 'Should have secure contracts');
+    runner.assertEqual(validationResults.overallStatus, 'SECURE', 'Overall status should be secure');
 });
 
 // Run all tests

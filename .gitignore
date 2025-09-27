@@ -60,3 +60,7 @@ Thumbs.db
 dist/
 build/
 out/
+
+# Development artifacts (to maintain import consistency)
+*.bak
+*.orig

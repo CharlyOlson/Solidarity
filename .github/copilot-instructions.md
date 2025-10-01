@@ -35,6 +35,8 @@ The Solidarity Platform is a comprehensive system implementing the Henry 7 Step 
 3. **Temporal Control** - Time-based processing with cog switching mechanisms
 4. **Platform Integration** - Orchestrates all components together
 5. **Cubit Calculation** - Sacred geometry and measurement systems
+6. **Twelve-Node System** - Self-correcting architecture with alpha/beta/omega locks
+7. **AI Integration** - Perplexity AI for real-time insights and code assistance
 
 ### Key Mathematical Relationships
 - Base progression: 7 → 14 → 49
@@ -48,6 +50,7 @@ The Solidarity Platform is a comprehensive system implementing the Henry 7 Step 
 - Use dependency injection for configuration
 - Implement proper error handling for edge cases
 - Maintain state consistency across components
+- Contracts use alpha/beta/omega lock states for controlled transitions
 
 ## Testing Guidelines
 
@@ -148,3 +151,38 @@ def calculate_harmonic_series(fundamental: float, num_harmonics: int) -> np.ndar
 5. Ensure integration with existing components
 6. Maintain performance standards for audio processing
 7. Follow the established architectural patterns
+
+## Perplexity AI Integration
+- Use `src/perplexityIntegration.js` for AI-powered insights
+- API key stored in `.env` (never commit)
+- `queryPerplexity(query, options)` for direct queries
+- `PerplexityAIAgent` class for autonomous insights
+- Useful for complex mathematical validations and code suggestions
+
+## Smart Contracts (Solidity)
+- Located in `contracts/` directory
+- Implement twelve-node self-correcting system
+- Use alpha/beta/omega lock states for state transitions
+- All contracts aligned with 7→14→49 framework
+- Include Pythagorean verification where applicable
+- Node 2: CommunityIntegration (partners and integration points)
+- Node 3: InstitutionalOnboarding (7-step onboarding)
+- Node 4: RevenueAllocationExample (automatic distribution)
+- Node 5: StabilityMetrics (error correction with 7²+24²=25²)
+
+## Database Schemas (SQL)
+- Located in `sql/` directory
+- PostgreSQL schemas with temporal control
+- Node 1: assets_table.sql (asset tracking with harmonic alignment)
+- Node 6: gradient_scaling.sql (temporal control, fiscal time always forward)
+- Use triggers to enforce "fiscal time always moves forward"
+- Include Pythagorean verification functions
+- Harmonic values must be 7, 14, or 49
+
+## Development Workflow
+- **VS Code Setup**: `.vscode/settings.json` has GitHub Copilot agent mode enabled
+- **Workspace Sync**: See `docs/WORKSPACE_SYNC.md` for multi-device setup
+- **Environment**: Copy `.env.example` to `.env` and add API keys
+- **Testing**: Run `npm test` frequently to validate changes
+- **Commits**: Use clear, descriptive commit messages
+- **AI Assistance**: Leverage both GitHub Copilot and Perplexity AI for complex tasks

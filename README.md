@@ -6,13 +6,22 @@ A Financial Focus on how we work.
 Welcome to the official repository for Solidarity, architected and trademarked by Scott Charles Olson (Charly).  
 This platform is dedicated to security, longevity, and community understanding.
 
-## Structure
-- **contracts/** – Smart contracts and on-chain logic
-- **sql/** – Database scripts and queries
-- **src/** – Core application source code
-- **docs/** – Documentation and roadmap
-- **palette/** – Color palettes and design tokens
+## Current Structure
+- **src/** – Core application source code (JavaScript & Python)
+  - **harmonics/** – Python harmonic processing (FFT, HPS, THD)
+  - **audio/** – Audio processing (compression, beamforming)
+  - **temporal/** – Temporal control with cog switching
+  - **cross_language/** – C and Java performance implementations
+- **tests/** – Test suite (15 comprehensive tests, 100% passing)
+- **examples/** – Demonstration and validation scripts
+- **docs/** – Mathematical documentation and roadmap
+- **data/** – Generated harmonic CSV files
 - **.env.example** – Example environment config
+
+## Planned Future Additions
+- **contracts/** – Smart contracts and on-chain logic (planned)
+- **sql/** – Database scripts and queries (planned)
+- **palette/** – Color palettes and design tokens (planned)
 
 ## Licensing & Commercial Use
 This platform is **open for non-commercial use** up to version 2.41.  

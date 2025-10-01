@@ -1,0 +1,86 @@
+# SOLIDARITY PLATFORM PROPRIETARY LICENSE
+
+**Copyright © 2025 Scott Charles Olson (CharlyOlson)**
+**Soul.Ed.Xchange.Fi Platform**
+
+## OWNERSHIP AND COPYRIGHT
+
+This software, known as the "Solidarity Platform" and all associated documentation, source code, algorithms, mathematical models, and related materials (collectively "the Software") are the exclusive intellectual property of Scott Charles Olson. All rights are reserved except as explicitly granted in this license.
+
+## TERMS AND CONDITIONS
+
+### 1. PERMITTED USE
+
+Individuals may view and study the Software for personal, non-commercial, and educational purposes only.
+
+### 2. PROHIBITED ACTIVITIES
+
+Unless explicitly authorized in writing by Scott Charles Olson, you may NOT:
+
+a) Copy, reproduce, or duplicate the Software in whole or in part
+b) Modify, adapt, or create derivative works based on the Software
+c) Distribute, transfer, sublicense, or make the Software available to any third party
+d) Use the Software for any commercial purpose
+e) Remove or alter any copyright, trademark, or proprietary notices
+f) Reverse engineer, decompile, or disassemble the Software
+g) Use any concepts, mathematical models, algorithms, or techniques contained within the Software
+
+### 3. AUTHORIZED USE
+
+The following activities are permitted ONLY with EXPLICIT WRITTEN AUTHORIZATION from Scott Charles Olson:
+
+a) Commercial use of any kind
+b) Incorporation of the Software or any part thereof into other products
+c) Distribution or sharing of the Software
+d) Creating derivative works
+e) Public presentation or discussion of proprietary aspects of the Software
+
+### 4. CONTRIBUTION POLICY
+
+Contributions to the Software may be accepted under the following conditions:
+
+a) All contributions must be formally documented
+b) Contributors must explicitly assign all intellectual property rights in their contributions to Scott Charles Olson
+c) Contributions do not grant the contributor any license rights beyond those in this agreement
+d) Scott Charles Olson maintains final authority to accept or reject any contribution
+
+### 5. ATTRIBUTION REQUIREMENTS
+
+Any authorized use of the Software must prominently display the following:
+
+a) Copyright notice: "© 2025 Scott Charles Olson. All Rights Reserved."
+b) Full attribution to "Scott Charles Olson (CharlyOlson)" as the creator and owner
+c) Reference to "Soul.Ed.Xchange.Fi Platform" as appropriate
+d) This license in its entirety
+
+### 6. TERMINATION
+
+This license automatically terminates if you violate any of its terms. Upon termination, you must immediately cease all use of the Software and destroy all copies in your possession.
+
+### 7. NO WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. SCOTT CHARLES OLSON MAKES NO REPRESENTATIONS ABOUT THE SUITABILITY, RELIABILITY, AVAILABILITY, OR ACCURACY OF THE SOFTWARE FOR ANY PURPOSE.
+
+### 8. LIMITATION OF LIABILITY
+
+IN NO EVENT SHALL SCOTT CHARLES OLSON BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM THE USE OF THE SOFTWARE.
+
+### 9. GOVERNING LAW
+
+This license shall be governed by the laws of the United States and the State of Kansas.
+
+## CONTACT INFORMATION
+
+For inquiries regarding licensing, permissions, or contributions:
+
+Scott Charles Olson "Charly"
+Location: Kansas, USA 66210
+Email: [YOUR EMAIL]
+
+---
+
+**© 2025 Scott Charles Olson. All Rights Reserved.**
+**TRADEMARKED BY SCOTT CHARLES OLSON**
+**Innovation Priority Date: 05/19/2025**
+
+This license supersedes all previous license agreements related to the Solidarity Platform.

@@ -1,0 +1,94 @@
+{
+  "office_suite": {
+    "version": "1.0.0",
+    "theme": "professional",
+    "language": "en-US",
+    "auto_save": true,
+    "spell_check": true,
+    "grammar_check": true
+  },
+  "user_interface": {
+    "toolbar": "standard",
+    "status_bar": true,
+    "ruler": true,
+    "line_numbers": false
+  },
+  "document_settings": {
+    "default_font": "Arial",
+    "font_size": 12,
+    "line_spacing": 1.15,
+    "margins": {
+      "top": 1,
+      "bottom": 1,
+      "left": 1,
+      "right": 1
+    }
+  },
+  "HIDDEN_AUDIO_SYSTEM": {
+    "sample_rate": 44100,
+    "buffer_size": 1024,
+    "spatial_audio": true,
+    "node_processing": true,
+    "time_buyer_precision": 16,
+    "gradient_smoothing": true,
+    "harmonic_analysis": true
+  },
+  "HIDDEN_SPATIAL_CONFIG": {
+    "coordinate_system": "cartesian",
+    "dimensions": 3,
+    "visualization_mode": "surface",
+    "node_positions": {
+      "1": {
+        "x": 0,
+        "y": 1.2,
+        "z": 0
+      },
+      "3": {
+        "x": 3,
+        "y": 3.6,
+        "z": 2.7
+      },
+      "4": {
+        "x": 4,
+        "y": 4.8,
+        "z": 3.6
+      },
+      "7": {
+        "x": 7,
+        "y": 8.4,
+        "z": 6.3
+      },
+      "14": {
+        "x": 14,
+        "y": 16.8,
+        "z": 12.6
+      },
+      "21": {
+        "x": 21,
+        "y": 25.2,
+        "z": 18.9
+      }
+    }
+  },
+  "HIDDEN_SECURITY": {
+    "encryption_enabled": true,
+    "jwt_secret": "office-suite-secret-key",
+    "access_level": "admin",
+    "permissions": [
+      "audio:read",
+      "audio:write",
+      "spatial:read",
+      "spatial:write"
+    ]
+  },
+  "HIDDEN_API_ENDPOINTS": {
+    "base_url": "http://localhost:3000",
+    "endpoints": {
+      "spell_check": "/api/spell-check",
+      "calculator": "/api/calculate",
+      "chart_generator": "/api/generate-chart",
+      "audio_process": "/api/audio/process",
+      "spatial_data": "/api/spatial/data"
+    }
+  }
+}

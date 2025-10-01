@@ -1,0 +1,115 @@
+{
+  "workspaces": {
+    "solidarity": {
+      "path": ".",
+      "modules": ["src", "audio", "core", "utils", "contracts", "tests"],
+      "priority": 1,
+      "description": "Main Solidarity platform - audio processing, blockchain, and core functionality"
+    },
+    "soul_ed_xchange": {
+      "path": "../Soul.Ed.Xchange---Quantum-Core", 
+      "modules": ["src", "educational", "learning", "components"],
+      "priority": 2,
+      "description": "Educational components and learning management"
+    },
+    "coul_curve": {
+      "path": "../Coul-Curve",
+      "modules": ["src", "financial", "blockchain", "defi"],
+      "priority": 2, 
+      "description": "Financial algorithms and DeFi components"
+    },
+    "souls": {
+      "path": "../Souls",
+      "modules": ["src", "community", "social", "profiles"],
+      "priority": 3,
+      "description": "Community integration and social features"
+    },
+    "ready": {
+      "path": "../ready",
+      "modules": ["src", "deployment", "config", "scripts"],
+      "priority": 4,
+      "description": "Deployment and configuration management"
+    }
+  },
+  "module_mapping": {
+    "solidarityAudioProcessor": {
+      "primary": "solidarity/src",
+      "fallbacks": ["soul_ed_xchange/src", "solidarity/audio"],
+      "classes": [
+        "MasterSolidarityAudioSystem",
+        "SolidarityAudioProcessor", 
+        "AudioTimeBuyer",
+        "AudioParameterController",
+        "AudioGradientTransferenceEngine",
+        "Audio3DPositionalEncoder",
+        "ProfessionalAudioProcessor",
+        "AdvancedSpatialAudioProcessor"
+      ]
+    },
+    "goldenHarmonicSystem": {
+      "primary": "solidarity/src",
+      "fallbacks": ["coul_curve_fi/src", "solidarity/harmonic"],
+      "classes": [
+        "GoldenHarmonicProcessor",
+        "HarmonicAnalyzer", 
+        "PhiCalculator"
+      ]
+    },
+    "ultimateSolidaritySystem": {
+      "primary": "solidarity/src", 
+      "fallbacks": ["solidarity/core"],
+      "classes": [
+        "UltimateSolidaritySystem",
+        "SystemIntegrator",
+        "ComponentManager"
+      ]
+    },
+    "EnhancedHarmonicPhraseParser": {
+      "primary": "solidarity",
+      "fallbacks": ["souls/src", "solidarity/src"],
+      "classes": [
+        "EnhancedHarmonicPhraseParser",
+        "ZipPhraseProcessor",
+        "PhraseAnalyzer"
+      ]
+    },
+    "fractal_quantum_energy": {
+      "primary": "solidarity",
+      "fallbacks": ["coul_curve_fi/src"],
+      "classes": [
+        "FractalQuantumProcessor",
+        "QuantumEnergyCalculator",
+        "FractalGenerator"
+      ]
+    }
+  },
+  "file_patterns": {
+    "audio_processing": [
+      "**/solidarityAudioProcessor.py",
+      "**/audio/**/*.py",
+      "**/harmonic/**/*.py"
+    ],
+    "blockchain": [
+      "**/contracts/**/*.sol",
+      "**/blockchain/**/*.js",
+      "**/defi/**/*.py"
+    ],
+    "core_systems": [
+      "**/ultimateSolidaritySystem.js",
+      "**/goldenHarmonicSystem.js", 
+      "**/core/**/*.js"
+    ],
+    "testing": [
+      "**/test_*.py",
+      "**/tests/**/*.py",
+      "**/*_test.py"
+    ]
+  },
+  "import_aliases": {
+    "SolidarityAudio": "solidarityAudioProcessor",
+    "GoldenHarmonic": "goldenHarmonicSystem",
+    "UltimateSystem": "ultimateSolidaritySystem",
+    "PhraseParser": "EnhancedHarmonicPhraseParser",
+    "QuantumEnergy": "fractal_quantum_energy"
+  }
+}

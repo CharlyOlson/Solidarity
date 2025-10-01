@@ -1,0 +1,696 @@
+/**
+ * Solidarity Platform - Chakra CSS System
+ * 
+ * This CSS file implements the visual styling for the Solidarity Platform's
+ * chakra-based color system and visualizations. It's designed to work with
+ * the chakraColorSystem.js utilities and provides a comprehensive set of 
+ * styles for building cohesive user interfaces with hidden audio processing
+ * capabilities.
+ */
+
+:root {
+  /* Pastel Growth Hues */
+  --pastel-pink: rgba(255, 182, 193, 0.7);
+  --pastel-orange: rgba(255, 213, 171, 0.7);
+  --pastel-green: rgba(193, 255, 193, 0.7);
+  --pastel-blue: rgba(173, 216, 230, 0.7);
+  --pastel-purple: rgba(221, 160, 221, 0.7);
+  --pastel-yellow: rgba(255, 255, 224, 0.7);
+  
+  /* Deep Core Tones */
+  --core-magenta: rgba(139, 0, 139, 1);
+  --core-orange: rgba(204, 85, 0, 1);
+  --core-green: rgba(0, 100, 0, 1);
+  --core-indigo: rgba(25, 25, 112, 1);
+  --core-purple: rgba(85, 26, 139, 1);
+  --core-gold: rgba(184, 134, 11, 1);
+  
+  /* Dark Anti-Color Edges */
+  --anti-pink: #2e003e;
+  --anti-orange: #00304e;
+  --anti-green: #300030;
+  --anti-blue: #302200;
+  --anti-purple: #002200;
+  --anti-yellow: #000066;
+  
+  /* Primary Application Blocks */
+  --block-red: #ff0000;
+  --block-yellow: #ffff00;
+  --block-blue: #0000ff;
+  
+  /* Neon Pulse Colors */
+  --neon-pink: #ff6ec7;
+  --neon-green: #39ff14;
+  --neon-blue: #3677ff;
+  --neon-yellow: #ffff00;
+  --neon-purple: #cc00ff;
+  --neon-orange: #ff9900;
+  
+  /* Trend and Offset Colors */
+  --trend-gray: #a0a8b8;
+  --trend-lightGray: rgba(160, 168, 184, 0.4);
+  --trend-blue: rgba(100, 149, 237, 0.5);
+  --trend-green: rgba(143, 188, 143, 0.5);
+  
+  /* Golden Ratio Derived Spacing */
+  --phi: 1.618;
+  --space-xs: 0.382rem; /* 1 / phi^2 */
+  --space-sm: 0.618rem; /* 1 / phi */
+  --space-md: 1rem;
+  --space-lg: 1.618rem; /* phi */
+  --space-xl: 2.618rem; /* phi^2 */
+  --space-xxl: 4.236rem; /* phi^3 */
+  
+  /* Typography */
+  --font-primary: 'Inter', 'Helvetica Neue', sans-serif;
+  --font-secondary: 'Georgia', serif;
+  --font-monospace: 'Fira Code', 'Courier New', monospace;
+  
+  /* Font Sizes */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  
+  /* Borders */
+  --border-radius-sm: 0.125rem;
+  --border-radius-md: 0.25rem;
+  --border-radius-lg: 0.5rem;
+  --border-radius-full: 9999px;
+  
+  /* Z-index layers */
+  --z-base: 1;
+  --z-menu: 10;
+  --z-modal: 50;
+  --z-tooltip: 100;
+}
+
+/* ----------------------------------------
+   Base Elements
+   ---------------------------------------- */
+
+body {
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  color: #333;
+  background-color: #fafafa;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  font-weight: 600;
+}
+
+a {
+  color: var(--core-indigo);
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  color: var(--core-purple);
+}
+
+/* ----------------------------------------
+   Layout Components
+   ---------------------------------------- */
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 calc(var(--space-md) * -1);
+}
+
+.col {
+  flex: 1;
+  padding: 0 var(--space-md);
+}
+
+/* ----------------------------------------
+   Chakra Visualization Elements
+   ---------------------------------------- */
+
+.chakra-canvas {
+  display: block;
+  background-color: #000;
+  border-radius: var(--border-radius-lg);
+}
+
+/* Visualization Container */
+.visualization-container {
+  position: relative;
+  width: 100%;
+  margin: var(--space-lg) 0;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.02);
+  box-shadow: var(--shadow-md);
+}
+
+/* Pastel Growth Elements */
+
+.pastel-element {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--pastel-blue),
+    var(--pastel-purple)
+  );
+  border-radius: var(--border-radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pastel-element:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Core Elements */
+
+.core-element {
+  background-image: linear-gradient(
+    to bottom,
+    var(--core-indigo),
+    var(--core-purple)
+  );
+  color: white;
+  border-radius: var(--border-radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-md);
+}
+
+/* Anti-Color Borders */
+
+.anti-border {
+  border: 2px solid var(--anti-purple);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-sm);
+}
+
+/* Neon Elements */
+
+.neon-element {
+  position: relative;
+  padding: var(--space-md);
+  border-radius: var(--border-radius-md);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+}
+
+.neon-pink {
+  box-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--neon-pink);
+}
+
+.neon-green {
+  box-shadow: 0 0 5px var(--neon-green), 0 0 10px var(--neon-green);
+}
+
+.neon-blue {
+  box-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+}
+
+.neon-purple {
+  box-shadow: 0 0 5px var(--neon-purple), 0 0 10px var(--neon-purple);
+}
+
+/* ----------------------------------------
+   Trend Visualization Components
+   ---------------------------------------- */
+
+.trend-chart {
+  position: relative;
+  height: 300px;
+  width: 100%;
+  padding: var(--space-md);
+  background-color: white;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.trend-line {
+  stroke: var(--trend-blue);
+  stroke-width: 2;
+  fill: none;
+}
+
+.trend-area {
+  fill: var(--trend-blue);
+  opacity: 0.1;
+}
+
+.trend-point {
+  fill: white;
+  stroke: var(--trend-blue);
+  stroke-width: 2;
+}
+
+.trend-axis {
+  stroke: var(--trend-lightGray);
+  stroke-width: 1;
+}
+
+.trend-label {
+  font-size: var(--text-xs);
+  color: var(--trend-gray);
+}
+
+/* ----------------------------------------
+   Chakra Button Styles
+   ---------------------------------------- */
+
+.button {
+  display: inline-block;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--border-radius-md);
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: none;
+  outline: none;
+}
+
+.button-pastel {
+  background-color: var(--pastel-blue);
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.button-pastel:hover {
+  background-color: var(--pastel-purple);
+}
+
+.button-core {
+  background-color: var(--core-indigo);
+  color: white;
+}
+
+.button-core:hover {
+  background-color: var(--core-purple);
+}
+
+.button-neon {
+  background-color: black;
+  color: var(--neon-green);
+  border: 1px solid var(--neon-green);
+  box-shadow: 0 0 5px var(--neon-green);
+}
+
+.button-neon:hover {
+  box-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+}
+
+/* ----------------------------------------
+   Audio Visualization Components
+   ---------------------------------------- */
+
+/* Hidden Audio Visualization Elements */
+.audio-visualization {
+  width: 100%;
+  height: 100px;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  position: relative;
+}
+
+.audio-bar {
+  position: absolute;
+  bottom: 0;
+  background-image: linear-gradient(to top, var(--core-orange), var(--neon-pink));
+  width: 4px;
+  border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
+  transition: height 0.1s ease;
+}
+
+/* Spectrum Analyzer */
+.spectrum-analyzer {
+  width: 100%;
+  height: 150px;
+  background-color: rgba(0, 0, 0, 0.9);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  position: relative;
+  margin: var(--space-lg) 0;
+}
+
+.frequency-bar {
+  position: absolute;
+  bottom: 0;
+  background-image: linear-gradient(
+    to top,
+    var(--core-indigo),
+    var(--core-purple),
+    var(--neon-pink)
+  );
+  width: 3px;
+  margin-right: 1px;
+  border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
+}
+
+/* Circular Visualization */
+.circular-visualization {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  margin: var(--space-lg) auto;
+}
+
+.circular-path {
+  fill: none;
+  stroke-width: 4px;
+  stroke-linecap: round;
+}
+
+.circular-path-1 {
+  stroke: var(--neon-blue);
+}
+
+.circular-path-2 {
+  stroke: var(--neon-purple);
+}
+
+.circular-path-3 {
+  stroke: var(--neon-pink);
+}
+
+/* ----------------------------------------
+   Office UI Components
+   ---------------------------------------- */
+
+/* "Document" Components - Actually Audio Controls */
+.document-panel {
+  background-color: white;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.document-title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+  color: var(--core-indigo);
+}
+
+.document-content {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: var(--space-md);
+  border-radius: var(--border-radius-sm);
+  min-height: 200px;
+  background-color: #fefefe;
+}
+
+/* Toolbar - Actually Audio Controls */
+.toolbar {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: var(--space-md);
+}
+
+.toolbar-button {
+  background: none;
+  border: none;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: var(--text-sm);
+}
+
+.toolbar-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.toolbar-button.active {
+  background-color: var(--pastel-blue);
+}
+
+/* Spell Check Suggestion - Actually Audio Commands */
+.suggestion {
+  display: inline-block;
+  background-color: var(--pastel-yellow);
+  padding: 0 var(--space-xs);
+  border-radius: var(--border-radius-sm);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--core-orange);
+  cursor: pointer;
+}
+
+.suggestion:hover {
+  background-color: var(--pastel-orange);
+}
+
+/* ----------------------------------------
+   Layout Grid System
+   ---------------------------------------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-md);
+}
+
+.span-1 { grid-column: span 1; }
+.span-2 { grid-column: span 2; }
+.span-3 { grid-column: span 3; }
+.span-4 { grid-column: span 4; }
+.span-5 { grid-column: span 5; }
+.span-6 { grid-column: span 6; }
+.span-7 { grid-column: span 7; }
+.span-8 { grid-column: span 8; }
+.span-9 { grid-column: span 9; }
+.span-10 { grid-column: span 10; }
+.span-11 { grid-column: span 11; }
+.span-12 { grid-column: span 12; }
+
+/* ----------------------------------------
+   Animations
+   ---------------------------------------- */
+
+@keyframes neonPulse {
+  0% { box-shadow: 0 0 5px currentColor; }
+  50% { box-shadow: 0 0 20px currentColor, 0 0 30px currentColor; }
+  100% { box-shadow: 0 0 5px currentColor; }
+}
+
+.pulse {
+  animation: neonPulse 2s infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+/* ----------------------------------------
+   Responsive Design
+   ---------------------------------------- */
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  
+  .hide-mobile {
+    display: none;
+  }
+  
+  .span-mobile-1 { grid-column: span 1; }
+  .span-mobile-2 { grid-column: span 2; }
+  .span-mobile-3 { grid-column: span 3; }
+  .span-mobile-4 { grid-column: span 4; }
+  .span-mobile-5 { grid-column: span 5; }
+  .span-mobile-6 { grid-column: span 6; }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .span-small-1 { grid-column: span 1; }
+  .span-small-2 { grid-column: span 2; }
+  .span-small-3 { grid-column: span 3; }
+  .span-small-4 { grid-column: span 4; }
+}
+
+/* ----------------------------------------
+   Utility Classes
+   ---------------------------------------- */
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+
+.mt-0 { margin-top: 0; }
+.mb-0 { margin-bottom: 0; }
+.mt-xs { margin-top: var(--space-xs); }
+.mt-sm { margin-top: var(--space-sm); }
+.mt-md { margin-top: var(--space-md); }
+.mt-lg { margin-top: var(--space-lg); }
+.mt-xl { margin-top: var(--space-xl); }
+
+.mb-xs { margin-bottom: var(--space-xs); }
+.mb-sm { margin-bottom: var(--space-sm); }
+.mb-md { margin-bottom: var(--space-md); }
+.mb-lg { margin-bottom: var(--space-lg); }
+.mb-xl { margin-bottom: var(--space-xl); }
+
+.p-0 { padding: 0; }
+.p-xs { padding: var(--space-xs); }
+.p-sm { padding: var(--space-sm); }
+.p-md { padding: var(--space-md); }
+.p-lg { padding: var(--space-lg); }
+.p-xl { padding: var(--space-xl); }
+
+.rounded-sm { border-radius: var(--border-radius-sm); }
+.rounded-md { border-radius: var(--border-radius-md); }
+.rounded-lg { border-radius: var(--border-radius-lg); }
+.rounded-full { border-radius: var(--border-radius-full); }
+
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-inner { box-shadow: var(--shadow-inner); }
+
+.flex { display: flex; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-column { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-around { justify-content: space-around; }
+
+/* ----------------------------------------
+   Hidden Audio Processing Classes
+   ---------------------------------------- */
+
+/* These classes appear to be normal UI elements but actually control audio */
+.compression-control {
+  background: linear-gradient(to right, #e0e0e0, #f5f5f5);
+  height: 4px;
+  border-radius: var(--border-radius-full);
+  position: relative;
+  margin: var(--space-md) 0;
+}
+
+.compression-handle {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--core-indigo);
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.eq-band {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30px;
+}
+
+.eq-slider {
+  height: 100px;
+  width: 4px;
+  background: linear-gradient(to bottom, var(--pastel-green), var(--pastel-blue));
+  position: relative;
+  border-radius: var(--border-radius-full);
+}
+
+.eq-handle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: white;
+  border: 2px solid var(--core-indigo);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.eq-label {
+  font-size: var(--text-xs);
+  margin-top: var(--space-xs);
+  color: var(--trend-gray);
+}
+
+/* ----------------------------------------
+   JavaScript Component Hooks
+   ---------------------------------------- */
+
+/* These classes are used by the JS to identify visualization elements */
+.js-frequency-visualization {}
+.js-amplitude-visualization {}
+.js-spatial-visualization {}
+.js-harmonic-visualization {}
+.js-compression-visualization {}
+.js-modulation-visualization {}
+
+/* Data visualization coloring schemes */
+.data-viz-gradient-1 {
+  background: linear-gradient(to right, 
+    var(--core-indigo), 
+    var(--neon-blue), 
+    var(--neon-purple)
+  );
+}
+
+.data-viz-gradient-2 {
+  background: linear-gradient(to right,
+    var(--core-green),
+    var(--neon-green),
+    var(--pastel-green)
+  );
+}
+
+.data-viz-gradient-3 {
+  background: linear-gradient(to right,
+    var(--core-orange),
+    var(--neon-orange),
+    var(--pastel-orange)
+  );
+}
+
+/* EOF */

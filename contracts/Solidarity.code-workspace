@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../ready"
+		}
+	],
+	"settings": {
+		"githubRepositories.indexing.cacheRepoLimit": 100,
+		"githubRepositories.indexing.cacheSizeLimit": 100000000,
+		"perplexityBot.apiKey": "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",
+		"dependi.apiKey": "pplx-xUk2gnVuJ81HMtu57ImbX3qhyx3z1AVv9RZMDWcTl6lDepz"
+	}
+}

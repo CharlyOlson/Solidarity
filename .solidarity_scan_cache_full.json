@@ -1,0 +1,282 @@
+{
+  "signature": {
+    "base_path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity",
+    "quick": false,
+    "force_full": true,
+    "timestamp": 1758972300.7930608,
+    "root_mtime": 1758972300.4668007,
+    "version": 1
+  },
+  "nodes": [
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\.env",
+      "category": "config",
+      "mtime": 1757752014.1983676
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\.env.example",
+      "category": "config",
+      "mtime": 1757752014.2071152
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\.solidarity_scan_cache_full.json",
+      "category": "config",
+      "mtime": 1758972300.469306
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\hardhat.config.js",
+      "category": "blockchain",
+      "mtime": 1757752015.054423
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\launcher.js",
+      "category": "core",
+      "mtime": 1757752015.0716677
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\package-lock.json",
+      "category": "config",
+      "mtime": 1757752015.3886728
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\package.json",
+      "category": "config",
+      "mtime": 1757752015.3986864
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\setup_python_env.py",
+      "category": "config",
+      "mtime": 1757752015.455148
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\solidarity-ai-framework-config.json",
+      "category": "config",
+      "mtime": 1757752015.4737518
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\test_advanced_audio.py",
+      "category": "audio",
+      "mtime": 1758951655.098701
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\test_advanced_audio_fixed.py",
+      "category": "audio",
+      "mtime": 1758951655.1039553
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\test_discovery.py",
+      "category": "test",
+      "mtime": 1757752015.6344824
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\test_disk_cache_and_metrics.py",
+      "category": "test",
+      "mtime": 1758963003.5148263
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\test_feature_enhancements.py",
+      "category": "test",
+      "mtime": 1758972291.162712
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\test_numpy_quick.py",
+      "category": "test",
+      "mtime": 1757752015.6424758
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\test_unified_system.py",
+      "category": "test",
+      "mtime": 1758954560.0600073
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\test_workspace_simple.py",
+      "category": "test",
+      "mtime": 1758951655.1144514
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\unified_system_config.json",
+      "category": "config",
+      "mtime": 1758954560.0600073
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\workspace_config.json",
+      "category": "config",
+      "mtime": 1758951655.1132922
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\workspace_mapper.py",
+      "category": "workspace",
+      "mtime": 1758951655.1091955
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\workspace_scanner.py",
+      "category": "workspace",
+      "mtime": 1758951655.1144514
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\contracts\\CommunityIntegration.sol",
+      "category": "blockchain",
+      "mtime": 1757752014.4452589
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\contracts\\HabitualCorrection.sol",
+      "category": "blockchain",
+      "mtime": 1757752014.4532557
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\contracts\\InstitutionalOnboarding.sol",
+      "category": "blockchain",
+      "mtime": 1757752014.460758
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\contracts\\RevenueAllocationExample.sol",
+      "category": "blockchain",
+      "mtime": 1757752014.4701731
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\contracts\\SolidarityToken.sol",
+      "category": "blockchain",
+      "mtime": 1757752014.4886978
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\contracts\\StabilityMetrics.sol",
+      "category": "blockchain",
+      "mtime": 1757752014.4982855
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\core\\correctedSolidaritySystem.js",
+      "category": "core",
+      "mtime": 1757752014.5500479
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\core\\goldenHarmonicSystem.js",
+      "category": "core",
+      "mtime": 1757752014.5730727
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\core\\ultimateSolidaritySystem.js",
+      "category": "core",
+      "mtime": 1757752014.5926075
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\frontend\\package-lock.json",
+      "category": "config",
+      "mtime": 1757752014.7974153
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\frontend\\package.json",
+      "category": "config",
+      "mtime": 1757752014.8071616
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\frontend\\public\\manifest.json",
+      "category": "config",
+      "mtime": 1757752014.87095
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\frontend\\src\\components\\SystemStatusTab.js",
+      "category": "core",
+      "mtime": 1757752014.9902906
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\metrics\\latest.json",
+      "category": "config",
+      "mtime": 1758972282.1022346
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\metrics\\metrics_20250927_033811.json",
+      "category": "config",
+      "mtime": 1758962291.9404898
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\metrics\\metrics_20250927_034802.json",
+      "category": "config",
+      "mtime": 1758962882.650703
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\metrics\\metrics_20250927_034841.json",
+      "category": "config",
+      "mtime": 1758962921.4462492
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\metrics\\metrics_20250927_042441.json",
+      "category": "config",
+      "mtime": 1758965081.6599362
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\metrics\\metrics_20250927_044133.json",
+      "category": "config",
+      "mtime": 1758966093.820428
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\metrics\\metrics_20250927_044418.json",
+      "category": "config",
+      "mtime": 1758966258.0486667
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\metrics\\metrics_20250927_062442.json",
+      "category": "config",
+      "mtime": 1758972282.10024
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\mock-office-suite\\office-suite\\package.json",
+      "category": "config",
+      "mtime": 1757752015.2674606
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\mock-office-suite\\office-suite\\config\\user-preferences.json",
+      "category": "config",
+      "mtime": 1757752015.1831357
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\mock-office-suite\\office-suite\\plugins\\spell-check\\grammar-rules.json",
+      "category": "config",
+      "mtime": 1757752015.319504
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\src\\correctedSolidaritySystem.js",
+      "category": "core",
+      "mtime": 1757752015.5374548
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\src\\solidarityAudioProcessor.py",
+      "category": "audio",
+      "mtime": 1757752015.5706944
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\src\\config\\audio.json",
+      "category": "config",
+      "mtime": 1757752015.5166638
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\tests\\test_advanced_audio.py",
+      "category": "audio",
+      "mtime": 1757752015.6624758
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\tests\\test_discovery.py",
+      "category": "test",
+      "mtime": 1757752015.6714754
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\tests\\test_numpy_quick.py",
+      "category": "test",
+      "mtime": 1757752015.6804495
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\_backup_tests\\test_advanced_audio.py",
+      "category": "audio",
+      "mtime": 1757846299.672884
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\_backup_tests\\test_discovery.py",
+      "category": "test",
+      "mtime": 1757752014.3552828
+    },
+    {
+      "path": "C:\\Users\\souls\\OneDrive\\Documents\\GitHub\\Solidarity\\_backup_tests\\test_numpy_quick.py",
+      "category": "test",
+      "mtime": 1758950162.1649296
+    }
+  ]
+}

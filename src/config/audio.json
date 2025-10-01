@@ -1,0 +1,7 @@
+{
+  "sampleRate": 44100,
+  "bufferSize": 1024,
+  "spatialAudio": true,
+  "advancedProcessing": true,
+  "pythonFallback": true
+}

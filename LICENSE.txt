@@ -1,0 +1,99 @@
+# SOLIDARITY PLATFORM - DUAL LICENSE AGREEMENT
+
+**Copyright © 2025 Scott Charles Olson (CharlyOlson)**  
+**Soul.Ed.Xchange.Fi Platform**
+
+## OVERVIEW
+
+This software ("Solidarity Platform") is made available under a dual-license model:
+1. **Non-Commercial License**: For educational, personal, and non-profit use
+2. **Commercial License**: Required for any commercial applications
+
+## NON-COMMERCIAL LICENSE (SOLIDARITY COMMUNITY LICENSE)
+
+### Permitted Uses
+You may use, modify, and distribute the Solidarity Platform (up to version 2.00) for non-commercial purposes, provided:
+
+1. You maintain all copyright notices, attributions, and this license
+2. You clearly indicate any modifications made
+3. You do not use the software for any harmful purposes (defined below)
+
+### Limitations
+This license explicitly does NOT permit:
+
+1. Commercial use of any kind
+2. Use in military applications or weapons systems
+3. Use that promotes discrimination, hatred, or harm
+4. Distribution without this license and attribution
+5. Use of proprietary algorithms and mathematical models in other projects
+6. Access to or use of any version above 2.00
+
+## COMMERCIAL LICENSE
+
+For commercial use, integration, or any purpose not covered by the Non-Commercial License, you must obtain a written commercial license from Scott Charles Olson.
+
+Commercial licenses are granted on a case-by-case basis and include:
+
+1. Evaluation of intended use case
+2. Commitment to ethical application
+3. Fair compensation for intellectual property
+4. Specific terms and conditions appropriate to the use case
+
+## PROHIBITED APPLICATIONS
+
+Regardless of license type, this software may NOT be used for:
+
+1. Military or weapons applications
+2. Surveillance systems that violate privacy rights
+3. Projects promoting discrimination, hatred, or harm
+4. Illegal activities of any kind
+5. Any application that causes deliberate harm to individuals, communities, or the environment
+
+## RESTRICTED COMPONENTS
+
+The following components require explicit written permission regardless of license type:
+
+1. Advanced mathematical models and algorithms
+2. Quantum computing integration components
+3. Golden ratio and harmonic implementations
+4. Any version above 2.00
+5. Proprietary compression and encryption modules
+
+## ATTRIBUTION
+
+All uses of the Solidarity Platform must maintain the following attribution:
+
+```
+Powered by Solidarity Platform
+© 2025 Scott Charles Olson
+www.solidarity.com
+```
+
+## NO WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+## TERMINATION
+
+This license automatically terminates if you fail to comply with its terms. Upon termination, you must cease all use of the software.
+
+## GOVERNING LAW
+
+This agreement shall be governed by the laws of the United States and the State of Kansas.
+
+## COMMERCIAL LICENSING CONTACT
+
+For commercial licensing inquiries:
+
+Scott Charles Olson  
+Kansas, USA 66210  
+Email: cSolson1997@outlook.com
+
+---
+
+**© 2025 Scott Charles Olson. All Rights Reserved.**  
+**TRADEMARKED BY SCOTT CHARLES OLSON**  
+**Innovation Priority Date: 05/19/2025**
+**Located: Kansas, USA 66210**
+
+For all inquiries on code or Soul.Ed.Xchange.Fi, please contact Scott Charles Olson; @CharlyOlson.

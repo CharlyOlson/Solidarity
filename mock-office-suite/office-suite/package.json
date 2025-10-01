@@ -1,0 +1,20 @@
+{
+  "name": "office-suite-document-management",
+  "version": "1.0.0",
+  "description": "Professional document creation and editing platform",
+  "main": "office-suite.js",
+  "scripts": {
+    "start": "node office-suite.js",
+    "spell-check": "node plugins/spell-check/dictionary.js",
+    "calculator": "node plugins/office-tools/calculator.js",
+    "chart-generator": "node plugins/office-tools/chart-generator.js"
+  },
+  "keywords": [
+    "office",
+    "documents",
+    "editing",
+    "productivity"
+  ],
+  "author": "Office Suite Development Team",
+  "license": "MIT"
+}

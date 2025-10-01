@@ -1,0 +1,29 @@
+{
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": true,
+    "plaintext": true,
+    "markdown": true,
+    "javascript": true,
+    "python": true,
+    "solidity": true
+  },
+  "github.copilot.editor.enableAutoCompletions": true,
+  "github.copilot.chat.persistenceEnabled": true,
+  "github.copilot.enableAgentIntegration": true,
+  "github.copilot.agent.enabled": true,
+  "editor.inlineSuggest.enabled": true,
+  "editor.suggest.preview": true,
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": true,
+    "strings": true
+  },
+  "settingsSync.keybindingsPerPlatform": false,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "python.analysis.typeCheckingMode": "basic",
+  "python.linting.enabled": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always"
+}

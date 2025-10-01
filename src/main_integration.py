@@ -22,9 +22,9 @@ import numpy as np
 from typing import Dict, List, Tuple, Optional, Union
 
 # Add all source paths
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'harmonics'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'audio'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'temporal'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'harmonics'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'audio'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'temporal'))
 
 from core_harmonics import HarmonicProcessor
 from advanced_analysis import AdvancedHarmonicAnalyzer

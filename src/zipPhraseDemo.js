@@ -72,11 +72,6 @@ async function demonstrateZipPhrases() {
         if (result.success) {
             console.log(`  ✅ Phrase executed successfully`);
             if (result.audioResult?.success) {
-        // Enhanced: trigger audio command if available
-        if (audioCommands[phrase]) {
-            const audioResult = executeAudioCommand(phrase);
-            console.log('🎶 Audio Command Triggered:', audioResult);
-        }
                 console.log(`  🎶 Audio processed: RMS ${result.audioResult.signal_stats?.rms_level?.toFixed(4)}`);
             }
         } else {
@@ -116,13 +111,6 @@ async function demonstrateZipPhrases() {
     });
 
     console.log('\n📊 Final System Status:');
-    for (const phrase of testSequence) {
-        // Enhanced: trigger audio command if available
-        if (audioCommands[phrase]) {
-            const audioResult = executeAudioCommand(phrase);
-            console.log('🎶 Audio Command Triggered:', audioResult);
-        }
-    }
     const finalStatus = solidarity.getSystemStatus();
     console.log(JSON.stringify(finalStatus, null, 2));
 

@@ -1,0 +1,91 @@
+# Git Attributes for Solidarity Platform
+# Ensures consistent line endings and proper file handling across platforms
+
+# Auto-detect text files and perform LF normalization
+* text=auto eol=lf
+
+# Source code files
+*.js text eol=lf
+*.ts text eol=lf
+*.jsx text eol=lf
+*.tsx text eol=lf
+*.py text eol=lf
+*.sol text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Config files
+*.config.js text eol=lf
+*.rc text eol=lf
+.env* text eol=lf
+*.lock text eol=lf
+
+# Documentation
+*.rst text eol=lf
+*.adoc text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+*.bat text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.svg binary
+*.zip binary
+*.tar binary
+*.gz binary
+
+# Node modules (should be in .gitignore but ensuring proper handling)
+node_modules/** -text
+
+# Build outputs
+dist/** -text
+build/** -text
+*.min.js -text
+*.bundle.js -text
+
+# Solidarity Platform specific file handling
+# Audio files
+*.wav binary
+*.mp3 binary
+*.flac binary
+
+# Python compiled files
+*.pyc binary
+__pycache__/** binary
+
+# Jupyter notebooks
+*.ipynb text eol=lf
+
+# Log files
+*.log text eol=lf
+logs/** text eol=lf
+
+# Solidarity mathematical precision files (preserve exact formatting)
+src/henry-7-step-14-shoe-waltz.js text eol=lf
+src/cubit-calculation.js text eol=lf
+src/SacredNumericSequence.js text eol=lf
+
+# Development stage files (preserve as-is)
+**/*[0-9]+-*.js text eol=lf
+**/core/*.js text eol=lf
+**/mobile/*.js text eol=lf
+
+# Blockchain contract files (critical formatting)
+contracts/*.sol text eol=lf
+
+# Configuration files requiring exact formatting
+hardhat.config.js text eol=lf
+package*.json text eol=lf
+solidarity-ai-framework-config.json text eol=lf

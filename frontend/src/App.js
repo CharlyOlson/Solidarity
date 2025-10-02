@@ -7,6 +7,7 @@ import AudioTab from './components/AudioTab';
 import SystemStatusTab from './components/SystemStatusTab';
 import DevicesTab from './components/DevicesTab';
 import MobileDeviceDashboard from './components/MobileDeviceDashboard';
+import GreekNodesTab from './components/GreekNodesTab';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -42,6 +43,11 @@ function App() {
             className={activeTab === 'dashboard' ? 'active' : ''} 
             onClick={() => setActiveTab('dashboard')}>
             Dashboard
+          </button>
+          <button 
+            className={activeTab === 'greek-nodes' ? 'active' : ''} 
+            onClick={() => setActiveTab('greek-nodes')}>
+            🏛️ Greek Nodes
           </button>
           <button 
             className={activeTab === 'discovery' ? 'active' : ''} 
@@ -93,12 +99,17 @@ function App() {
 
             <div className="quick-actions">
               <h3>Quick Actions</h3>
+              <button onClick={() => setActiveTab('greek-nodes')}>🏛️ Manage Greek Letter Nodes</button>
               <button onClick={() => setActiveTab('discovery')}>Run Discovery</button>
               <button onClick={() => setActiveTab('audio')}>Execute Audio Command</button>
               <button onClick={() => setActiveTab('mobile')}>Mobile Device Sync</button>
               <button onClick={() => window.open('http://localhost:3000/api/docs', '_blank')}>API Documentation</button>
             </div>
           </section>
+        )}
+
+        {activeTab === 'greek-nodes' && (
+          <GreekNodesTab />
         )}
 
         {activeTab === 'discovery' && (

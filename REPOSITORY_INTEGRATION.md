@@ -30,6 +30,7 @@ The Solidarity platform operates across two interlaced repositories for maximum 
   - Experimental spatial features
   - Research implementations
 
+
 ---
 
 ## Integration Points
@@ -65,7 +66,6 @@ npm run test:cross-repo
 4. **Deploy** production updates
 
 ---
-
 ## Quick Cross-Repository Setup
 
 ```bash
@@ -156,4 +156,3 @@ set DISABLE_MEMORY_DISCOVERY_CACHE=1
 | Metrics Aggregation | Rolling health trends dashboard | Aggregate `metrics/latest.json` over time |
 | Cross-Repo Bridge | Automatic promotion pipeline from Coul-Curve → Solidarity | Gate by health + test success |
 | Dependency Graph | Persist enriched dependency edges (JSON) | Accelerate integration optimization heuristics |
-

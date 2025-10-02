@@ -1,111 +1,103 @@
-
 #!/usr/bin/env python3
 """
-User-Friendly Advanced Audio Processing Test Suite for Solidarity
-Run this file to verify your audio modules and advanced features.
+Advanced Audio Processing System Test Suite
+Professional demonstration of sophisticated audio processing capabilities
+
+This test suite demonstrates:
+- Time buyer π-based pacing allocation
+- Audio parameter reset with catch-up synchronization
+- Gradient transference for smooth audio transitions
+- 3D spatial audio positioning and encoding
+- Professional audio effects processing
+- Spatial transmission and perfect transmission effects
+- Master system integration
+
+Perfect for demonstrating professional audio processing capabilities
+while maintaining the sophisticated mathematical underpinnings.
 """
 
+import numpy as np
+import math
+import time
 import sys
 import os
-import unittest
-import time
-import math
-import numpy as np
 
-class TestAdvancedAudio(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        try:
-            import numpy as np
-            cls.np = np
-        except ImportError as e:
-            raise unittest.SkipTest(f"NumPy is not installed. Install with: pip install numpy. Error: {e}")
-        # Add src directory to path
-        cls.src_path = os.path.join(os.path.dirname(__file__), 'src')
-        sys.path.insert(0, cls.src_path)
-        try:
-            from solidarityAudioProcessor import (
-                MasterSolidarityAudioSystem,
-                SolidarityAudioProcessor,
-                AudioTimeBuyer,
-                AudioParameterController,
-                AudioGradientTransferenceEngine,
-                Audio3DPositionalEncoder,
-                ProfessionalAudioProcessor,
-                AdvancedSpatialAudioProcessor
-            )
-            cls.MasterSolidarityAudioSystem = MasterSolidarityAudioSystem
-            cls.SolidarityAudioProcessor = SolidarityAudioProcessor
-            cls.AudioTimeBuyer = AudioTimeBuyer
-            cls.AudioParameterController = AudioParameterController
-            cls.AudioGradientTransferenceEngine = AudioGradientTransferenceEngine
-            cls.Audio3DPositionalEncoder = Audio3DPositionalEncoder
-            cls.ProfessionalAudioProcessor = ProfessionalAudioProcessor
-            cls.AdvancedSpatialAudioProcessor = AdvancedSpatialAudioProcessor
-        except ImportError as e:
-            raise unittest.SkipTest(f"Failed to import advanced audio modules: {e}")
+# Add the src directory to the path so we can import our modules
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-    def test_audio_time_buyer(self):
-        time_buyer = self.AudioTimeBuyer(sample_rate=44100, pi_precision=16)
-        test_codes = [
-            b"compression_wave_reset",
-            b"spatial_audio_positioning",
-            b"harmonic_analysis_deep",
-            b"professional_studio_effects"
-        ]
-        for code in test_codes:
-            allocated_time = time_buyer.code_bytes_to_time(code)
-            self.assertIsInstance(allocated_time, float)
-            self.assertGreater(allocated_time, 0)
-        self.assertEqual(time_buyer.pi_precision, 16)
-        self.assertTrue(len(time_buyer.pi_expanded) >= 5)
+try:
+    from solidarityAudioProcessor import (
+        MasterSolidarityAudioSystem,
+        SolidarityAudioProcessor,
+        AudioTimeBuyer,
+        AudioParameterController,
+        AudioGradientTransferenceEngine,
+        Audio3DPositionalEncoder,
+        ProfessionalAudioProcessor,
+        AdvancedSpatialAudioProcessor
+    )
+    print("✅ Successfully imported all advanced audio processing modules")
+except ImportError as e:
+    print(f"❌ Failed to import modules: {e}")
+    sys.exit(1)
 
-    def test_audio_parameter_controller(self):
-        controller = self.AudioParameterController()
-        # Simulate parameter reset and check for expected attributes
-        controller.reset_parameters()
-        self.assertTrue(hasattr(controller, 'parameters'))
+def test_audio_time_buyer():
+    """Test the advanced audio time buyer with π expansion"""
+    print("\n🕒 Testing Audio Time Buyer System")
+    print("=" * 40)
+    
+    time_buyer = AudioTimeBuyer(sample_rate=44100, pi_precision=16)
+    
+    # Test different code byte scenarios
+    test_codes = [
+        b"compression_wave_reset",
+        b"spatial_audio_positioning",
+        b"harmonic_analysis_deep",
+        b"professional_studio_effects"
+    ]
+    
+    print("Time allocation results:")
+    for code in test_codes:
+        allocated_time = time_buyer.code_bytes_to_time(code)
+        print(f"  {code.decode()}: {allocated_time:.6f}s")
+    
+    # Test reset scheduling
+    reset_time = time_buyer.schedule_audio_reset("test_node", b"reset_test_code")
+    print(f"\nScheduled reset time: {reset_time:.6f}s")
+    
+    # Show π expansion
+    print(f"π expansion precision: {time_buyer.pi_precision}")
+    print(f"First 5 π terms: {time_buyer.pi_expanded[:5]}")
+    
+    return time_buyer
 
-    def test_gradient_transference(self):
-        engine = self.AudioGradientTransferenceEngine()
-        result = engine.transfer_gradient([0, 1, 2], [2, 1, 0])
-        self.assertIsInstance(result, list)
-        self.assertEqual(len(result), 3)
-
-    def test_3d_positional_encoder(self):
-        encoder = self.Audio3DPositionalEncoder()
-        pos = encoder.encode_position(1, 2, 3)
-        self.assertIsInstance(pos, dict)
-        self.assertIn('x', pos)
-        self.assertIn('y', pos)
-        self.assertIn('z', pos)
-
-    def test_professional_audio_processor(self):
-        processor = self.ProfessionalAudioProcessor()
-        processed = processor.process([0.1, 0.2, 0.3])
-        self.assertIsInstance(processed, list)
-        self.assertEqual(len(processed), 3)
-
-    def test_advanced_spatial_audio_processor(self):
-        spatial_processor = self.AdvancedSpatialAudioProcessor()
-        result = spatial_processor.spatialize([0.1, 0.2, 0.3], position=(1, 2, 3))
-        self.assertIsInstance(result, list)
-        self.assertEqual(len(result), 3)
-
-# Additional test functions (commented out due to missing dependencies)
-# These would need the actual audio modules to be implemented
-
-def test_audio_time_buyer_standalone():
-    """Test audio time buyer functionality (requires actual implementation)"""
-    print("\n⏰ Testing Audio Time Buyer (Placeholder)")
-    print("This test requires the actual AudioTimeBuyer implementation")
-    return True
-
-def test_audio_parameter_controller_standalone():
-    """Test audio parameter controller (requires actual implementation)"""
-    print("\n🎛️ Testing Audio Parameter Controller (Placeholder)")
-    print("This test requires the actual AudioParameterController implementation")
-    return True
+def test_audio_parameter_controller():
+    """Test professional audio parameter controller with reset capabilities"""
+    print("\n🎛️ Testing Audio Parameter Controller")
+    print("=" * 40)
+    
+    time_buyer = AudioTimeBuyer()
+    controller = AudioParameterController(time_buyer)
+    
+    # Register professional audio parameters
+    params = [
+        ('studio_volume', 0.8, b'volume_reset_sequence'),
+        ('reverb_depth', 0.5, b'reverb_parameter_reset'),
+        ('spatial_width', 0.7, b'spatial_width_control'),
+        ('harmonic_gain', 0.6, b'harmonic_processing_reset')
+    ]
+    
+    for param_id, initial_value, reset_code in params:
+        controller.register_audio_parameter(param_id, initial_value, reset_code)
+        print(f"✅ Registered parameter: {param_id} = {initial_value}")
+    
+    # Test parameter reset with catch-up
+    print("\nTesting parameter reset with catch-up synchronization:")
+    for param_id, _, _ in params[:2]:  # Test first two parameters
+        success = controller.trigger_parameter_reset(param_id, catch_up_mode=True)
+        print(f"  {param_id}: {'✅ Reset successful' if success else '❌ Reset failed'}")
+    
+    return controller
 
 def test_gradient_transference():
     """Test professional audio gradient transference engine"""

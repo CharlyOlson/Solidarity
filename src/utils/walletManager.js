@@ -9,24 +9,8 @@ const { ethers } = require('ethers');
 const winston = require('winston');
 // Add Solana web3 for Phantom integration
 const { Connection, PublicKey, clusterApiUrl } = require('@solana/web3.js');
-// Enhanced audio command integration
-const { audioCommands, executeAudioCommand } = require('../../enhancedAudioStudioCommands');
 
 class WalletManager {
-  // Utility: Trigger audio command by node/phrase for security, flexibility, and variant handling
-  triggerNodeAudioCommand(phraseOrNode) {
-    let key = phraseOrNode;
-    if (typeof phraseOrNode === 'number') {
-      // Find command by node
-      key = Object.keys(audioCommands).find(k => audioCommands[k].node === phraseOrNode);
-    }
-    if (audioCommands[key]) {
-      const audioResult = executeAudioCommand(key);
-      this.logger.info(`🎶 Audio Command Triggered (WalletManager):`, audioResult);
-      return audioResult;
-    }
-    return null;
-  }
   constructor(config = {}) {
     this.providers = new Map();
     this.contracts = new Map();
@@ -171,8 +155,6 @@ class WalletManager {
    * Connect to Solidarity Token contract
    */
   async connectToSolidarityContract(network = 'mainnet', wallet = null) {
-  // Trigger audio command for contract connection node
-  this.triggerNodeAudioCommand('lockstop');
     const contractAddress = process.env.SOLIDARITY_CONTRACT_ADDRESS;
     if (!contractAddress || contractAddress === '0x...') {
       throw new Error('Solidarity contract address not configured');
@@ -222,8 +204,6 @@ class WalletManager {
    * Get wallet balance for any ERC20 token
    */
   async getTokenBalance(walletAddress, tokenAddress, network = 'mainnet') {
-  // Trigger audio command for balance check node
-  this.triggerNodeAudioCommand('makingcents');
     const provider = this.providers.get(network);
     if (!provider) {
       throw new Error(`Provider not found for network: ${network}`);
@@ -258,8 +238,6 @@ class WalletManager {
    * Get transaction history for a wallet
    */
   async getTransactionHistory(walletAddress, network = 'mainnet', limit = 10) {
-  // Trigger audio command for transaction history node
-  this.triggerNodeAudioCommand('passwordcarousel');
     if (!this.isValidAddress(walletAddress)) {
       throw new Error('Invalid wallet address');
     }
@@ -312,8 +290,6 @@ class WalletManager {
    * Monitor wallet for incoming transactions
    */
   startWalletMonitoring(walletAddress, network = 'mainnet', callback) {
-  // Trigger audio command for monitoring node
-  this.triggerNodeAudioCommand('hiccup');
     if (!this.isValidAddress(walletAddress)) {
       throw new Error('Invalid wallet address');
     }
@@ -351,8 +327,6 @@ class WalletManager {
    * Generate wallet connection QR code data
    */
   generateWalletConnectData(walletAddress) {
-  // Trigger audio command for wallet connect node
-  this.triggerNodeAudioCommand('switchcogs');
     if (!this.isValidAddress(walletAddress)) {
       throw new Error('Invalid wallet address');
     }
@@ -370,8 +344,6 @@ class WalletManager {
    * Treasury wallet addresses for the platform
    */
   getTreasuryAddresses() {
-  // Trigger audio command for treasury node
-  this.triggerNodeAudioCommand('archetypes');
     return {
       communityPool: process.env.COMMUNITY_POOL_ADDRESS,
       payrollTreasury: process.env.PAYROLL_TREASURY_ADDRESS,

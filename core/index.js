@@ -20,6 +20,7 @@ const treasuryRoutes = require('./routes/treasury');
 const governanceRoutes = require('./routes/governance');
 const metricsRoutes = require('./routes/metrics');
 const walletRoutes = require('./routes/wallet');
+const greekNodesRoutes = require('./routes/greekNodes');
 const apiRoutes = require('./routes/api');
 
 // Import middleware
@@ -96,6 +97,7 @@ app.use('/api/treasury', treasuryRoutes);
 app.use('/api/governance', governanceRoutes);
 app.use('/api/metrics', metricsRoutes);
 app.use('/api/wallet', walletRoutes);
+app.use('/api/greek-nodes', greekNodesRoutes);
 app.use('/api', apiRoutes);
 
 // Root endpoint

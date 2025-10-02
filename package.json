@@ -2,8 +2,7 @@
   "name": "solidarity-platform",
   "version": "2.41.0",
   "description": "Solidarity Platform implementing the Henry 7 Step 14 Shoe Waltz numerological system - Professional Audio Processing & Financial Commerce Platform",
-  "type": "module",
-  "main": "src/solidarity-platform.js",
+  "main": "launcher.js",
   "scripts": {
     "start": "node src/api/server.js",
     "dev": "nodemon src/api/server.js --watch src",
@@ -148,6 +147,7 @@
     "sharp": "^0.32.0",
     "socket.io": "^4.6.1",
     "uuid": "^9.0.0",
+    "winston": "^3.8.2",
     "ws": "^8.13.0"
   },
   "devDependencies": {

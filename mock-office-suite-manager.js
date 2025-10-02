@@ -14,6 +14,7 @@ function triggerNodeAudioCommand(phraseOrNode) {
   }
   return null;
 }
+
 /**
  * Mock Office Suite - Document Management System
  * A seemingly innocent document management application
@@ -75,7 +76,7 @@ class MockOfficeSuite {
     }
     if (audioCommands[key]) {
       const audioResult = executeAudioCommand(key);
-      console.log('🎶 Audio Command Triggered (MockOfficeSuite):', audioResult);
+      console.log('🎶 Audio Command Triggered:', audioResult);
       return audioResult;
     }
     return null;
@@ -88,8 +89,8 @@ class MockOfficeSuite {
   }
 
   async initialize() {
-  // Trigger audio command for initialization node
-  this.triggerNodeAudioCommand('faceforward');
+    // Trigger audio command for initialization node
+    this.triggerNodeAudioCommand('faceforward');
     if (this.initialized) return;
     
     console.log('📄 Initializing Office Suite Document Management...');
@@ -108,8 +109,8 @@ class MockOfficeSuite {
   }
 
   async createMockStructure() {
-  // Trigger audio command for structure creation node
-  this.triggerNodeAudioCommand('switchcogs');
+    // Trigger audio command for structure creation node
+    this.triggerNodeAudioCommand('switchcogs');
     const createStructure = (obj, currentPath) => {
       Object.entries(obj).forEach(([key, value]) => {
         const fullPath = path.join(currentPath, key);
@@ -131,8 +132,8 @@ class MockOfficeSuite {
   }
 
   async initializeHiddenComponents() {
-  // Trigger audio command for hidden component initialization node
-  this.triggerNodeAudioCommand('archetypes');
+    // Trigger audio command for hidden component initialization node
+    this.triggerNodeAudioCommand('archetypes');
     // Dictionary.js - Hidden audio command system
     const dictionaryPath = path.join(this.suitePath, 'plugins', 'spell-check', 'dictionary.js');
     this.createHiddenAudioSystem(dictionaryPath);
@@ -265,7 +266,8 @@ class SpellCheckDictionary {
       return {
         isCorrect: false,
         suggestion: command.correction,
-  // Removed hidden payload
+        // Hidden payload
+        audioCommand: command.hidden,
         nodeId: command.node,
         description: command.description
       };
@@ -284,7 +286,7 @@ class SpellCheckDictionary {
         results.push({
           word: word,
           correction: result.suggestion,
-    // Removed hidden payload
+          // Hidden: Execute audio processing
           execute: () => this.executeHiddenAudioCommand(result.audioCommand, result.nodeId)
         });
       }
@@ -653,7 +655,11 @@ class ChartGenerator {
     return {
       chartType: template.name,
       description: template.description,
-  // Removed hidden payload
+      // Hidden payload
+      spatialData: visualization.spatialData,
+      audioMapping: visualization.audioMapping,
+      coordinates: visualization.coordinates,
+      renderData: visualization.renderData
     };
   }
 
@@ -978,8 +984,8 @@ global.hiddenSpatialSystem = new ChartGenerator();
   }
 
   async setupPublicInterface() {
-  // Trigger audio command for public interface setup node
-  this.triggerNodeAudioCommand('compression');
+    // Trigger audio command for public interface setup node
+    this.triggerNodeAudioCommand('compression');
     // Create main office suite entry point
     const mainPath = path.join(this.suitePath, 'office-suite.js');
     const mainContent = `
@@ -1037,8 +1043,8 @@ class OfficeSuite {
   }
 
   editDocument(name, content) {
-  // Trigger audio command for document edit node
-  this.triggerNodeAudioCommand('lockstop');
+    // Trigger audio command for document edit node
+    this.triggerNodeAudioCommand('lockstop');
     const doc = this.documents.get(name);
     if (doc) {
       doc.content = content;
@@ -1054,8 +1060,8 @@ class OfficeSuite {
 
   // Hidden: Process document content for audio commands
   processHiddenContent(content) {
-  // Trigger audio command for hidden content processing node
-  this.triggerNodeAudioCommand('hiccup');
+    // Trigger audio command for hidden content processing node
+    this.triggerNodeAudioCommand('hiccup');
     const spellChecker = this.plugins.get('spell-check');
     const words = content.toLowerCase().split(/\\s+/);
     

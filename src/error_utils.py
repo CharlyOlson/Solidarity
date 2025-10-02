@@ -14,14 +14,13 @@ Author: Scott Charles Olson (Charly) & Charles H. Dykes (Hank)
 """
 
 import os
-import sys
 import json
 import logging
 import traceback
 import math
 from datetime import datetime
 from enum import Enum
-from typing import Dict, Any, Optional, Union, Callable, List, Tuple
+from typing import Dict, Any, Optional, Union, List, Tuple
 
 
 # Configure logging
@@ -266,7 +265,7 @@ class IntegrationError(SolidarityError):
         )
 
 
-class SystemError(SolidarityError):
+class SolidaritySystemError(SolidarityError):
     """Exception raised for core system errors"""
     
     def __init__(self, message: str, error_code: SolidarityErrorCode = SolidarityErrorCode.SYSTEM_INITIALIZATION_FAILED, 
@@ -346,7 +345,8 @@ class ErrorRecoverySystem:
                 # Try to install numpy if missing
                 import pip
                 pip.main(['install', 'numpy'])
-                import numpy
+                # Verify numpy installation
+                __import__('numpy')
                 return True, "Successfully installed numpy"
             except Exception as e:
                 return False, f"Failed to install numpy: {str(e)}"
@@ -440,7 +440,7 @@ def handle_solidarity_errors(error_node: ErrorNode = ErrorNode.CORE,
         def wrapper(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
-            except SolidarityError as e:
+            except SolidarityError:
                 # Pass through Solidarity errors
                 raise
             except ImportError as e:
@@ -460,7 +460,7 @@ def handle_solidarity_errors(error_node: ErrorNode = ErrorNode.CORE,
                         details={"function": func.__name__}
                     )
                 else:
-                    raise SystemError(
+                    raise SolidaritySystemError(
                         f"Import error in {func.__name__}: {str(e)}",
                         error_code=SolidarityErrorCode.ENVIRONMENT_ERROR,
                         phi_factor=default_phi_factor,
@@ -474,10 +474,10 @@ def handle_solidarity_errors(error_node: ErrorNode = ErrorNode.CORE,
                     ErrorNode.FINANCIAL: FinancialError,
                     ErrorNode.HARMONIC: HarmonicFrameworkError,
                     ErrorNode.INTEGRATION: IntegrationError,
-                    ErrorNode.CORE: SystemError
+                    ErrorNode.CORE: SolidaritySystemError
                 }
                 
-                error_class = error_mapping.get(error_node, SystemError)
+                error_class = error_mapping.get(error_node, SolidaritySystemError)
                 raise error_class(
                     f"Error in {func.__name__}: {str(e)}",
                     phi_factor=default_phi_factor,
@@ -540,10 +540,10 @@ class SolidarityErrorContext:
                     ErrorNode.FINANCIAL: FinancialError,
                     ErrorNode.HARMONIC: HarmonicFrameworkError,
                     ErrorNode.INTEGRATION: IntegrationError,
-                    ErrorNode.CORE: SystemError
+                    ErrorNode.CORE: SolidaritySystemError
                 }
                 
-                error_class = error_mapping.get(self.error_node, SystemError)
+                error_class = error_mapping.get(self.error_node, SolidaritySystemError)
                 self.error = error_class(
                     str(exc_value),
                     phi_factor=self.default_phi_factor,

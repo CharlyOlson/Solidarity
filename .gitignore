@@ -1,6 +1,11 @@
 # Dependencies
 node_modules/
 */node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
 
 # Environment variables
 .env
@@ -11,25 +16,27 @@ node_modules/
 
 # Logs
 logs/
+logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # Runtime data
 pids/
+pids
 *.pid
 *.seed
 *.pid.lock
 .nyc_output/
+.nyc_output
 
 # Coverage directory used by tools like istanbul
 coverage/
+*.lcov
 
 # Build outputs
 build/
 dist/
 frontend/build/
+out/
 
 # Database
 data/
@@ -74,8 +81,6 @@ ENV/
 *.mp3
 *.flac
 *.aiff
-.env
-
 
 #Ignore vscode AI rules
 .github\instructions\codacy.instructions.md

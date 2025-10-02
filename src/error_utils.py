@@ -9,6 +9,8 @@ and Node.js communication layers.
 The error system follows the φ-based principles of the platform, implementing
 error codes and recovery mechanisms that align with the 6 primary nodes
 (1, 3, 4, 7, 14, 21) representing different system aspects.
+
+Author: Scott Charles Olson (Charly) & Charles H. Dykes (Hank)
 """
 
 import os
@@ -276,6 +278,34 @@ class SystemError(SolidarityError):
             details=details,
             **kwargs
         )
+
+
+# Simple utility functions for basic error logging (backward compatibility)
+def log_error(error, message="Error occurred"):
+    """
+    Securely log error with conditional stack trace exposure
+    Only shows stack traces when NODE_ENV is 'development'
+    
+    Args:
+        error: The exception to log
+        message: Optional custom message
+    """
+    print(f"{message}: {error}")
+    
+    # Only expose stack traces in development environment
+    if os.environ.get('NODE_ENV') == 'development':
+        traceback.print_exc()
+
+
+def log_error_with_traceback(error, message="Error occurred"):
+    """
+    Log error with conditional traceback based on NODE_ENV
+    
+    Args:
+        error: The exception to log
+        message: Optional custom message
+    """
+    log_error(error, message)
 
 
 # Error recovery system

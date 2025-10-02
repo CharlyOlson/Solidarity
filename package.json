@@ -1,8 +1,9 @@
 {
   "name": "solidarity-platform",
   "version": "2.41.0",
-  "description": "Professional Audio Processing & Financial Commerce Platform",
-  "main": "src/api/server.js",
+  "description": "Solidarity Platform implementing the Henry 7 Step 14 Shoe Waltz numerological system - Professional Audio Processing & Financial Commerce Platform",
+  "type": "module",
+  "main": "src/solidarity-platform.js",
   "scripts": {
     "start": "node src/api/server.js",
     "dev": "nodemon src/api/server.js --watch src",
@@ -71,7 +72,8 @@
     "ultimate:demo": "node src/ultimateSolidaritySystem.js",
     "ultimate:test": "node src/ultimateSolidaritySystem.js",
     "ultimate:full": "node src/ultimateSolidaritySystem.js",
-    "solidarity:ultimate": "node src/ultimateSolidaritySystem.js"
+    "solidarity:ultimate": "node src/ultimateSolidaritySystem.js",
+    "demo": "node examples/demo.js"
   },
   "keywords": [
     "audio-processing",
@@ -83,7 +85,17 @@
     "real-time-processing",
     "secure-transactions",
     "api-server",
-    "frontend-ready"
+    "frontend-ready",
+    "solidarity",
+    "numerology",
+    "sacred-geometry",
+    "henry-7-step",
+    "cubit-calculation",
+    "harmonic-progression"
+  ],
+  "authors": [
+    "Scott Charles Olson (Charly)",
+    "Charles H. Dykes (Hank)"
   ],
   "author": {
     "name": "Scott Charles Olson",
@@ -99,12 +111,12 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "repository": {
     "type": "git",
-    "url": "https://github.com/solidarity-platform/solidarity.git"
+    "url": "git+https://github.com/CharlyOlson/Solidarity.git"
   },
   "bugs": {
-    "url": "https://github.com/solidarity-platform/solidarity/issues"
+    "url": "https://github.com/CharlyOlson/Solidarity/issues"
   },
-  "homepage": "https://solidarity.com",
+  "homepage": "https://github.com/CharlyOlson/Solidarity#readme",
   "engines": {
     "node": ">=16.0.0",
     "npm": ">=8.0.0",

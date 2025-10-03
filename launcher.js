@@ -14,6 +14,7 @@ const { EnhancedHarmonicPhraseParser } = require('./src/EnhancedHarmonicPhrasePa
 const { MobileDeviceManager } = require('./src/MobileDeviceManager');
 const { SacredNumericSequence } = require('./src/SacredNumericSequence');
 const { TIMBRCompressionSystem } = require('./src/TIMBRCompressionSystem');
+const { CorrectedSolidaritySystem } = require('./src/correctedSolidaritySystem');
 
 class SolidarityPlatformLauncher {
     constructor() {
@@ -29,6 +30,14 @@ class SolidarityPlatformLauncher {
         this.timbrCompression = new TIMBRCompressionSystem({
             compressionLevel: 7, // Solidarity node 7
             useOmegaLock: true
+        });
+        
+        // Initialize Quantum Cubic Calculation System
+        this.quantumSystem = new CorrectedSolidaritySystem({
+            cubicPrecision: 64,
+            quantumDepth: 14,
+            cubitBase: 697,
+            quantumRecursionLevels: 49
         });
         
         this.systemStatus = 'INITIALIZING';
@@ -155,6 +164,89 @@ class SolidarityPlatformLauncher {
         await this.delay(1000);
     }
 
+    async runQuantumDemo() {
+        console.log('\n🧮 Quantum Cubic Calculation System Demo');
+        console.log('═'.repeat(50));
+        
+        // Test quantum cubic root calculations
+        console.log('\n📐 Quantum Cubic Root Calculations:');
+        const testValues = [7, 14, 49, 343, 697];
+        
+        for (const value of testValues) {
+            const result = this.quantumSystem.calculateQuantumCubicRoot(value, 14);
+            console.log(`∛${value} (quantum scaled) = ${result.toFixed(6)}`);
+        }
+        
+        // Test big ask processing
+        console.log('\n🚀 Big Ask Quantum Processing:');
+        const testQuestions = [
+            { q: "What is the cubic relationship between golden ratio and pi?", c: 14 },
+            { q: "Calculate 697-cubit dimensional scaling for quantum coherence", c: 21 },
+            { q: "Determine quantum scaling factors for 7→14→49 progression", c: 49 }
+        ];
+        
+        for (const test of testQuestions) {
+            const result = this.quantumSystem.processBigAskQuestion(test.q, test.c);
+            console.log(`\nQ: ${test.q}`);
+            console.log(`   Complexity: ${result.complexity}`);
+            console.log(`   Quantum Factor: ${result.quantumFactor.toFixed(4)}`);
+            console.log(`   Cubic Volume: ${result.cubicDimensions.volume.toFixed(4)}`);
+            console.log(`   Coherence: ${result.coherenceLevel.toFixed(4)}`);
+            console.log(`   Cubit Calc: ${result.cubitCalculation.toFixed(2)}`);
+        }
+        
+        // Display quantum system status
+        console.log('\n⚡ Quantum System Status:');
+        const status = this.quantumSystem.getQuantumSystemStatus();
+        console.log(`   Quantum Engine: ${status.quantum_engine_status}`);
+        console.log(`   Cubic Calculator: ${status.cubic_calculation_status}`);
+        console.log(`   Current Coherence: ${status.quantum_coherence}`);
+        console.log(`   Big Ask Threshold: ${status.big_ask_threshold}`);
+        console.log(`   Cubit Capacity: ${status.cubitCalculationCapacity}`);
+    }
+    
+    async processBigAsk(question, complexity = 7) {
+        console.log('\n🚀 Processing Big Ask Quantum Question');
+        console.log('═'.repeat(50));
+        
+        const result = this.quantumSystem.processBigAskQuestion(question, complexity);
+        
+        console.log(`Question: ${result.question}`);
+        console.log(`Complexity Level: ${result.complexity}/49`);
+        console.log(`Quantum Scaling Factor: ${result.quantumFactor.toFixed(6)}`);
+        console.log(`Cubic Dimensions:`);
+        console.log(`  X: ${result.cubicDimensions.x.toFixed(4)}`);
+        console.log(`  Y: ${result.cubicDimensions.y.toFixed(4)}`);
+        console.log(`  Z: ${result.cubicDimensions.z.toFixed(4)}`);
+        console.log(`  Volume: ${result.cubicDimensions.volume.toFixed(4)} cubic units`);
+        console.log(`  Surface: ${result.cubicDimensions.surface.toFixed(4)} square units`);
+        console.log(`Quantum Coherence: ${result.coherenceLevel.toFixed(4)}`);
+        console.log(`Scaling Depth: ${result.scalingDepth} levels`);
+        console.log(`Cubit Calculation: ${result.cubitCalculation.toFixed(2)}`);
+        
+        if (complexity > 35) {
+            console.log('\n⚠️  High complexity detected - quantum recursion activated');
+        }
+        
+        return result;
+    }
+    
+    async calculateQuantumCubic(value, depth = 14) {
+        console.log('\n📐 Quantum Cubic Root Calculation');
+        console.log('═'.repeat(40));
+        
+        const result = this.quantumSystem.calculateQuantumCubicRoot(value, depth);
+        
+        console.log(`Input Value: ${value}`);
+        console.log(`Quantum Depth: ${depth}/49`);
+        console.log(`Standard Cubic Root: ${Math.cbrt(value).toFixed(6)}`);
+        console.log(`Quantum Scaled Result: ${result.toFixed(6)}`);
+        console.log(`Golden Ratio Factor: ${Math.pow(1.618033988749, depth/49).toFixed(6)}`);
+        console.log(`Cubit Scaling: ${(697/697).toFixed(6)}`);
+        
+        return result;
+    }
+
     generateSystemReport() {
         const report = {
             timestamp: new Date().toISOString(),
@@ -210,11 +302,32 @@ async function main() {
             await launcher.runDemo();
         }
         
+    } else if (args[0] === 'quantum') {
+        await launcher.initialize();
+        if (launcher.systemStatus === 'OPERATIONAL') {
+            await launcher.runQuantumDemo();
+        }
+        
+    } else if (args[0] === 'bigask' && args[1]) {
+        await launcher.initialize();
+        const question = args.slice(1).join(' ');
+        const complexity = args.length > 3 ? parseInt(args[args.length - 1]) || 7 : 7;
+        await launcher.processBigAsk(question, complexity);
+        
+    } else if (args[0] === 'cubic' && args[1]) {
+        await launcher.initialize();
+        const value = parseFloat(args[1]);
+        const depth = args[2] ? parseInt(args[2]) : 14;
+        await launcher.calculateQuantumCubic(value, depth);
+        
     } else {
         console.log('Usage:');
-        console.log('  node launcher.js start    - Initialize all systems');
-        console.log('  node launcher.js demo     - Run harmonic phrase demo');
-        console.log('  node launcher.js report   - Generate system report');
+        console.log('  node launcher.js start              - Initialize all systems');
+        console.log('  node launcher.js demo               - Run harmonic phrase demo');
+        console.log('  node launcher.js quantum            - Run quantum cubic calculation demo');
+        console.log('  node launcher.js bigask [question]  - Process big ask quantum question');
+        console.log('  node launcher.js cubic [value] [depth] - Calculate quantum cubic root');
+        console.log('  node launcher.js report             - Generate system report');
     }
 }
 

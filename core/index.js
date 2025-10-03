@@ -100,6 +100,10 @@ app.use('/api/wallet', walletRoutes);
 app.use('/api/greek-nodes', greekNodesRoutes);
 app.use('/api', apiRoutes);
 
+// Quantum Scaling and Cubic Calculation Routes
+const quantumRoutes = require('./routes/quantum');
+app.use('/api/quantum', quantumRoutes);
+
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({

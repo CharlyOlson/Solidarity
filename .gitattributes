@@ -1,2 +1,10 @@
-# Auto detect text files and perform LF normalization  
-* text=auto 
+"# Git attributes for Solidarity Platform" 
+"# Auto detect text files and perform LF normalization" 
+"* text=auto" 
+"" 
+"# Language detection for GitHub" 
+"*.md linguist-detectable=false" 
+"*.js linguist-language=JavaScript" 
+"*.py linguist-language=Python" 
+"*.sol linguist-language=Solidity" 
+"*.json linguist-detectable=false"

@@ -1,11 +1,14 @@
 # Dependencies
 node_modules/
 */node_modules/
+<<<<<<< Updated upstream
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 package-lock.json
 yarn.lock
+=======
+>>>>>>> Stashed changes
 
 # Environment variables
 .env
@@ -17,6 +20,12 @@ yarn.lock
 # Logs
 logs/
 *.log
+<<<<<<< Updated upstream
+=======
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+>>>>>>> Stashed changes
 
 # Runtime data
 pids/
@@ -24,17 +33,26 @@ pids/
 *.seed
 *.pid.lock
 .nyc_output/
+<<<<<<< Updated upstream
 .nyc_output
 
 # Coverage directory used by tools like istanbul
 coverage/
 *.lcov
+=======
+
+# Coverage directory used by tools like istanbul
+coverage/
+>>>>>>> Stashed changes
 
 # Build outputs
 build/
 dist/
 frontend/build/
+<<<<<<< Updated upstream
 out/
+=======
+>>>>>>> Stashed changes
 
 # Database
 data/
@@ -78,6 +96,7 @@ ENV/
 *.wav
 *.mp3
 *.flac
+<<<<<<< Updated upstream
 *.aiff
 
 # Solidarity Platform specific ignores
@@ -89,3 +108,6 @@ ENV/
 .env.development.local
 .env.test.local
 .env.production.local
+=======
+*.aiff
+>>>>>>> Stashed changes

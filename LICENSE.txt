@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 # SOLIDARITY PLATFORM - DUAL LICENSE AGREEMENT
 
 **Copyright © 2025 Scott Charles Olson (CharlyOlson)**  
@@ -13,11 +14,37 @@ This software ("Solidarity Platform") is made available under a dual-license mod
 
 ### Permitted Uses
 You may use, modify, and distribute the Solidarity Platform (up to version 2.00) for non-commercial purposes, provided:
+=======
+# Solidarity Platform License
+
+**Copyright (c) 2025 Scott Charles Olson; CharlyOlson**
+**Soul.Ed.Xchange.Fi Platform**
+
+## Grant of License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software **with explicit attribution and acknowledgment**, including the rights to use, copy, modify, merge, publish, and distribute, subject to the following conditions:
+
+### Attribution Requirements
+
+1. **Full attribution** to Scott Charles Olson must be included in all copies or substantial portions of the Software
+2. **This license notice** must be included in all copies or substantial portions of the Software
+3. **Innovation priority** - Technology innovations documented starting 05/19/2025
+
+### Commercial Use Restrictions
+
+- **Commercial licensing required** for any commercial use, distribution, or derivative works
+- **Contact Scott Charles Olson** for commercial licensing terms
+- **Revenue sharing** may be required for commercial implementations
+- **Review TRADEMARK.md for trademark compliance**
+
+### Non-Commercial Use
+>>>>>>> Stashed changes
 
 1. You maintain all copyright notices, attributions, and this license
 2. You clearly indicate any modifications made
 3. You do not use the software for any harmful purposes (defined below)
 
+<<<<<<< Updated upstream
 ### Limitations
 This license explicitly does NOT permit:
 
@@ -106,6 +133,8 @@ Email: cSolson1997@outlook.com
 
 For all inquiries on code or Soul.Ed.Xchange.Fi, please contact Scott Charles Olson; @CharlyOlson.
 
+=======
+>>>>>>> Stashed changes
 For commercial use, partnership, or special features, contact Scott Charles Olson "Charly" for compliance and payment instructions.
 
 Unauthorized commercial use or misuse of proprietary information is strictly prohibited.
@@ -120,4 +149,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 **Located: Kansas, USA 66210**
 **Innovation Priority Date: 05/19/2025**
 
+<<<<<<< Updated upstream
 For all inquiries on code or Soul.Ed.Xchange.Fi, please contact Scott Charles Olson; @CharlyOlson.
+=======
+For all inquiries on code or Soul.Ed.Xchange.Fi, please contact Scott Charles Olson; @CharlyOlson.
+>>>>>>> Stashed changes

@@ -7,7 +7,10 @@ import AudioTab from './components/AudioTab';
 import SystemStatusTab from './components/SystemStatusTab';
 import DevicesTab from './components/DevicesTab';
 import MobileDeviceDashboard from './components/MobileDeviceDashboard';
+<<<<<<< Updated upstream
 import GreekNodesTab from './components/GreekNodesTab';
+=======
+>>>>>>> Stashed changes
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -45,11 +48,14 @@ function App() {
             Dashboard
           </button>
           <button 
+<<<<<<< Updated upstream
             className={activeTab === 'greek-nodes' ? 'active' : ''} 
             onClick={() => setActiveTab('greek-nodes')}>
             🏛️ Greek Nodes
           </button>
           <button 
+=======
+>>>>>>> Stashed changes
             className={activeTab === 'discovery' ? 'active' : ''} 
             onClick={() => setActiveTab('discovery')}>
             Discovery
@@ -99,7 +105,10 @@ function App() {
 
             <div className="quick-actions">
               <h3>Quick Actions</h3>
+<<<<<<< Updated upstream
               <button onClick={() => setActiveTab('greek-nodes')}>🏛️ Manage Greek Letter Nodes</button>
+=======
+>>>>>>> Stashed changes
               <button onClick={() => setActiveTab('discovery')}>Run Discovery</button>
               <button onClick={() => setActiveTab('audio')}>Execute Audio Command</button>
               <button onClick={() => setActiveTab('mobile')}>Mobile Device Sync</button>
@@ -108,9 +117,12 @@ function App() {
           </section>
         )}
 
+<<<<<<< Updated upstream
         {activeTab === 'greek-nodes' && (
           <GreekNodesTab />
         )}
+=======
+>>>>>>> Stashed changes
         {activeTab === 'discovery' && (
           <DiscoveryTab />
         )}

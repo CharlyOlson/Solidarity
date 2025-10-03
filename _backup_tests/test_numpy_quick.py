@@ -99,6 +99,7 @@ if __name__ == "__main__":
     print("This will check your Python, NumPy, and basic audio math setup.")
     print("If any test fails, follow the guidance in the error message.")
 
+<<<<<<< Updated upstream
     try:
         # Run the test suite
         unittest.main(exit=False, verbosity=2)
@@ -107,3 +108,7 @@ if __name__ == "__main__":
         print(f"\n❌ Test suite failed: {e}")
     finally:
         cleanup_test_environment()
+=======
+    unittest.main()
+    cleanup_test_environment()
+>>>>>>> Stashed changes

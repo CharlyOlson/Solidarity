@@ -2,6 +2,7 @@
 // Place this file in your project root and update with your API key and endpoint as needed.
 
 const axios = require('axios');
+<<<<<<< Updated upstream
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
@@ -220,3 +221,43 @@ if (require.main === module) {
 }
 
 module.exports = { queryPerplexity, queryPerplexityHarmonic };
+=======
+require('dotenv').config();
+
+// Set your Perplexity API key in a .env file: PERPLEXITY_API_KEY=your_key_here
+const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
+const PERPLEXITY_API_URL = 'https://api.perplexity.ai/v1/query'; // Update if needed
+
+/**
+ * Send a query to Perplexity AI and return the result
+ * @param {string} query - The question or prompt to send
+ * @returns {Promise<string>} - The AI response
+ */
+async function queryPerplexity(query) {
+  if (!PERPLEXITY_API_KEY) throw new Error('Perplexity API key not set');
+  try {
+    const response = await axios.post(PERPLEXITY_API_URL, {
+      prompt: query
+    }, {
+      headers: {
+        'Authorization': `Bearer ${PERPLEXITY_API_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    return response.data?.answer || response.data;
+  } catch (error) {
+    console.error('Perplexity API error:', error.response?.data || error.message);
+    throw error;
+  }
+}
+
+// Example usage
+if (require.main === module) {
+  (async () => {
+    const result = await queryPerplexity('What is a twelve-node self-correcting system?');
+    console.log('Perplexity AI response:', result);
+  })();
+}
+
+module.exports = { queryPerplexity };
+>>>>>>> Stashed changes

@@ -185,3 +185,18 @@ This platform is open for non-commercial use up to version 6.5.0. Commercial use
 
 © 2025 Scott Charles Olson. All rights reserved.
 TRADEMARKED BY SCOTT CHARLES OLSON
+<<<<<<< Updated upstream
+=======
+
+const fs = require('fs');
+
+// Fix protocol-relative URLs
+const fixProtocolRelativeUrls = (htmlContent) => {
+    return htmlContent.replace(/href="\/\/github\.com/g, 'href="https://github.com');
+};
+
+// Process the file
+const htmlContent = fs.readFileSync('ReleaseNotes.html', 'utf8');
+const fixedContent = fixProtocolRelativeUrls(htmlContent);
+fs.writeFileSync('ReleaseNotes.html', fixedContent);
+>>>>>>> Stashed changes

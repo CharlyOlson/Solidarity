@@ -1,4 +1,5 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 # Soul.Ed.Xchange Whitepaper
 
 **Prepared by:** Scott Charles Olson  
@@ -128,6 +129,9 @@ Scott Charles Olson
 Kansas, USA 66210  
 
 ---
+=======
+// ...existing code from SoulEdXchange_Whitepaper_Version2.md...
+>>>>>>> Stashed changes
 =======
 // ...existing code from SoulEdXchange_Whitepaper_Version2.md...
 >>>>>>> Stashed changes

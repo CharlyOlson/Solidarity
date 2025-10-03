@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 # Solidarity Platform
 
 Welcome to the official repository for Solidarity, architected and trademarked by Scott Charles Olson ("Charly").
@@ -225,22 +226,24 @@ All commercial inquiries must be directed to Scott Charles Olson for licensing a
 ---
 
 ## Professional Audio Processing & Financial Commerce System
+=======
+# Solidarity
+>>>>>>> Stashed changes
 
-**Solidarity.Soul.Ed.Xchange.Fi** - A comprehensive platform integrating advanced audio processing with secure financial operations.
+Welcome to the official repository for Solidarity, architected and trademarked by Scott Charles Olson ("Charly").
+This platform is dedicated to security, longevity, and community understanding.
 
-> **Twin Repository System**: This platform operates across two interlaced repositories:
-> - **Solidarity** (Main): Production-ready audio processing & financial commerce
-> - **Coul-Curve** (Development): Advanced harmonic research & experimental features
+---
 
-### Platform Overview
-Welcome to the official repository for Solidarity, architected and trademarked by **Scott Charles Olson (Charly)**.  
-This platform combines cutting-edge audio processing technology with secure financial commerce systems, designed for security, longevity, and community understanding.
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Structure](#structure)
+3. [Licensing & Commercial Use](#licensing--commercial-use)
+4. [Contact](#contact)
 
-**Core Team:**
-- **Architect & Lead Developer:** Scott Charles Olson ("Charly") 
-- **Framework Concept Designer:** Charles H. Dykes ("Hank")
-- **Additional Contributors:** Founding investors and community developers
+---
 
+<<<<<<< Updated upstream
 ## 🧮 Advanced Cubic Calculations & Quantum Scaling System
 
 The Solidarity Platform implements **the world's first software-only quantum computing system** achieving quantum-coherent behavior without any quantum hardware:
@@ -356,6 +359,34 @@ For commercial use, partnership, or special features, please see the [LICENSE.md
 
 ## Contact
 
+=======
+## Introduction
+
+Solidarity is a full-scale system for commerce, focusing on financial solutions and community-driven development.
+
+---
+
+## Structure
+
+- **contracts/** – Smart contracts and on-chain logic
+- **sql/** – Database scripts and queries
+- **src/** – Core application source code
+- **docs/** – Documentation and roadmap
+- **palette/** – Color palettes and design tokens
+- **.env.example** – Example environment config
+
+---
+
+## Licensing & Commercial Use
+
+This platform is **open for non-commercial use** up to version 2.41.  
+For commercial use, partnership, or special features, please see the [LICENSE.md](LICENSE.md) and [TRADEMARK.md](TRADEMARK.md) files for payment instructions and trademark info.
+
+---
+
+## Contact
+
+>>>>>>> Stashed changes
 - **Architect:** Scott Charles Olson ("Charly")
 - **Phone:** Contact Through LinkedIn
 - **Location:** Kansas, USA 66210

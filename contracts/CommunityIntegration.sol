@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -81,6 +82,8 @@ contract CommunityIntegration is Ownable {
     }
 }
 =======
+=======
+>>>>>>> Stashed changes
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -143,4 +146,7 @@ contract CommunityIntegration is Ownable {
         return (c.alphaLock, c.betaLock, c.omegaLock);
     }
 }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 pragma solidity ^0.8.0;
 
 contract StabilityMetrics {
@@ -56,6 +57,8 @@ contract StabilityMetrics {
      * @return The square root of the input number.
      */
 =======
+=======
+>>>>>>> Stashed changes
 pragma solidity ^0.8.20;
 
 /**
@@ -108,6 +111,9 @@ contract StabilityMetrics {
         return (normalized * 100) / 1000;
     }
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     function sqrt(uint256 x) internal pure returns (uint256) {
         if (x == 0) return 0;
@@ -120,11 +126,17 @@ contract StabilityMetrics {
         return y;
     }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 }
 =======
+=======
+>>>>>>> Stashed changes
 
     function getCurrentMetrics() public view returns (Metrics memory) {
         return dailyMetrics[currentDay];
     }
 }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes

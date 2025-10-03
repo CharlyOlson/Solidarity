@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 pragma solidity ^0.8.0;
 
 contract TreasuryManager {
 =======
+=======
+>>>>>>> Stashed changes
 pragma solidity ^0.8.20;
 
 /**
@@ -12,11 +15,15 @@ pragma solidity ^0.8.20;
  * Manages allocation of revenue to charity, payroll, and operational reserves.
  */
 contract RevenueAllocationExample {
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     uint256 public charityFund;
     uint256 public payrollFund;
     uint256 public operationalReserve;
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     event RevenueAllocated(uint256 charity, uint256 payroll, uint256 reserve);
 
@@ -36,6 +43,8 @@ contract RevenueAllocationExample {
     }
 }
 =======
+=======
+>>>>>>> Stashed changes
     bool public alphaLock;
     bool public betaLock;
     bool public omegaLock;
@@ -66,4 +75,7 @@ contract RevenueAllocationExample {
         emit RevenueAllocated(charity, payroll, reserve);
     }
 }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes

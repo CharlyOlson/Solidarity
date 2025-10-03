@@ -8,10 +8,13 @@ const { spawn, exec } = require('child_process');
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // Import Solidarity platform utilities
 const colorUtils = require('./src/utils/colorUtils');
 const { audioCommands, executeAudioCommand } = require('./src/enhancedAudioStudioCommands');
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -385,6 +388,7 @@ discovery.scanAllLocations();
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // Color Motion Visualization Functions
 class ColorMotionVisualizer {
     constructor() {
@@ -500,11 +504,16 @@ if (typeof module !== 'undefined' && module.exports) {
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 // Export for module use
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         ComprehensiveSolidarityDiscovery
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -512,6 +521,7 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 // Auto-run if called directly
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 async function main() {
@@ -525,10 +535,13 @@ async function main() {
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 if (typeof window === 'undefined') {
     main().catch(console.error);
 }
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 // Demo chakra visualization
@@ -562,6 +575,9 @@ let pythonCommand = 'python3';
 =======
 // Launcher automatically detects and uses virtual environment
 >>>>>>> Stashed changes
+=======
+// Launcher automatically detects and uses virtual environment
+>>>>>>> Stashed changes
 if (fs.existsSync(venvPython)) {
     pythonCommand = venvPython;
     console.log('🔐 Using secure virtual environment');
@@ -569,11 +585,14 @@ if (fs.existsSync(venvPython)) {
     console.log('💡 Run python:setup to create secure environment');
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 }
 
 // Run the demo if this file is executed directly
 if (require.main === module) {
     demoChakraVisualization();
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======

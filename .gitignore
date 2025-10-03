@@ -3,11 +3,14 @@ node_modules/
 */node_modules/
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 package-lock.json
 yarn.lock
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -25,6 +28,12 @@ logs/
 *.log
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+>>>>>>> Stashed changes
 =======
 npm-debug.log*
 yarn-debug.log*
@@ -44,11 +53,17 @@ pids/
 .nyc_output/
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 .nyc_output
 
 # Coverage directory used by tools like istanbul
 coverage/
 *.lcov
+=======
+
+# Coverage directory used by tools like istanbul
+coverage/
+>>>>>>> Stashed changes
 =======
 
 # Coverage directory used by tools like istanbul
@@ -66,7 +81,10 @@ dist/
 frontend/build/
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 out/
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -116,6 +134,7 @@ ENV/
 *.flac
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 *.aiff
 
 # Solidarity Platform specific ignores
@@ -127,6 +146,9 @@ ENV/
 .env.development.local
 .env.test.local
 .env.production.local
+=======
+*.aiff
+>>>>>>> Stashed changes
 =======
 *.aiff
 >>>>>>> Stashed changes

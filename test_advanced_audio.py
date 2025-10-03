@@ -10,9 +10,12 @@ import os
 import unittest
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import numpy as np
 import math
 import time
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -106,6 +109,7 @@ if __name__ == "__main__":
     unittest.main()
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     print("=" * 40)
     
     time_buyer = AudioTimeBuyer()
@@ -132,6 +136,8 @@ if __name__ == "__main__":
 def test_audio_time_buyer():
     """Test complete audio time buyer with parameter controller"""
     print("\n🕐 Testing Audio Time Buyer & Parameter Controller")
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======

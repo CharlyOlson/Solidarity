@@ -4,6 +4,7 @@
 const axios = require('axios');
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
@@ -225,6 +226,8 @@ module.exports = { queryPerplexity, queryPerplexityHarmonic };
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 require('dotenv').config();
 
 // Set your Perplexity API key in a .env file: PERPLEXITY_API_KEY=your_key_here
@@ -264,6 +267,9 @@ if (require.main === module) {
 
 module.exports = { queryPerplexity };
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

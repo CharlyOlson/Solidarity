@@ -9,7 +9,10 @@ import DevicesTab from './components/DevicesTab';
 import MobileDeviceDashboard from './components/MobileDeviceDashboard';
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import GreekNodesTab from './components/GreekNodesTab';
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -53,11 +56,14 @@ function App() {
           <button 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             className={activeTab === 'greek-nodes' ? 'active' : ''} 
             onClick={() => setActiveTab('greek-nodes')}>
             🏛️ Greek Nodes
           </button>
           <button 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -113,7 +119,10 @@ function App() {
               <h3>Quick Actions</h3>
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
               <button onClick={() => setActiveTab('greek-nodes')}>🏛️ Manage Greek Letter Nodes</button>
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -128,9 +137,12 @@ function App() {
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         {activeTab === 'greek-nodes' && (
           <GreekNodesTab />
         )}
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======

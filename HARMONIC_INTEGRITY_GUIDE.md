@@ -186,7 +186,10 @@ This platform is open for non-commercial use up to version 6.5.0. Commercial use
 © 2025 Scott Charles Olson. All rights reserved.
 TRADEMARKED BY SCOTT CHARLES OLSON
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 
 const fs = require('fs');
 
@@ -198,5 +201,9 @@ const fixProtocolRelativeUrls = (htmlContent) => {
 // Process the file
 const htmlContent = fs.readFileSync('ReleaseNotes.html', 'utf8');
 const fixedContent = fixProtocolRelativeUrls(htmlContent);
+<<<<<<< Updated upstream
+fs.writeFileSync('ReleaseNotes.html', fixedContent);
+>>>>>>> Stashed changes
+=======
 fs.writeFileSync('ReleaseNotes.html', fixedContent);
 >>>>>>> Stashed changes

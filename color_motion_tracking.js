@@ -7,10 +7,13 @@ const os = require('os');
 const { spawn, exec } = require('child_process');
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // Import Solidarity platform utilities
 const colorUtils = require('./src/utils/colorUtils');
 const { audioCommands, executeAudioCommand } = require('./src/enhancedAudioStudioCommands');
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 // Class Definitions
@@ -381,6 +384,7 @@ const discovery = new ComprehensiveSolidarityDiscovery();
 discovery.scanAllLocations();
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // Color Motion Visualization Functions
 class ColorMotionVisualizer {
     constructor() {
@@ -494,15 +498,21 @@ if (typeof module !== 'undefined' && module.exports) {
         ComprehensiveSolidarityDiscovery,
         ColorMotionVisualizer
 =======
+=======
+>>>>>>> Stashed changes
 // Export for module use
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         ComprehensiveSolidarityDiscovery
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     };
 }
 
 // Auto-run if called directly
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 async function main() {
     const discovery = new ComprehensiveSolidarityDiscovery();
@@ -513,10 +523,13 @@ async function main() {
 
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 if (typeof window === 'undefined') {
     main().catch(console.error);
 }
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 // Demo chakra visualization
 function demoChakraVisualization() {
@@ -546,17 +559,23 @@ let pythonCommand = 'python3';
 =======
 // Launcher automatically detects and uses virtual environment
 >>>>>>> Stashed changes
+=======
+// Launcher automatically detects and uses virtual environment
+>>>>>>> Stashed changes
 if (fs.existsSync(venvPython)) {
     pythonCommand = venvPython;
     console.log('🔐 Using secure virtual environment');
 } else {
     console.log('💡 Run python:setup to create secure environment');
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 }
 
 // Run the demo if this file is executed directly
 if (require.main === module) {
     demoChakraVisualization();
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 }

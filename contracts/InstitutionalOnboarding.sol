@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 pragma solidity ^0.8.0;
 
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 pragma solidity ^0.8.20;
@@ -14,6 +17,9 @@ pragma solidity ^0.8.20;
  * Handles onboarding and management of institutions in the ecosystem.
  */
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -21,6 +27,7 @@ contract InstitutionalOnboarding {
     struct Institution {
         string name;
         bool isEducational;
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
         bool isVerified;
@@ -71,6 +78,8 @@ contract InstitutionalOnboarding {
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
         uint256 onboardedAt;
         bool alphaLock;
         bool betaLock;
@@ -104,6 +113,9 @@ contract InstitutionalOnboarding {
     }
 }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

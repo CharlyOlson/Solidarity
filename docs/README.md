@@ -1,5 +1,6 @@
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 # Soul.Ed.Xchange - Quantum-Core
 Scott Charles Olson's Soul.Ed.XChange: Revolutionary quantum-powered universal cryptocurrency integrating harmonic error correction, biometric security, and institutional partnerships. **Now featuring the world's first software-only quantum computing system!**
 
@@ -12,6 +13,8 @@ For complete system documentation including the revolutionary quantum computing 
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 # Documentation
 
 This folder contains guides, whitepapers, and reference documentation for the Solidarity platform.
@@ -20,6 +23,9 @@ This folder contains guides, whitepapers, and reference documentation for the So
 - Whitepapers
 - Integration references
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

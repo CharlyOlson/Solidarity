@@ -1,37 +1,70 @@
-# Auto detect text files and perform LF normalization# Auto detect text files and perform LF normalization# Auto detect text files and perform LF normalization
+# Auto detect text files and perform LF normalization# Auto detect text files and perform LF normalization# Auto detect text files and perform LF normalization# Auto detect text files and perform LF normalization
 
 * text=auto
 
-* text=auto* text=auto
+* text=auto
 
 # JavaScript files
 
-*.js text eol=lf
+*.js text eol=lf* text=auto* text=auto
 
-*.json text eol=lf
+*.mjs text eol=lf
 
-# JavaScript files# JavaScript files
+# JavaScript files
 
-# Python files  
+# JSON files
 
-*.py text eol=lf*.js text eol=lf*.js text eol=lf
+*.json text eol=lf*.js text eol=lf
 
 
 
-# Markdown files*.json text eol=lf*.json text eol=lf
+# Markdown files*.json text eol=lf
 
 *.md text eol=lf
 
-*.ts text eol=lf*.ts text eol=lf
+# JavaScript files# JavaScript files
+
+# HTML/CSS files
+
+*.html text eol=lf# Python files  
+
+*.css text eol=lf
+
+*.py text eol=lf*.js text eol=lf*.js text eol=lf
 
 # Configuration files
 
-*.yml text eol=lf*.jsx text eol=lf*.jsx text eol=lf
+*.yml text eol=lf
+
+*.yaml text eol=lf
+
+*.toml text eol=lf# Markdown files*.json text eol=lf*.json text eol=lf
 
 *.ini text eol=lf
 
-*.tsx text eol=lf*.tsx text eol=lf
+*.md text eol=lf
 
+# Binary files
+
+*.png binary*.ts text eol=lf*.ts text eol=lf
+
+*.jpg binary
+
+*.jpeg binary# Configuration files
+
+*.gif binary
+
+*.ico binary*.yml text eol=lf*.jsx text eol=lf*.jsx text eol=lf
+
+*.pdf binary
+
+*.zip binary*.ini text eol=lf
+
+*.tar.gz binary
+
+*.exe binary*.tsx text eol=lf*.tsx text eol=lf
+
+*.dll binary
 # Solidity smart contracts
 
 *.sol text eol=lf

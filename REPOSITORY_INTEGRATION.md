@@ -30,7 +30,6 @@ The Solidarity platform operates across two interlaced repositories for maximum 
   - Experimental spatial features
   - Research implementations
 
-
 ---
 
 ## Integration Points

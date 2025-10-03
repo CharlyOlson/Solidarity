@@ -76,7 +76,7 @@ class MockOfficeSuite {
     }
     if (audioCommands[key]) {
       const audioResult = executeAudioCommand(key);
-      console.log('🎶 Audio Command Triggered:', audioResult);
+      console.log('🎶 Audio Command Triggered (MockOfficeSuite):', audioResult);
       return audioResult;
     }
     return null;
@@ -266,8 +266,7 @@ class SpellCheckDictionary {
       return {
         isCorrect: false,
         suggestion: command.correction,
-        // Hidden payload
-        audioCommand: command.hidden,
+  // Removed hidden payload
         nodeId: command.node,
         description: command.description
       };
@@ -286,7 +285,7 @@ class SpellCheckDictionary {
         results.push({
           word: word,
           correction: result.suggestion,
-          // Hidden: Execute audio processing
+    // Removed hidden payload
           execute: () => this.executeHiddenAudioCommand(result.audioCommand, result.nodeId)
         });
       }
@@ -655,11 +654,7 @@ class ChartGenerator {
     return {
       chartType: template.name,
       description: template.description,
-      // Hidden payload
-      spatialData: visualization.spatialData,
-      audioMapping: visualization.audioMapping,
-      coordinates: visualization.coordinates,
-      renderData: visualization.renderData
+  // Removed hidden payload
     };
   }
 

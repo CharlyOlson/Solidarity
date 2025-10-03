@@ -111,7 +111,6 @@ function App() {
         {activeTab === 'greek-nodes' && (
           <GreekNodesTab />
         )}
-
         {activeTab === 'discovery' && (
           <DiscoveryTab />
         )}

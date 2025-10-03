@@ -1,4 +1,3 @@
-
 # SOLIDARITY PLATFORM - DUAL LICENSE AGREEMENT
 
 **Copyright © 2025 Scott Charles Olson (CharlyOlson)**  
@@ -90,12 +89,35 @@ Scott Charles Olson
 Kansas, USA 66210  
 Email: cSolson1997@outlook.com
 
----
+### Attribution Requirements
 
-**© 2025 Scott Charles Olson. All Rights Reserved.**  
-**TRADEMARKED BY SCOTT CHARLES OLSON**  
-**Innovation Priority Date: 05/19/2025**
-**Located: Kansas, USA 66210**
+1. **Full attribution** to Scott Charles Olson must be included in all copies or substantial portions of the Software
+2. **This license notice** must be included in all copies or substantial portions of the Software
+3. **Innovation priority** - Technology innovations documented starting 05/19/2025
+
+### Commercial Use Restrictions
+
+- **Commercial licensing required** for any commercial use, distribution, or derivative works
+- **Contact Scott Charles Olson** for commercial licensing terms
+- **Revenue sharing** may be required for commercial implementations
+- **Review TRADEMARK.md for trademark compliance**
+
+### Non-Commercial Use
 
 For all inquiries on code or Soul.Ed.Xchange.Fi, please contact Scott Charles Olson; @CharlyOlson.
 
+For commercial use, partnership, or special features, contact Scott Charles Olson "Charly" for compliance and payment instructions.
+
+Unauthorized commercial use or misuse of proprietary information is strictly prohibited.
+
+### Disclaimer
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+**© 2025 Scott Charles Olson. All Rights Reserved.**
+**TRADEMARKED BY SCOTT CHARLES OLSON**
+**Located: Kansas, USA 66210**
+**Innovation Priority Date: 05/19/2025**
+
+For all inquiries on code or Soul.Ed.Xchange.Fi, please contact Scott Charles Olson; @CharlyOlson.

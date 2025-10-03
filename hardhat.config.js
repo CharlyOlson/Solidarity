@@ -5,7 +5,7 @@ require("dotenv").config();
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: {
-    version: "0.8.20",
+    version: "0.8.19",
     settings: {
       optimizer: {
         enabled: true,
@@ -16,14 +16,9 @@ module.exports = {
   networks: {
     hardhat: {
       chainId: 1337,
-      accounts: {
-        count: 20,
-        accountsBalance: "10000000000000000000000", // 10,000 ETH
-      },
     },
     localhost: {
       url: "http://127.0.0.1:8545",
-      chainId: 1337,
     },
     goerli: {
       url: process.env.ETHEREUM_RPC_URL || "https://goerli.infura.io/v3/YOUR_INFURA_KEY",

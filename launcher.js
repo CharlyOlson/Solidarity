@@ -10,7 +10,7 @@
  */
 
 const { ComprehensiveSolidarityDiscovery } = require('./src/ComprehensiveSolidarityDiscovery');
-const { EnhancedHarmonicPhraseParser } = require('./EnhancedHarmonicPhraseParser');
+const { EnhancedHarmonicPhraseParser } = require('./src/EnhancedHarmonicPhraseParser');
 const { MobileDeviceManager } = require('./src/MobileDeviceManager');
 const { SacredNumericSequence } = require('./src/SacredNumericSequence');
 const { TIMBRCompressionSystem } = require('./src/TIMBRCompressionSystem');

@@ -18,13 +18,13 @@ try {
   harmonicFormatter = require('./ai/HarmonicAIInputFormatter');
   harmonicCache = require('./ai/HarmonicCache');
 } catch (_) {
-  // ignore if not present
+  // ignore if not present - allows standalone operation
 }
 
-// Commonly available model IDs (kept short to avoid 400 invalid_model errors if docs change)
+// Commonly available model IDs for Solidarity platform integration
 // Reference: https://docs.perplexity.ai/getting-started/models
 const DEFAULT_MODEL_CANDIDATES = [
-  process.env.PERPLEXITY_MODEL, // user override
+  process.env.PERPLEXITY_MODEL, // user override from .env
   'sonar',                      // base search model
   'sonar-pro',                  // advanced search/reasoning
   'sonar-reasoning',            // reasoning focused
@@ -32,59 +32,97 @@ const DEFAULT_MODEL_CANDIDATES = [
 ].filter(Boolean);
 
 /**
- * Send a query to Perplexity AI and return the result
- * @param {string} query - The question or prompt to send
- * @returns {Promise<string>} - The AI response
- */
-/**
- * Low-level Perplexity query with fallback model attempts (plain text).
+ * Low-level Perplexity query with fallback model attempts and harmonic integration.
+ * Supports the Solidarity platform's adaptive AI processing with barrier-like system controls.
  * @param {string} query Raw user question/content
- * @param {object} options Additional options
+ * @param {object} options Additional options for model selection and temperature control
+ * @returns {Promise<object>} Response object with model used, content, and metadata
  */
 async function queryPerplexity(query, options = {}) {
-  if (!PERPLEXITY_API_KEY) throw new Error('Perplexity API key not set');
+  if (!PERPLEXITY_API_KEY) throw new Error('Perplexity API key not set - check .env file');
+  
   const { modelCandidates = DEFAULT_MODEL_CANDIDATES, temperature = 0.2, dryRun = false, disableAdaptive = false } = options;
   let ordered = [...new Set(modelCandidates)];
-  // Adaptive ordering if harmonic formatter available
+  
+  // Adaptive ordering using harmonic formatter if available (Solidarity platform feature)
   if (harmonicFormatter && !disableAdaptive) {
     try {
       const features = harmonicFormatter.computeInputFeatures(query);
       const adaptive = harmonicFormatter.chooseModelAndTemperature(features, ordered);
       ordered = adaptive.orderedModelCandidates;
-    } catch (_) { /* ignore */ }
+    } catch (_) { 
+      // Graceful fallback if harmonic formatter fails
+    }
   }
+  
   const basePayload = {
     model: ordered[0],
-    messages: [ { role: 'system', content: 'You are a concise AI assistant.' }, { role: 'user', content: query } ],
+    messages: [ 
+      { role: 'system', content: 'You are a concise AI assistant for the Solidarity platform.' }, 
+      { role: 'user', content: query } 
+    ],
     temperature
   };
+  
   if (dryRun) return { dryRun: true, payload: { ...basePayload, modelCandidates: ordered } };
+  
   const tried = [];
   let lastError;
+  
   for (const model of ordered) {
     const payload = { ...basePayload, model };
     try {
+      // Check cache first if available
       if (harmonicCache) {
         const cached = harmonicCache.getCachedResponse(payload);
         if (cached) {
-          return { modelUsed: model, cached: true, content: cached.response?.choices?.[0]?.message?.content || cached.response };
+          return { 
+            modelUsed: model, 
+            cached: true, 
+            content: cached.response?.choices?.[0]?.message?.content || cached.response 
+          };
         }
       }
-      const response = await axios.post(PERPLEXITY_API_URL, payload, { headers: { 'Authorization': `Bearer ${PERPLEXITY_API_KEY}`, 'Content-Type': 'application/json' }, timeout: 20000 });
+      
+      const response = await axios.post(PERPLEXITY_API_URL, payload, { 
+        headers: { 
+          'Authorization': `Bearer ${PERPLEXITY_API_KEY}`, 
+          'Content-Type': 'application/json' 
+        }, 
+        timeout: 20000 
+      });
+      
+      // Store in cache if available
       if (harmonicCache) {
-        try { harmonicCache.storeResponse(payload, response.data); } catch (_) {}
+        try { 
+          harmonicCache.storeResponse(payload, response.data); 
+        } catch (_) {
+          // Cache storage failure is non-critical
+        }
       }
-      return { modelUsed: model, content: response.data?.choices?.[0]?.message?.content || response.data };
+      
+      return { 
+        modelUsed: model, 
+        content: response.data?.choices?.[0]?.message?.content || response.data 
+      };
     } catch (error) {
       const status = error.response?.status;
       const errBody = error.response?.data;
       const invalidModel = errBody?.error?.type === 'invalid_model';
       tried.push({ model, status, message: errBody?.error?.message || error.message });
       lastError = error;
-      if (!invalidModel) break; // stop for non-model errors
+      if (!invalidModel) break; // Stop for non-model errors
     }
   }
-  const lines = [ 'Perplexity API error after trying models:', ...tried.map(t => `  - ${t.model}: [${t.status}] ${t.message}`), 'Hints:', '  * Verify access to model(s).', '  * See https://docs.perplexity.ai/getting-started/models', '  * Override PERPLEXITY_MODEL in .env' ];
+  
+  const lines = [ 
+    'Perplexity API error after trying models:', 
+    ...tried.map(t => `  - ${t.model}: [${t.status}] ${t.message}`), 
+    'Hints:', 
+    '  * Verify access to model(s).', 
+    '  * See https://docs.perplexity.ai/getting-started/models', 
+    '  * Override PERPLEXITY_MODEL in .env' 
+  ];
   const aggregate = new Error(lines.join('\n'));
   aggregate.cause = lastError;
   throw aggregate;

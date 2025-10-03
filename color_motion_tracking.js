@@ -6,8 +6,9 @@ const path = require('path');
 const os = require('os');
 const { spawn, exec } = require('child_process');
 
-// Import color utilities
+// Import Solidarity platform utilities
 const colorUtils = require('./src/utils/colorUtils');
+const { audioCommands, executeAudioCommand } = require('./src/enhancedAudioStudioCommands');
 
 // Class Definitions
 class ComprehensiveSolidarityDiscovery {
@@ -380,36 +381,47 @@ discovery.scanAllLocations();
 class ColorMotionVisualizer {
     constructor() {
         this.colors = [];
-        this.palette = colorUtils.generateHarmonicPalette(240, 6); // Generate a blue-based harmonic palette
+        this.palette = colorUtils.generateHarmonicPalette(240, 6); // Generate chakra-based harmonic palette
+        this.chakraColors = {
+            root: '#FF0000',       // Red - stability layers
+            sacral: '#FF6600',     // Orange - movement energy
+            solar: '#FFFF00',      // Yellow - core applications
+            heart: '#00FF00',      // Green - balance transitions
+            throat: '#0066FF',     // Blue - deep tones
+            third_eye: '#6600FF',  // Indigo - projection points
+            crown: '#FF00FF'       // Violet - anti-color borders
+        };
     }
 
     /**
-     * Visualize motion tracking data with color gradients
+     * Visualize motion tracking data with chakra-based color gradients
      * @param {Array} data - Motion tracking data points 
      * @param {Object} options - Visualization options
      */
     visualizeMotionData(data, options = {}) {
-        console.log("\n🎨 Visualizing Motion Tracking Data");
+        console.log("\n🎨 Visualizing Motion Tracking Data with Chakra Colors");
         console.log("=".repeat(50));
         
         const defaultOptions = {
             showIntensity: true,
             colorize: true,
-            threshold: 0.75
+            threshold: 0.75,
+            useChakraColors: true
         };
         
         const config = { ...defaultOptions, ...options };
         
         data.forEach((point, index) => {
             const strength = Math.min(1, Math.max(0, point.intensity || 0.5));
-            const colorData = colorUtils.getColorIntensity(strength);
+            const colorData = this.getChakraColorIntensity(strength);
             
             console.log(`Point ${index + 1}:`);
             console.log(`  Strength: ${strength.toFixed(2)}`);
-            console.log(`  Color: ${colorData.fill}`);
+            console.log(`  Chakra Color: ${colorData.fill}`);
+            console.log(`  Energy Level: ${colorData.chakraLevel}`);
             
             if (colorData.stroke) {
-                console.log(`  Border: ${colorData.stroke} (exceeds threshold)`);
+                console.log(`  Anti-Border: ${colorData.stroke} (high intensity)`);
             }
             
             console.log(`  Coordinates: (${point.x || 0}, ${point.y || 0})`);
@@ -418,26 +430,54 @@ class ColorMotionVisualizer {
     }
     
     /**
-     * Generate a color-coded representation of solidarity score
-     * @param {number} score - The solidarity score (0-100)
-     * @returns {string} - Color representation of the score
+     * Get chakra-based color intensity mapping
+     * @param {number} intensity - Normalized intensity (0-1)
+     * @returns {Object} - Color data with chakra mapping
      */
-    generateScoreColor(score) {
-        const normalizedScore = score / 100;
-        return colorUtils.getColorIntensity(normalizedScore);
+    getChakraColorIntensity(intensity) {
+        const chakraKeys = Object.keys(this.chakraColors);
+        const chakraIndex = Math.floor(intensity * (chakraKeys.length - 1));
+        const chakraKey = chakraKeys[chakraIndex];
+        
+        return {
+            fill: this.chakraColors[chakraKey],
+            stroke: intensity > 0.75 ? this.getAntiColor(this.chakraColors[chakraKey]) : null,
+            chakraLevel: chakraKey,
+            intensity: intensity
+        };
     }
     
     /**
-     * Create a color gradient for visualization
-     * @param {number} steps - Number of gradient steps
-     * @returns {Array} - Array of color values
+     * Generate anti-color for borders
+     * @param {string} color - Original color hex
+     * @returns {string} - Anti-color hex
      */
-    createGradient(steps = 10) {
+    getAntiColor(color) {
+        // Convert to RGB and invert
+        const hex = color.replace('#', '');
+        const r = 255 - parseInt(hex.substr(0, 2), 16);
+        const g = 255 - parseInt(hex.substr(2, 2), 16);
+        const b = 255 - parseInt(hex.substr(4, 2), 16);
+        return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    }
+    
+    /**
+     * Generate a chakra-based color gradient for visualization
+     * @param {number} steps - Number of gradient steps
+     * @returns {Array} - Array of chakra color values
+     */
+    createChakraGradient(steps = 7) {
         const gradient = [];
+        const chakraKeys = Object.keys(this.chakraColors);
         
         for (let i = 0; i < steps; i++) {
             const factor = i / (steps - 1);
-            gradient.push(colorUtils.getColorIntensity(factor));
+            const chakraIndex = Math.floor(factor * (chakraKeys.length - 1));
+            gradient.push({
+                color: this.chakraColors[chakraKeys[chakraIndex]],
+                chakra: chakraKeys[chakraIndex],
+                intensity: factor
+            });
         }
         
         return gradient;
@@ -453,33 +493,43 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 // Auto-run if called directly
-if (typeof window === 'undefined' && typeof main === 'function') {
+async function main() {
+    const discovery = new ComprehensiveSolidarityDiscovery();
+    await discovery.scanAllLocations();
+    await discovery.detectMobileDevices();
+    discovery.generateDiscoveryReport();
+}
+
+if (typeof window === 'undefined') {
     main().catch(console.error);
 }
 
-// Demo visualization
-function demoVisualization() {
+// Demo chakra visualization
+function demoChakraVisualization() {
     const visualizer = new ColorMotionVisualizer();
     
-    // Sample motion tracking data
+    // Sample motion tracking data with chakra intensity mapping
     const sampleData = [
-        { x: 10, y: 20, intensity: 0.2 },
-        { x: 15, y: 25, intensity: 0.5 },
-        { x: 20, y: 30, intensity: 0.8 },
-        { x: 25, y: 35, intensity: 1.0 }
+        { x: 10, y: 20, intensity: 0.1, chakra: 'root' },        // Pastel red - new growth
+        { x: 15, y: 25, intensity: 0.4, chakra: 'solar' },       // Mid yellow - developing
+        { x: 20, y: 30, intensity: 0.8, chakra: 'throat' },      // Deep blue - stable
+        { x: 25, y: 35, intensity: 1.0, chakra: 'crown' }        // Intense violet - peak energy
     ];
     
     visualizer.visualizeMotionData(sampleData);
     
-    console.log("\n🌈 Color Gradient Demo:");
-    const gradient = visualizer.createGradient(5);
-    gradient.forEach((color, i) => {
-        console.log(`Step ${i + 1}: ${color.fill} ${color.stroke ? `(Border: ${color.stroke})` : ''}`);
+    console.log("\n🌈 Chakra Gradient Demo:");
+    const gradient = visualizer.createChakraGradient(7);
+    gradient.forEach((colorData, i) => {
+        console.log(`${colorData.chakra}: ${colorData.color} (Intensity: ${colorData.intensity.toFixed(2)})`);
     });
 }
 
-// Launcher automatically detects and uses virtual environment
-if (typeof venvPython !== 'undefined' && fs.existsSync(venvPython)) {
+// Python environment detection
+const venvPython = './venv/Scripts/python.exe'; // Windows path
+let pythonCommand = 'python3';
+
+if (fs.existsSync(venvPython)) {
     pythonCommand = venvPython;
     console.log('🔐 Using secure virtual environment');
 } else {
@@ -488,5 +538,5 @@ if (typeof venvPython !== 'undefined' && fs.existsSync(venvPython)) {
 
 // Run the demo if this file is executed directly
 if (require.main === module) {
-    demoVisualization();
+    demoChakraVisualization();
 }

@@ -1,4 +1,5 @@
-// Color Motion Tracking System
+// Color Motion Tracking System with Harmonious Safety Controls
+// Integrated with Solidarity Platform's unified safety framework
 
 // Imports
 const fs = require('fs');
@@ -6,6 +7,20 @@ const path = require('path');
 const os = require('os');
 const { spawn, exec } = require('child_process');
 
+// 🛡️ Harmonious Safety Thresholds for Color Motion Processing
+const MOTION_SAFETY_THRESHOLDS = {
+  CRITICAL_EMERGENCY: { min: 0.00, max: 0.05, mode: 'static_only', fps: 1, colors: 'grayscale' },
+  WARNING_LEVEL: { min: 0.05, max: 0.15, mode: 'basic_motion', fps: 10, colors: 'limited' },
+  CAUTION_RANGE: { min: 0.15, max: 0.25, mode: 'standard_tracking', fps: 24, colors: 'standard' },
+  OPTIMAL_RANGE: { min: 0.25, max: 0.75, mode: 'full_tracking', fps: 60, colors: 'full_spectrum' },
+  UPPER_CAUTION: { min: 0.75, max: 0.85, mode: 'high_precision', fps: 30, colors: 'enhanced' },
+  UPPER_WARNING: { min: 0.85, max: 0.95, mode: 'processing_capped', fps: 15, colors: 'reduced' },
+  CRITICAL_UPPER: { min: 0.95, max: 1.00, mode: 'emergency_limits', fps: 5, colors: 'minimal' }
+};
+
+let globalMotionSafetyLevel = 0.618; // Golden Ratio PHI - harmonious starting point
+
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
@@ -13,6 +28,8 @@ const { spawn, exec } = require('child_process');
 const colorUtils = require('./src/utils/colorUtils');
 const { audioCommands, executeAudioCommand } = require('./src/enhancedAudioStudioCommands');
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -389,6 +406,7 @@ discovery.scanAllLocations();
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // Color Motion Visualization Functions
 class ColorMotionVisualizer {
     constructor() {
@@ -506,12 +524,17 @@ if (typeof module !== 'undefined' && module.exports) {
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 // Export for module use
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         ComprehensiveSolidarityDiscovery
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -521,6 +544,7 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 // Auto-run if called directly
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
@@ -537,10 +561,13 @@ async function main() {
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 if (typeof window === 'undefined') {
     main().catch(console.error);
 }
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
@@ -578,6 +605,9 @@ let pythonCommand = 'python3';
 =======
 // Launcher automatically detects and uses virtual environment
 >>>>>>> Stashed changes
+=======
+// Launcher automatically detects and uses virtual environment
+>>>>>>> Stashed changes
 if (fs.existsSync(venvPython)) {
     pythonCommand = venvPython;
     console.log('🔐 Using secure virtual environment');
@@ -586,11 +616,14 @@ if (fs.existsSync(venvPython)) {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 }
 
 // Run the demo if this file is executed directly
 if (require.main === module) {
     demoChakraVisualization();
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======

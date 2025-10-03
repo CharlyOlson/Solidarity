@@ -1,7 +1,11 @@
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 # Solidarity Platform
+=======
+# Solidarity
+>>>>>>> Stashed changes
 =======
 # Solidarity
 >>>>>>> Stashed changes
@@ -12,6 +16,7 @@
 Welcome to the official repository for Solidarity, architected and trademarked by Scott Charles Olson ("Charly").
 This platform is dedicated to security, longevity, and community understanding.
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 ## 📖 **COMPLETE UNIFIED SYSTEM DOCUMENTATION**
@@ -406,6 +411,53 @@ For commercial use, partnership, or special features, please see the [LICENSE.md
 
 ---
 
+=======
+---
+
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Structure](#structure)
+3. [Licensing & Commercial Use](#licensing--commercial-use)
+4. [Contact](#contact)
+
+---
+
+## Introduction
+
+Solidarity is a full-scale system for commerce, focusing on financial solutions and community-driven development.
+
+---
+
+## Structure
+
+- **contracts/** – Smart contracts and on-chain logic
+- **sql/** – Database scripts and queries
+- **src/** – Core application source code
+- **docs/** – Documentation and roadmap
+- **palette/** – Color palettes and design tokens
+- **.env.example** – Example environment config
+
+---
+
+## Licensing & Commercial Use
+
+This platform is **open for non-commercial use** up to version 2.41.  
+For commercial use, partnership, or special features, please see the [LICENSE.md](LICENSE.md) and [TRADEMARK.md](TRADEMARK.md) files for payment instructions and trademark info.
+
+---
+
+## Contact
+
+- **Architect:** Scott Charles Olson ("Charly")
+- **Phone:** Contact Through LinkedIn
+- **Location:** Kansas, USA 66210
+- **Framework Concept Design:** "Hank" Charles H. Dykes
+- **Email:** Contact Scott "Charly" for Concept Designer inquiries.
+- **Location:** U.S.A.
+
+---
+
+>>>>>>> Stashed changes
 =======
 ---
 

@@ -102,6 +102,7 @@ if __name__ == "__main__":
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     try:
         # Run the test suite
         unittest.main(exit=False, verbosity=2)
@@ -110,6 +111,10 @@ if __name__ == "__main__":
         print(f"\n❌ Test suite failed: {e}")
     finally:
         cleanup_test_environment()
+=======
+    unittest.main()
+    cleanup_test_environment()
+>>>>>>> Stashed changes
 =======
     unittest.main()
     cleanup_test_environment()

@@ -1,18 +1,12 @@
-// Perplexity AI Integration Template
-// Place this file in your project root and update with your API key and endpoint as needed.
+// Legacy Perplexity Integration - Migrated to Ollama
+// This file now uses free, local Ollama integration
+// No API keys or external dependencies needed!
 
-const axios = require('axios');
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-const fs = require('fs');
-const path = require('path');
-require('dotenv').config();
+console.log('⚠️  Perplexity integration migrated to Ollama (free local AI)');
+console.log('🔄 Loading Ollama integration with harmonious safety controls...');
 
-// Set your Perplexity API key in a .env file: PERPLEXITY_API_KEY=your_key_here
-// Optional: PERPLEXITY_MODEL=sonar (will override default)
-const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
-const PERPLEXITY_API_URL = 'https://api.perplexity.ai/chat/completions'; // Official Perplexity chat completions endpoint
+// Redirect all functionality to Ollama integration
+const ollamaIntegration = require('./ollamaIntegration');
 
 // Attempt to load harmonic formatter (soft dependency so this file can run standalone)
 let harmonicFormatter = null;
@@ -228,6 +222,8 @@ module.exports = { queryPerplexity, queryPerplexityHarmonic };
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 require('dotenv').config();
 
 // Set your Perplexity API key in a .env file: PERPLEXITY_API_KEY=your_key_here
@@ -268,6 +264,9 @@ if (require.main === module) {
 module.exports = { queryPerplexity };
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

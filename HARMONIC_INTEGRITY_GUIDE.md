@@ -188,7 +188,10 @@ TRADEMARKED BY SCOTT CHARLES OLSON
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -206,6 +209,10 @@ const htmlContent = fs.readFileSync('ReleaseNotes.html', 'utf8');
 const fixedContent = fixProtocolRelativeUrls(htmlContent);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+fs.writeFileSync('ReleaseNotes.html', fixedContent);
+>>>>>>> Stashed changes
+=======
 fs.writeFileSync('ReleaseNotes.html', fixedContent);
 >>>>>>> Stashed changes
 =======

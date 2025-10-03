@@ -10,10 +10,14 @@
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	"settings": {
 		"githubRepositories.indexing.cacheRepoLimit": 100,
 		"githubRepositories.indexing.cacheSizeLimit": 100000000
 	}
+=======
+	"settings": {}
+>>>>>>> Stashed changes
 =======
 	"settings": {}
 >>>>>>> Stashed changes

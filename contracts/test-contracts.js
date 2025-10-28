@@ -87,14 +87,6 @@ class ContractValidator {
             }
             
             // Record secure contracts that don't have vulnerable code in actual implementation
-            if (vulnerableCount === 0 && !isDemo && secureMatches) {
-                this.validationResults.push({
-                    file,
-                    status: 'SECURE',
-                    issue: null
-                });
-            }
-            
             // Check for proper comments about security
             if (content.includes('SECURITY FIX') || content.includes('SECURE:')) {
                 console.log(`   📝 Contains security documentation`);

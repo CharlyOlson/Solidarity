@@ -173,7 +173,7 @@ class ContractValidator {
      */
     validate() {
         console.log('🔐 Solidarity Smart Contract Security Validation');
-        console.log('=' .repeat(60));
+        console.log('='.repeat(60));
         
         this.validateSecureEncoding();
         this.validateContractStructure();

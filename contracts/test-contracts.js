@@ -10,7 +10,8 @@ import path from 'path';
 
 class ContractValidator {
     constructor() {
-        this.contractsDir = '/home/runner/work/Solidarity/Solidarity/contracts';
+        // Use a portable, relative path to the contracts directory
+        this.contractsDir = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'contracts');
         this.validationResults = [];
     }
 

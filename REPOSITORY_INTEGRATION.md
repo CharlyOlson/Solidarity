@@ -65,22 +65,6 @@ npm run test:cross-repo
 4. **Deploy** production updates
 
 ---
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
-=======
-
->>>>>>> Stashed changes
-=======
-
->>>>>>> Stashed changes
-=======
-
->>>>>>> Stashed changes
 ## Quick Cross-Repository Setup
 
 ```bash

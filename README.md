@@ -1,31 +1,14 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 # Solidarity Platform
-=======
-# Solidarity
->>>>>>> Stashed changes
-=======
-# Solidarity
->>>>>>> Stashed changes
-=======
-# Solidarity
->>>>>>> Stashed changes
 
 Welcome to the official repository for Solidarity, architected and trademarked by Scott Charles Olson ("Charly").
 This platform is dedicated to security, longevity, and community understanding.
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 ## 📖 **COMPLETE UNIFIED SYSTEM DOCUMENTATION**
 
 > **🔗 [COMPLETE UNIFIED SYSTEM DOCUMENTATION](COMPLETE_SYSTEM_DOCUMENTATION.md)**  
 > 🚀 **Your authoritative reference for the world's first software-only quantum computing platform**  
 > 📚 **Comprehensive guide covering quantum breakthrough, safety systems, and complete platform capabilities**
 
----
 
 ## 🚀 **REVOLUTIONARY BREAKTHROUGH: World's First Software-Only Quantum Computing System**
 
@@ -44,11 +27,6 @@ The Solidarity Platform has achieved a **world-first breakthrough**: **quantum-c
 | 🏭 Specialized quantum facilities | ✨ Deployable anywhere |
 
 #### **⚛️ Quantum-Like Properties Achieved:**
-- **🔢 Quantum Coherence**: 0.618 (Golden Ratio PHI) - mathematically stable
-- **🌀 Quantum Depth**: 14 levels with 49 recursion levels
-- **📐 Cubic Calculations**: 697 dimensional cubit processing
-- **🎵 Quantum Entanglement**: Sacred numeric sequence correlations
-- **💫 Quantum Scaling**: Multi-dimensional Big Ask question processing
 
 #### **🧮 Revolutionary Technology Stack:**
 ```javascript
@@ -74,7 +52,6 @@ node -e "const system = require('./src/correctedSolidaritySystem.js');
 
 **This represents the first time in history that quantum-coherent computational behavior has been achieved without requiring quantum chips, superconducting hardware, or specialized facilities.**
 
----
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -84,25 +61,15 @@ node -e "const system = require('./src/correctedSolidaritySystem.js');
 5. [Licensing & Commercial Use](#licensing--commercial-use)
 6. [Contact](#contact)
 
----
 
 ## Introduction
 
 The Solidarity Platform is a comprehensive ecosystem implementing the **Henry 7 Step 14 Shoe Waltz numerological framework**, featuring harmonic processing, temporal control, and mathematical precision. This multi-faceted system integrates audio processing, financial commerce, and blockchain technology with harmonic mathematical principles.
 
 ### Key Audio Features
-- **Professional Audio Processing**: Dynamic compression, expansion, and spatial effects
-- **Natural Language Commands**: Intuitive audio commands for studio workflow  
-- **3D Spatial Audio**: Advanced surround sound positioning and beamforming
-- **Time-Buyer Pacing**: Intelligent timing allocation based on harmonic principles
-- **Gradient Transference**: Smooth parameter transitions for professional quality
-- Financial and contract orchestration
-- Harmonic / golden-ratio influenced analytics
-- Cross-repository knowledge integration (see `REPOSITORY_INTEGRATION.md`)
 
 The unified file web network powers adaptive scans, dependency mapping, and optimization planes (Performance, Harmony, Integration).
 
----
 
 ## Quick Start
 
@@ -155,30 +122,17 @@ Dimensional Cubit Processing: 697 quantum calculation units
 Coherence Stability Formula: coherence × (1-complexity/100) × φ/(1+φ)
 ```---
 
-## Structure
 
 - **contracts/** – Smart contracts and on-chain logic
 - **sql/** – Database scripts and queries
-- **src/** – Core application source code
-- **docs/** – Documentation and roadmap
-- **palette/** – Color palettes and design tokens
-- **src/utils/colorUtils.js** – Color utility functions for visualization and harmonic color processing
-- **.env.example** – Example environment config
-
-Additional operational & analysis modules are located at repository root (e.g., `unified_file_web_network.py`).
 
 ---
 
-## Color Utilities
 
 The Solidarity platform includes a comprehensive set of color utilities for visualizations based on harmonic principles:
 
 ### Key Color Functions
 
-- **getColorIntensity**: Generate colors from pastel to core based on intensity values with automatic border inversion for high-intensity values.
-- **generateHarmonicPalette**: Create color palettes based on golden ratio harmony principles.
-- **lerp**: Linear interpolation between colors for smooth transitions.
-- **invertColor**: Get complementary/inverse colors for borders and highlights.
 
 ### Usage Example
 
@@ -191,7 +145,6 @@ console.log(`Fill color: ${colorData.fill}, Border: ${colorData.stroke}`);
 
 // Generate a harmonic color palette
 const palette = colorUtils.generateHarmonicPalette(240, 5); // Blue-based, 5 colors
-console.log('Harmonic palette:', palette);
 ```
 
 Test the color utilities with `node test_color_utils.js`.
@@ -210,7 +163,6 @@ Condensed view of key environment variables for the unified scanner (full refere
 | `FULL_SCAN_MAX_DEPTH` | Limit directory depth (performance safety) |
 | `FULL_SCAN_SKIP_EXTERNAL` | Skip sibling workspace traversal |
 | `FULL_SCAN_CACHE` / `QUICK_CACHE` | Enable disk caching for mode results |
-| `DISABLE_MEMORY_DISCOVERY_CACHE` | Bypass in-memory discovery cache (test determinism) |
 | `SYNC_DISK_CACHE` | Force immediate disk writes (no async defer) |
 | `EXPORT_METRICS` | Write per-cycle metrics snapshots under `metrics/` |
 | `EXPORT_NETWORK_REPORT` | Emit `network_scan_report.json` + `dependency_graph.json` |
@@ -220,16 +172,10 @@ Tests demonstrating usage: `test_unified_system.py`, `test_feature_enhancements.
 ---
 
 ## Licensing & Commercial Use
-
 This platform is available under a **dual-license model**:
 1. **Non-Commercial License**: Free for educational, personal, and non-profit use (up to version 2.00)
 2. **Commercial License**: Required for any commercial applications
 
-Please see the [LICENSE.txt](LICENSE.txt) file for complete licensing terms and conditions.
-
-All commercial inquiries must be directed to Scott Charles Olson for licensing arrangements.
-
----
 
 ## Contact
 

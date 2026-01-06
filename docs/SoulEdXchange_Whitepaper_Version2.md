@@ -1,8 +1,3 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 # Soul.Ed.Xchange Whitepaper
 
 **Prepared by:** Scott Charles Olson  
@@ -129,21 +124,4 @@ Soul.Ed.Xchange represents a bold step forward in the evolution of digital finan
 For inquiries, please contact:  
 Scott Charles Olson  
 +1 913-548-5715  
-Kansas, USA 66210  
-
----
-=======
-// ...existing code from SoulEdXchange_Whitepaper_Version2.md...
->>>>>>> Stashed changes
-=======
-// ...existing code from SoulEdXchange_Whitepaper_Version2.md...
->>>>>>> Stashed changes
-=======
-// ...existing code from SoulEdXchange_Whitepaper_Version2.md...
->>>>>>> Stashed changes
-=======
-// ...existing code from SoulEdXchange_Whitepaper_Version2.md...
->>>>>>> Stashed changes
-=======
-// ...existing code from SoulEdXchange_Whitepaper_Version2.md...
->>>>>>> Stashed changes
+Kansas, USA 66210

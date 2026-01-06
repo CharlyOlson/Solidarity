@@ -712,7 +712,7 @@ class ComprehensiveIntegrationTester {
                 await this.systems.masterIntegration.processZipPhrase(null);
             }
             
-            throw new Error('Error should have been thrown but wasn\\'t');
+            throw new Error("Error should have been thrown but wasn't");
             
         } catch (error) {
             // Expected behavior - error was caught

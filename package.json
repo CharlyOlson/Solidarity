@@ -75,24 +75,7 @@
     "ultimate:demo": "node src/ultimateSolidaritySystem.js",
     "ultimate:test": "node src/ultimateSolidaritySystem.js",
     "ultimate:full": "node src/ultimateSolidaritySystem.js",
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    "solidarity:ultimate": "node src/ultimateSolidaritySystem.js",
-    "demo": "node examples/demo.js"
-=======
     "solidarity:ultimate": "node src/ultimateSolidaritySystem.js"
->>>>>>> Stashed changes
-=======
-    "solidarity:ultimate": "node src/ultimateSolidaritySystem.js"
->>>>>>> Stashed changes
-=======
-    "solidarity:ultimate": "node src/ultimateSolidaritySystem.js"
->>>>>>> Stashed changes
-=======
-    "solidarity:ultimate": "node src/ultimateSolidaritySystem.js"
->>>>>>> Stashed changes
   },
   "keywords": [
     "audio-processing",
@@ -167,19 +150,7 @@
     "sharp": "^0.32.0",
     "socket.io": "^4.6.1",
     "uuid": "^9.0.0",
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     "winston": "^3.8.2",
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     "ws": "^8.13.0"
   },
   "devDependencies": {
@@ -218,6 +189,12 @@
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/tests/setup.js"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/backend-test-server.js",
+      "<rootDir>/test-aibot.js",
+      "<rootDir>/test_color_utils.js",
+      "<rootDir>/test_harmonic_systems.js"
     ],
     "testTimeout": 10000
   },

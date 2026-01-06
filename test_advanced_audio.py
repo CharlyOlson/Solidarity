@@ -8,21 +8,9 @@ Run this file to verify your audio modules and advanced features.
 import sys
 import os
 import unittest
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 import numpy as np
 import math
 import time
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 class TestAdvancedAudio(unittest.TestCase):
     @classmethod
@@ -140,14 +128,6 @@ if __name__ == "__main__":
 def test_audio_time_buyer():
     """Test complete audio time buyer with parameter controller"""
     print("\n🕐 Testing Audio Time Buyer & Parameter Controller")
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     print("=" * 40)
     
     time_buyer = AudioTimeBuyer()

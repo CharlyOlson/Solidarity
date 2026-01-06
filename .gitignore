@@ -1,23 +1,13 @@
 # Dependencies
 node_modules/
 */node_modules/
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
+# Logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
-yarn.lock
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 # Environment variables
 .env
@@ -26,87 +16,21 @@ yarn.lock
 .env.test.local
 .env.production.local
 
-# Logs
-logs/
-*.log
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
->>>>>>> Stashed changes
-=======
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
->>>>>>> Stashed changes
-=======
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
->>>>>>> Stashed changes
-=======
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
->>>>>>> Stashed changes
-
 # Runtime data
 pids/
 *.pid
 *.seed
 *.pid.lock
 .nyc_output/
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-.nyc_output
 
-# Coverage directory used by tools like istanbul
+# Coverage directory
 coverage/
 *.lcov
-=======
-
-# Coverage directory used by tools like istanbul
-coverage/
->>>>>>> Stashed changes
-=======
-
-# Coverage directory used by tools like istanbul
-coverage/
->>>>>>> Stashed changes
-=======
-
-# Coverage directory used by tools like istanbul
-coverage/
->>>>>>> Stashed changes
-=======
-
-# Coverage directory used by tools like istanbul
-coverage/
->>>>>>> Stashed changes
 
 # Build outputs
 build/
 dist/
 frontend/build/
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-out/
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 # Database
 data/
@@ -145,35 +69,10 @@ __pycache__/
 env/
 venv/
 ENV/
+.venv/
 
 # Audio files (exclude large audio samples)
 *.wav
 *.mp3
 *.flac
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 *.aiff
-
-# Solidarity Platform specific ignores
-.github\instructions\codacy.instructions.md
-
-# Configuration templates (keep examples, ignore actual configs)
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-=======
-*.aiff
->>>>>>> Stashed changes
-=======
-*.aiff
->>>>>>> Stashed changes
-=======
-*.aiff
->>>>>>> Stashed changes
-=======
-*.aiff
->>>>>>> Stashed changes

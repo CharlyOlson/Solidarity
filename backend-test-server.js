@@ -64,10 +64,12 @@ const serverState = {
         files: ['launcher.js', 'README.md'],
         lastModified: new Date(Date.now() - 1000000).toISOString()
       }
-    ],
-    devices: serverState?.connectedDevices || []
+    ]
   }
 };
+
+// Link discovery devices after initialization to avoid temporal reference
+serverState.discoveryResults.devices = serverState.connectedDevices;
 
 // API Routes
 

@@ -1,0 +1,56 @@
+name: Charter Guard
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'SOLIDARITY_CHARTER.md'
+      - '.charter-fingerprint'
+      - 'contracts/**'
+      - '.github/copilot-instructions.md'
+
+jobs:
+  charter-check:
+    name: Verify charter integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Charter file must exist
+        run: |
+          if [ ! -f "SOLIDARITY_CHARTER.md" ]; then
+            echo "FAIL: SOLIDARITY_CHARTER.md is missing."
+            echo "The charter is the authority document for this repo."
+            echo "It cannot be deleted. Reference: Principle #2"
+            exit 1
+          fi
+          echo "Charter present."
+
+      - name: Fingerprint must exist
+        run: |
+          if [ ! -f ".charter-fingerprint" ]; then
+            echo "FAIL: .charter-fingerprint is missing."
+            echo "Generate it with: sha256sum SOLIDARITY_CHARTER.md | awk '{print $1}' > .charter-fingerprint"
+            exit 1
+          fi
+          echo "Fingerprint file present."
+
+      - name: Fingerprint must match charter
+        run: |
+          CURRENT_HASH=$(sha256sum SOLIDARITY_CHARTER.md | awk '{print $1}')
+          EXPECTED_HASH=$(cat .charter-fingerprint | tr -d '[:space:]')
+
+          echo "Charter SHA-256:     $CURRENT_HASH"
+          echo "Stored fingerprint:  $EXPECTED_HASH"
+
+          if [ "$CURRENT_HASH" != "$EXPECTED_HASH" ]; then
+            echo ""
+            echo "FAIL: Charter has been modified without authorization."
+            echo "If this change is intentional:"
+            echo "  1. Update .charter-fingerprint: sha256sum SOLIDARITY_CHARTER.md | awk '{print $1}' > .charter-fingerprint"
+            echo "  2. Commit with a signed commit from @CharlyOlson"
+            echo "  3. Re-open this PR"
+            exit 1
+          fi
+
+          echo "Charter integrity verified. Hash matches fingerprint."

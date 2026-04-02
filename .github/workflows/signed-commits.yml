@@ -1,0 +1,62 @@
+name: Require Signed Commits
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-signatures:
+    name: All commits must be GPG signed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify commit signatures
+        run: |
+          # Get commits in this PR that aren't on main yet
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="origin/${{ github.base_ref }}"
+            COMMITS=$(git log --format="%H" "$BASE"..HEAD 2>/dev/null || echo "")
+          else
+            # On direct push to main — check the pushed commit
+            COMMITS="${{ github.sha }}"
+          fi
+
+          if [ -z "$COMMITS" ]; then
+            echo "No new commits to verify."
+            exit 0
+          fi
+
+          FAILED=0
+          for COMMIT in $COMMITS; do
+            SHORT=$(echo $COMMIT | cut -c1-8)
+            MSG=$(git log --format="%s" -1 $COMMIT)
+
+            # Check GitHub's verified signature status via API
+            VERIFIED=$(curl -s \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/${{ github.repository }}/commits/$COMMIT" \
+              | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('commit',{}).get('verification',{}).get('verified','false'))" 2>/dev/null || echo "false")
+
+            if [ "$VERIFIED" = "True" ] || [ "$VERIFIED" = "true" ]; then
+              echo "PASS $SHORT: $MSG"
+            else
+              echo "FAIL $SHORT: $MSG — unsigned or unverified"
+              FAILED=1
+            fi
+          done
+
+          if [ $FAILED -eq 1 ]; then
+            echo ""
+            echo "Signed commit check failed."
+            echo "Set up GPG signing: https://docs.github.com/en/authentication/managing-commit-signature-verification"
+            echo "Then: git config --global commit.gpgsign true"
+            exit 1
+          fi
+
+          echo "All commits verified."

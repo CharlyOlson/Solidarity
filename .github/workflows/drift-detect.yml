@@ -1,0 +1,64 @@
+name: Drift Detector
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  drift:
+    name: Detect mission drift and hype language
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan for banned patterns
+        run: |
+          # Patterns banned by SOLIDARITY_CHARTER.md
+          # These phrases are false, inflated, or contradict what this system is.
+          BANNED_PATTERNS=(
+            "world's first"
+            "revolutionary breakthrough"
+            "quantum computing breakthrough"
+            "historic achievement"
+            "no quantum hardware"
+            "software-only quantum"
+            "quantum-inspired"
+            "AGI"
+            "artificial general intelligence"
+            "sentient"
+            "conscious AI"
+            "unlimited profit"
+            "guaranteed returns"
+            "risk-free"
+          )
+
+          FAILED=0
+          for PATTERN in "${BANNED_PATTERNS[@]}"; do
+            MATCHES=$(grep -ri "$PATTERN" \
+              --include="*.md" \
+              --include="*.js" \
+              --include="*.ts" \
+              --include="*.sol" \
+              --include="*.py" \
+              --include="*.json" \
+              --exclude-dir=node_modules \
+              --exclude-dir=.git \
+              . 2>/dev/null || true)
+
+            if [ -n "$MATCHES" ]; then
+              echo "DRIFT DETECTED: '$PATTERN'"
+              echo "$MATCHES"
+              echo ""
+              FAILED=1
+            fi
+          done
+
+          if [ $FAILED -eq 1 ]; then
+            echo "---"
+            echo "Drift check failed."
+            echo "Banned phrases found. See SOLIDARITY_CHARTER.md — 'What This Must Never Become'"
+            echo "Remove the phrases and resubmit the PR."
+            exit 1
+          fi
+
+          echo "Drift check passed. No banned patterns found."

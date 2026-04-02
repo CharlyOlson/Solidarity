@@ -1,66 +1,46 @@
-# Dependencies
+# ============================================================
+# SOLIDARITY .gitignore
+# Security-hardened — April 2026
+# Reference: SOLIDARITY_CHARTER.md — Principle #5 (Security First)
+# ============================================================
+
+# ------------------------------------------------------------
+# SECRETS — NEVER COMMIT
+# ------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+.secrets
+*.secret
+
+# ------------------------------------------------------------
+# CACHE AND GENERATED — should never be in git
+# ------------------------------------------------------------
+.cache/
+.mcp-debug-tools/
+.codacy/
+
+# ------------------------------------------------------------
+# NODE
+# ------------------------------------------------------------
 node_modules/
 */node_modules/
-
-# Logs
-logs/
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.npm/
 
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Runtime data
-pids/
-*.pid
-*.seed
-*.pid.lock
-.nyc_output/
-
-# Coverage directory
-coverage/
-*.lcov
-
-# Build outputs
-build/
-dist/
-frontend/build/
-
-# Database
-data/
-*.db
-*.sqlite
-
-# Backups
-backups/
-
-# Temporary files
-temp/
-tmp/
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Python
+# ------------------------------------------------------------
+# PYTHON
+# ------------------------------------------------------------
 __pycache__/
 *.py[cod]
 *$py.class
@@ -70,8 +50,63 @@ env/
 venv/
 ENV/
 .venv/
+*.pyc
 
-# Audio files (exclude large audio samples)
+# ------------------------------------------------------------
+# BUILD OUTPUT
+# ------------------------------------------------------------
+build/
+dist/
+frontend/build/
+coverage/
+*.lcov
+.nyc_output/
+
+# ------------------------------------------------------------
+# RUNTIME
+# ------------------------------------------------------------
+pids/
+*.pid
+*.seed
+*.pid.lock
+logs/
+*.log
+
+# ------------------------------------------------------------
+# DATABASE
+# ------------------------------------------------------------
+data/
+*.db
+*.sqlite
+backups/
+temp/
+tmp/
+
+# ------------------------------------------------------------
+# VS CODE WORKSPACE FILES — editor artifacts, not source
+# ------------------------------------------------------------
+*.code-workspace
+.vscode/settings.json
+.vscode/launch.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ------------------------------------------------------------
+# OS
+# ------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ------------------------------------------------------------
+# AUDIO — large binary files
+# ------------------------------------------------------------
 *.wav
 *.mp3
 *.flac

@@ -1,0 +1,23 @@
+# CODEOWNERS — Solidarity
+# Every PR touching these paths requires explicit approval from @CharlyOlson
+# Reference: SOLIDARITY_CHARTER.md — Architectural Principle #6
+
+# Global fallback — all files
+* @CharlyOlson
+
+# Charter and fingerprint — immovable documents
+/SOLIDARITY_CHARTER.md @CharlyOlson
+/.charter-fingerprint @CharlyOlson
+
+# Smart contracts — distribution logic is locked
+/contracts/ @CharlyOlson
+
+# GitHub config and workflows — no silent changes to CI/CD
+/.github/ @CharlyOlson
+
+# Environment templates — watch for accidental secret exposure
+/.env.example @CharlyOlson
+/.env.template @CharlyOlson
+
+# Core system entry points
+/src/ @CharlyOlson

@@ -1,259 +1,158 @@
-# Solidarity Platform - AI Coding Agent Instructions
+# Solidarity Platform — AI Coding Agent Instructions
 
-## Project Overview
-Solidarity is a multi-faceted platform integrating audio processing, financial commerce, and blockchain technology. The system combines harmonic mathematical principles with modern technologies to create an innovative commercial ecosystem.
+## Authority Document
 
-The Solidarity Platform is a comprehensive system implementing the Henry 7 Step 14 Shoe Waltz numerological framework, featuring harmonic processing, temporal control, and mathematical precision. This is a mixed JavaScript/Python codebase with complex mathematical relationships.
+**Before writing any code, read `SOLIDARITY_CHARTER.md` in the root of this repo.**
+The charter is the authority. These instructions are the implementation of it.
+If any instruction here conflicts with the charter, the charter wins.
 
-## Core Architecture
+---
 
-### 1. Multi-Component System
-- **Core System**: `src/correctedSolidaritySystem.js` and other core modules are primary entry points
-- **Audio Processing**: Python modules integrate with Node.js through direct execution
-- **Financial Layer**: Express API server with blockchain connectivity
-- **Cross-Repository Integration**: Linked with Soul.Ed.Xchange, Coul.Curve.Fi, and Souls repositories
+## What This Platform Is
 
-### 2. Harmonic Framework
-- **ZIP Phrase System**: Key phrases trigger specific system actions (see `EnhancedHarmonicPhraseParser.js`)
-- **Node System**: Uses 6 primary nodes (1, 3, 4, 7, 14, 21) representing different system aspects
-- **Golden Ratio Mathematics**: φ-based calculations for audio processing and system metrics
+Solidarity is a financial equity platform using harmonic mathematics and
+proven architecture to route value toward people and systems that need it most.
 
-### Core Components
-1. **Henry 7 Step 14 Shoe Waltz** - The foundational numerological system
-2. **Harmonic Processing** - Audio analysis and harmonic series calculations
-3. **Temporal Control** - Time-based processing with cog switching mechanisms
-4. **Platform Integration** - Orchestrates all components together
-5. **Cubit Calculation** - Sacred geometry and measurement systems
+It is NOT:
+- A quantum computing system
+- A revolutionary AI breakthrough
+- A system to be described with inflated capability claims
 
-### Key Mathematical Relationships
+Code that contradicts those facts violates the charter and must not be merged.
+
+---
+
+## Project Architecture
+
+### Components
+- **Core System**: `src/correctedSolidaritySystem.js` — primary entry point
+- **Audio Processing**: Python modules integrated with Node.js
+- **Financial Layer**: Express API with blockchain connectivity
+- **Smart Contracts**: `/contracts/` — canonical is `TreasuryManager.sol`
+- **Cross-Repo Links**: Soul.Ed.Xchange, Coul.Curve.Fi, Souls repositories
+
+### Harmonic Framework
+- **Node System**: 6 primary nodes (1, 3, 4, 7, 14, 21)
+- **Golden Ratio**: φ-based calculations for audio and system metrics
+- **ZIP Phrase System**: Key phrases trigger specific system actions
+- **RJO Function**: Maps any value to nearest node + signed offset
+- **TIMBR Compression**: Septet/ring/block, absence marks, recursive pocketing
+
+### Mathematical Relationships
 - Base progression: 7 → 14 → 49
 - Control ratio: 3.5 (49÷14)
 - Source paths: 2+5=7 and 3+4=7
-- Pythagorean verification: 7²+24²=25²
-- Total cubits: ~697 (validated through ring calculations)
+- Pythagorean anchor: 7²+24²=25²
 
-## Development Workflows
+---
 
-### Setup
+## Development Commands
+
 ```bash
-# Windows setup
-setup.bat
+# Setup
+./setup.sh          # Unix/Linux/macOS
+setup.bat           # Windows
 
-# Unix/Linux/macOS setup
-./setup.sh
-```
+# Run
+node src/api/server.js          # Start API server
+node launcher.js discovery      # System discovery
+node launcher.js corrected      # Full system
 
-### Primary Commands
-```bash
-# Start the API server
-node src/api/server.js
-
-# Run comprehensive discovery
-node launcher.js discovery
-
-# Run corrected solidarity system (full capabilities)
-node launcher.js corrected
-
-# Test advanced audio processing
-node launcher.js test:audio
-```
-
-### Testing
-```bash
-# Run complete test suite
+# Test
 npm test
-
-# Audio specific testing
 python test_advanced_audio.py
-
-# Quick NumPy verification
 python test_numpy_quick.py
 ```
 
-## Code Style & Standards
+---
+
+## Code Standards
 
 ### JavaScript
-- Use ES6+ modules (`import`/`export`)
-- Prefer `const` and `let` over `var`
-- Use async/await for asynchronous operations
-- Follow the existing class-based architecture
-- Maintain mathematical precision in all calculations
-- Include comprehensive JSDoc comments for complex mathematical functions
+- ES6+ modules, `const`/`let`, async/await, class-based architecture
+- JSDoc for all mathematical functions
+- Tests required for all new functionality
 
 ### Python
-- Follow PEP 8 style guidelines
-- Use type hints for function parameters and return values
-- Maintain scientific precision in numerical calculations
-- Use numpy for array operations and mathematical computations
-- Include detailed docstrings for complex mathematical algorithms
+- PEP 8, type hints, numpy for array operations
+- Detailed docstrings for mathematical algorithms
 
-### General Principles
-- **Mathematical Accuracy**: All harmonic and numerical calculations must be mathematically precise
-- **Documentation**: Complex mathematical concepts require clear explanations
-- **Testing**: All new functionality must have corresponding tests
-- **Backwards Compatibility**: Maintain compatibility with existing APIs
-- **Performance**: Optimize for audio processing and real-time applications
+### All Code
+- Mathematical accuracy is non-negotiable
+- All inputs distrusted — validate everything
+- No secrets in code, logs, or git (see `.env.example` for template)
+- Least-privilege default
+- Tests: unit + integration + at least one E2E on critical paths
+
+---
+
+## Distribution Logic — Critical
+
+The `contracts/TreasuryManager.sol` contract encodes the distribution
+structure from the charter. Do not modify recipient allocations without
+a signed commit from CharlyOlson and an explicit charter amendment.
+
+The distribution structure is intentional and locked. It is not a stub
+to be filled in later. It is the entire point of the system.
+
+---
+
+## Security Rules for This Agent
+
+1. Never commit secrets, keys, tokens, or credentials to any file
+2. Never bypass branch protection or push directly to main
+3. Never create branches without a clear, named purpose
+4. Never modify `SOLIDARITY_CHARTER.md` or `contracts/TreasuryManager.sol`
+   without explicit founder authorization
+5. Never add hype language, false capability claims, or inflated descriptions
+6. When in doubt, open a PR and wait for human review
+
+---
 
 ## Project Conventions
 
-### 1. Direct Execution Pattern
-- Uses direct Node/Python execution rather than npm scripts for security
-- Python virtual environment is set up by `setup_python_env.py`
-- Avoids npm dependencies where possible
+### Execution Pattern
+- Direct Node/Python execution rather than npm scripts where possible
+- Python virtual environment via `setup_python_env.py`
 
-### 2. Security Approach
-- Environment verification on startup
-- No third-party package managers
-- Secure WebSocket connections for real-time collaboration
-
-### 3. Cross-Repository Structure
-- Four primary repositories make up the complete system:
-  - **Solidarity**: Core platform and API server
-  - **Soul.Ed.Xchange**: Educational components
-  - **Coul.Curve.Fi**: Financial algorithms
-  - **Souls**: Community integration features
+### Cross-Repository Structure
+- **Solidarity**: Core platform and API
+- **Soul.Ed.Xchange**: Educational components
+- **Coul.Curve.Fi**: Financial algorithms
+- **Souls**: Community integration
 
 ### Module Structure
-- Keep mathematical logic separate from I/O operations
-- Use dependency injection for configuration
-- Implement proper error handling for edge cases
-- Maintain state consistency across components
+- Keep mathematical logic separate from I/O
+- Dependency injection for configuration
+- Proper error handling for all edge cases
+- State consistency across components
 
-## Key Files & Directories
+---
 
-### Core Implementation
-- `/core/index.js`: Main Express application
-- `/contracts/*.sol`: Solidity smart contracts
-- `/EnhancedHarmonicPhraseParser.js`: ZIP phrase system
-- `/src/ComprehensiveSolidarityDiscovery.js`: System discovery and location detection
-- `/src/correctedSolidaritySystem.js`: Complete system integration
+## Key Files
 
-### Configuration
-- `/.env`: Environment variables (never commit secrets)
-- `/solidarity-ai-framework-config.json`: AI framework configuration
-- `/HARMONIC_INTEGRITY_GUIDE.md`: System verification guidelines
+| File | Purpose |
+|------|---------|
+| `SOLIDARITY_CHARTER.md` | **Authority document — read first** |
+| `contracts/TreasuryManager.sol` | Canonical distribution contract |
+| `src/correctedSolidaritySystem.js` | Main system integration |
+| `src/api/server.js` | Express API entry point |
+| `EnhancedHarmonicPhraseParser.js` | ZIP phrase system |
+| `.env.example` | Environment variable template (not the real .env) |
 
-## Integration Points
-
-### Blockchain Connection
-- Smart contracts in `/contracts/` connect through web3
-- `SolidarityToken.sol` implements treasury distribution
-- Cross-chain compatibility through `multi-drive-manager.js`
-
-### Mobile Device Integration
-```javascript
-// Setup mobile device connectivity
-node launcher.js discovery:mobile
-
-// Start mobile sync servers
-node mobile-sync-server.js
-```
-
-### Python Integration
-- Python scripts are called directly from Node.js
-- Scientific calculations use NumPy/SciPy libraries
-- Audio processing uses Python for performance reasons
-
-### Cross-Language Integration
-- Python handles intensive mathematical computations
-- JavaScript manages platform orchestration and I/O
-- Use proper data serialization between components
-- Maintain consistent APIs across languages
-
-### Audio Processing
-- Use standard sample rates (44100 Hz)
-- Implement proper buffering for real-time processing
-- Handle audio format conversions gracefully
-
-### Temporal Control
-- Respect the principle: "fiscal time always moves forward"
-- Allow cogs to switch function, not direction
-- Maintain synchronization across components
-
-## Testing Guidelines
-
-### Test Structure
-- Use the existing test framework (`tests/run-tests.js`)
-- Include both unit tests and integration tests
-- Validate mathematical relationships and harmonic calculations
-- Test edge cases and boundary conditions
-
-### Mathematical Validation
-- Verify all harmonic series calculations
-- Test temporal control mechanisms
-- Validate cubit allocation accuracy
-- Ensure Pythagorean relationships hold
-
-### Performance Testing
-- Test audio processing performance
-- Validate real-time processing capabilities
-- Monitor memory usage for long-running processes
-
-## Common Patterns
-
-### Configuration Management
-```javascript
-// Use configuration objects with sensible defaults
-constructor(config = {}) {
-    this.config = {
-        defaultValue: config.defaultValue ?? 'default',
-        ...config
-    };
-}
-```
-
-### Error Handling
-```javascript
-// Provide meaningful error messages for mathematical failures
-if (!this.validateMathematicalRelationship()) {
-    throw new Error('Mathematical validation failed: 7→14→49 progression violated');
-}
-```
-
-### Mathematical Operations
-```python
-# Use numpy for precision and performance
-import numpy as np
-
-def calculate_harmonic_series(fundamental: float, num_harmonics: int) -> np.ndarray:
-    """Calculate harmonic series with mathematical precision."""
-    return np.array([fundamental * (i + 1) for i in range(num_harmonics)])
-```
-
-## Security Considerations
-- Validate all input parameters
-- Sanitize mathematical expressions
-- Prevent buffer overflows in audio processing
-- Secure configuration loading
-
-## Performance Optimization
-- Use efficient algorithms for harmonic calculations
-- Implement caching for repeated calculations
-- Optimize for CPU and memory usage
-- Consider parallel processing for intensive operations
-
-## Documentation Requirements
-- Include mathematical proofs for complex algorithms
-- Provide usage examples for all public APIs
-- Document the philosophical and mathematical foundations
-- Maintain changelog for mathematical formula updates
-
-## Version Compatibility
-- Node.js >= 16.0.0
-- Python >= 3.8.0
-- npm >= 8.0.0 (when required)
-
-## Trademark and Licensing
-- Respect the trademark by Scott Charles Olson
-- Follow the licensing terms in LICENSE.md
-- Acknowledge contributors: "Charly" (Scott Charles Olson) and "Hank" (Charles H. Dykes)
+---
 
 ## When Writing New Code
-1. Understand the mathematical context first
-2. Validate relationships against the 7→14→49 progression
-3. Include comprehensive tests
-4. Document the mathematical reasoning
-5. Ensure integration with existing components
-6. Maintain performance standards for audio processing
-7. Follow the established architectural patterns
->>>>>>> 8ffb94850b01e309ac74aaf0bc6a8be31c03e44b
+
+1. Read `SOLIDARITY_CHARTER.md` — does this change align with it?
+2. Understand the mathematical context before touching calculations
+3. Validate relationships against the 7→14→49 progression where relevant
+4. Write tests alongside the code, not after
+5. Document mathematical reasoning in comments
+6. Open a PR — never push directly to main
+7. Blast radius check: what breaks if this fails?
+
+---
+
+*Instructions version: 2.0 — April 2026*
+*Authority: SOLIDARITY_CHARTER.md v1.0*

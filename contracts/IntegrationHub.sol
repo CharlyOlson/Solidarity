@@ -1,32 +1,40 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
+
+import "./StabilityMetrics.sol";
+import "./GovernanceModule.sol";
+
+/**
+ * @title IntegrationHub
+ * @dev Connects stability metrics, governance, and off-chain monitoring.
+ * Acts as a coordination point for the Twelve-Node Self-Correcting System.
+ */
+
+interface IOffChainMonitor {
+    function logMonitorUpdate(string calldata message) external;
+}
 
 contract IntegrationHub {
     StabilityMetrics public stabilityMetrics;
-    TreasuryManager public treasuryManager;
     GovernanceModule public governanceModule;
-    OffChainMonitorInterface public monitor;
-    
+    IOffChainMonitor public monitor;
+
     constructor(
         address _stability,
-        address _treasury,
         address _governance,
         address _monitor
     ) {
         stabilityMetrics = StabilityMetrics(_stability);
-        treasuryManager = TreasuryManager(_treasury);
         governanceModule = GovernanceModule(_governance);
-        monitor = OffChainMonitorInterface(_monitor);
+        monitor = IOffChainMonitor(_monitor);
     }
-    
-    function processAndMonitor(
-        uint256 rawPrice, 
-        uint256 volume, 
-        uint256 liquidityDepth, 
-        uint256 revenue
+
+    function processMetrics(
+        uint256 price,
+        uint256 volume,
+        uint256 liquidity
     ) external {
-        stabilityMetrics.recordMetric(rawPrice, volume, liquidityDepth);
-        treasuryManager.allocateRevenue(revenue);
-        monitor.logMonitorUpdate("Processed revenue and recorded new stability metric.");
+        stabilityMetrics.updateMetrics(price, volume, liquidity);
+        monitor.logMonitorUpdate("Processed stability metrics update.");
     }
 }

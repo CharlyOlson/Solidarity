@@ -30,7 +30,7 @@ contract ProjectAnalytics is Ownable {
     }
     CoreMetrics public coreMetrics;
     HarmonicData public harmonicData;
-    RiskData public riskData;
+    RiskData internal riskData;
     // Events for analytics tracking
     event MetricsUpdated(uint256 timestamp, address updater);
     event RiskThresholdExceeded(uint256 scope, uint256 slip, uint256 conflict);
@@ -52,8 +52,23 @@ contract ProjectAnalytics is Ownable {
         harmonicData.specialRanges.push([10, 11]);
         harmonicData.specialRanges.push([12, 16]);
         // Initialize outlier data
-        riskData.outliersScope = [-6197, 47202, 58527, -12413, 50789, -6969, -6510, 46324];
-        riskData.outliersSlip = [12933, 14413, -3821, -4059, 13279, 14330, 13847, 13956, -2907];
+        riskData.outliersScope.push(-6197);
+        riskData.outliersScope.push(47202);
+        riskData.outliersScope.push(58527);
+        riskData.outliersScope.push(-12413);
+        riskData.outliersScope.push(50789);
+        riskData.outliersScope.push(-6969);
+        riskData.outliersScope.push(-6510);
+        riskData.outliersScope.push(46324);
+        riskData.outliersSlip.push(12933);
+        riskData.outliersSlip.push(14413);
+        riskData.outliersSlip.push(-3821);
+        riskData.outliersSlip.push(-4059);
+        riskData.outliersSlip.push(13279);
+        riskData.outliersSlip.push(14330);
+        riskData.outliersSlip.push(13847);
+        riskData.outliersSlip.push(13956);
+        riskData.outliersSlip.push(-2907);
         // High-risk combinations (hard deadline + high conflict + big slip)
         _initializeSpecialOccasions();
     }

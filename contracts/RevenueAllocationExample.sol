@@ -1,21 +1,4 @@
 // SPDX-License-Identifier: MIT
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-pragma solidity ^0.8.0;
-
-contract TreasuryManager {
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 pragma solidity ^0.8.20;
 
 /**
@@ -24,54 +7,10 @@ pragma solidity ^0.8.20;
  * Manages allocation of revenue to charity, payroll, and operational reserves.
  */
 contract RevenueAllocationExample {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     uint256 public charityFund;
     uint256 public payrollFund;
     uint256 public operationalReserve;
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    event RevenueAllocated(uint256 charity, uint256 payroll, uint256 reserve);
-
-    // Function to allocate revenue
-    function allocateRevenue(uint256 amount) external {
-        uint256 charityAmount = (amount * 500) / 10000; // 5% for charity
-        uint256 payrollAmount = (amount * 1000) / 10000; // 10% for payroll
-        uint256 reserveAmount = amount - charityAmount - payrollAmount; // Remaining 85%
-
-        // Update fund balances
-        charityFund += charityAmount;
-        payrollFund += payrollAmount;
-        operationalReserve += reserveAmount;
-
-        // Emit the allocation event
-        emit RevenueAllocated(charityAmount, payrollAmount, reserveAmount);
-    }
-}
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     bool public alphaLock;
     bool public betaLock;
     bool public omegaLock;
@@ -102,16 +41,3 @@ contract RevenueAllocationExample {
         emit RevenueAllocated(charity, payroll, reserve);
     }
 }
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes

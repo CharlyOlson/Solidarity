@@ -9,12 +9,12 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
  * @dev Canonical distribution contract for the Solidarity platform.
  *
  * Encodes the distribution structure defined in SOLIDARITY_CHARTER.md v1.0.
- * Distribution logic is in the contract layer FIRST — not added later.
+ * Distribution logic is in the contract layer FIRST - not added later.
  *
  * Charter principle: "A system worth building is worth building correctly."
  *
- * @author Scott Charles Olson (Charly) — Soul.Ed.Xchange / Solidarity Platform
- * @author Hank — Charles H. Dykes (founding partner)
+ * @author Scott Charles Olson (Charly) - Soul.Ed.Xchange / Solidarity Platform
+ * @author Hank - Charles H. Dykes (founding partner)
  */
 contract TreasuryManager is Ownable, ReentrancyGuard {
 
@@ -24,9 +24,9 @@ contract TreasuryManager is Ownable, ReentrancyGuard {
 
     uint256 public constant BP_DENOMINATOR = 10000;
 
-    // Named personal slots — 1% each (100 BP)
-    uint256 public constant BP_SCOTT           = 100; // Scott Charles Olson — founder
-    uint256 public constant BP_HANK            = 100; // Charles H. Dykes — founding partner
+    // Named personal slots - 1% each (100 BP)
+    uint256 public constant BP_SCOTT           = 100; // Scott Charles Olson - founder
+    uint256 public constant BP_HANK            = 100; // Charles H. Dykes - founding partner
     uint256 public constant BP_HANK_CHOICE_1   = 100; // Hank names the person
     uint256 public constant BP_HANK_CHOICE_2   = 100;
     uint256 public constant BP_HANK_CHOICE_3   = 100;
@@ -34,16 +34,16 @@ contract TreasuryManager is Ownable, ReentrancyGuard {
     uint256 public constant BP_HANK_CAUSE_1    = 100; // Hank names the cause
     uint256 public constant BP_HANK_CAUSE_2    = 100;
     uint256 public constant BP_HANK_CAUSE_3    = 100;
-    uint256 public constant BP_SCOTTS_MOTHER   = 100; // Scott's mother — named
-    uint256 public constant BP_SOPHIE_JONES    = 100; // Sophie Jones — named
-    uint256 public constant BP_MARIAH          = 100; // Mariah — named
+    uint256 public constant BP_SCOTTS_MOTHER   = 100; // Scott's mother - named
+    uint256 public constant BP_SOPHIE_JONES    = 100; // Sophie Jones - named
+    uint256 public constant BP_MARIAH          = 100; // Mariah - named
     uint256 public constant BP_COLOMBIA        = 100; // Colombia Community Fund
     uint256 public constant BP_OPEN_SLOT_A     = 100; // Governance-nominated
     uint256 public constant BP_OPEN_SLOT_B     = 100; // Governance-nominated
 
     // Total named: 15% (1500 BP)
     // Founder Infrastructure Reserve: sized at first distribution (set by owner once)
-    // Class Equity & Rebuild Fund: remainder — the large amount
+    // Class Equity & Rebuild Fund: remainder - the large amount
 
     uint256 public infrastructureReserveBP; // Set once by owner at first distribution
     bool    public infrastructureReserveSet;
@@ -113,7 +113,7 @@ contract TreasuryManager is Ownable, ReentrancyGuard {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // SETUP — Owner sets remaining slots before first distribution
+    // SETUP - Owner sets remaining slots before first distribution
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
@@ -121,7 +121,7 @@ contract TreasuryManager is Ownable, ReentrancyGuard {
      * Charter: "Founder Infrastructure Reserve: sized at first distribution."
      */
     function setInfrastructureReserveBP(uint256 _bp) external onlyOwner {
-        require(!infrastructureReserveSet, "Already set — cannot change");
+        require(!infrastructureReserveSet, "Already set - cannot change");
         require(_bp <= 1000, "Cannot exceed 10% of gross revenue");
         infrastructureReserveBP = _bp;
         infrastructureReserveSet = true;
@@ -189,7 +189,7 @@ contract TreasuryManager is Ownable, ReentrancyGuard {
      * All named slots receive 1% each. Remainder goes to Class Equity & Rebuild Fund.
      *
      * Slots with zero address are held in contract until address is set.
-     * Nothing is lost — unclaimed amounts accumulate and are distributed
+     * Nothing is lost - unclaimed amounts accumulate and are distributed
      * on the next call once addresses are set.
      */
     function distribute() external payable nonReentrant {
@@ -224,10 +224,10 @@ contract TreasuryManager is Ownable, ReentrancyGuard {
             motherAmt + sophieAmt + mariahAmt +
             colombiaAmt + openAmt + openBAmt;
 
-        // Class Equity & Rebuild Fund gets the remainder — the large amount
+        // Class Equity & Rebuild Fund gets the remainder - the large amount
         uint256 classEquityAmt = total - named;
 
-        // Transfers — zero addresses accumulate in contract
+        // Transfers - zero addresses accumulate in contract
         _send(infrastructureReserve, infraAmount);
         _send(scott,           scottAmt);
         _send(hank,            hankAmt);

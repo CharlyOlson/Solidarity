@@ -1,0 +1,15 @@
+{
+  "contract": "TreasuryManager",
+  "address": "0x362DC26b4b084778DB9525DF5A1d4A344C9E0C64",
+  "network": "sepolia",
+  "chainId": "11155111",
+  "deployer": "0x5A6BE7b05d6DEFf4788DDBf138e1b8E5B16Fb3bc",
+  "constructorArgs": [
+    "0x5A6BE7b05d6DEFf4788DDBf138e1b8E5B16Fb3bc",
+    "0x5A6BE7b05d6DEFf4788DDBf138e1b8E5B16Fb3bc",
+    "0x5A6BE7b05d6DEFf4788DDBf138e1b8E5B16Fb3bc",
+    "0x5A6BE7b05d6DEFf4788DDBf138e1b8E5B16Fb3bc"
+  ],
+  "timestamp": "2026-04-13T17:48:25.044Z",
+  "blockNumber": "10652569"
+}

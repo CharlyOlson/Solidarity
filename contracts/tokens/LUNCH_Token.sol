@@ -246,4 +246,18 @@ contract LunchToken is ERC20, Ownable, ReentrancyGuard, AccessControl {
         
         // Music layer (7.5% from 30% total)
         gradientAnalysis.layers["Music"].inputAmount = (totalBudget * 75) / 1000; // 7.5%
-        gradientAnalysis.layers["Music"].heldAmount = (totalBudget * 75)
+        gradientAnalysis.layers["Music"].heldAmount = (totalBudget * 75) / 1000;
+        
+        // Sports layer (7.5% from 30% total)
+        gradientAnalysis.layers["Sports"].inputAmount = (totalBudget * 75) / 1000;
+        gradientAnalysis.layers["Sports"].heldAmount = (totalBudget * 75) / 1000;
+        
+        // Arts layer (7.5% from 30% total)  
+        gradientAnalysis.layers["Arts"].inputAmount = (totalBudget * 75) / 1000;
+        gradientAnalysis.layers["Arts"].heldAmount = (totalBudget * 75) / 1000;
+        
+        // Science layer (5% from remaining)
+        gradientAnalysis.layers["Science"].inputAmount = (totalBudget * 5) / 100;
+        gradientAnalysis.layers["Science"].heldAmount = (totalBudget * 5) / 100;
+    }
+}

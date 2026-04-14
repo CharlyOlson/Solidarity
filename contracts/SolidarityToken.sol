@@ -6,132 +6,133 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 /**
- * @title SolidarityToken
- * @dev Main token contract for the Solidarity platform
- * @author Scott Charles Olson (Charly)
+ * @title SolidarityToken (SLDRT)
+ * @dev ERC-20 token with coherence-based stability.
+ * Off-chain ThreeBodyCoherence engine pushes scores on-chain.
+ * Owner: Scott Charles Olson
+ * Trademark: TRADEMARKED BY SCOTT CHARLES OLSON
  */
 contract SolidarityToken is ERC20, Ownable, ReentrancyGuard {
-    
-    // Treasury allocation percentages
-    uint256 public constant COMMUNITY_POOL_PERCENTAGE = 5;
-    uint256 public constant PAYROLL_TREASURY_PERCENTAGE = 10;
-    
-    // Treasury addresses
-    address public communityPool;
-    address public payrollTreasury;
-    address public operationalReserve;
-    
-    // Stability metrics
-    struct StabilityMetrics {
-        uint256 price;
-        uint256 volume;
-        uint256 liquidityDepth;
-        uint256 stabilityScore;
+    // Three-body coherence score (0-10000 = 0.0000-1.0000, 4 decimals)
+    uint256 public coherenceScore;
+    // Coherence level thresholds
+    uint256 public constant CRITICAL_THRESHOLD = 3820;   // 0.382
+    uint256 public constant STABLE_THRESHOLD = 6180;      // 0.618
+    uint256 public constant ELEVATED_THRESHOLD = 8090;    // 0.809
+
+    // Treasury link
+    address public treasuryManager;
+
+    // Coherence history (last 30 updates)
+    struct CoherenceSnapshot {
+        uint256 score;
+        uint256 safetyScore;
+        uint256 harmonyScore;
+        uint256 demandScore;
         uint256 timestamp;
     }
-    
-    mapping(uint256 => StabilityMetrics) public dailyMetrics;
-    uint256 public currentDay;
-    
+    CoherenceSnapshot[] public coherenceHistory;
+    uint256 public constant MAX_HISTORY = 30;
+
+    // Transfer gating based on coherence
+    bool public coherenceGatingEnabled;
+
     // Events
-    event MetricsUpdated(uint256 indexed day, uint256 stabilityScore);
-    event TreasuryDistribution(uint256 communityAmount, uint256 payrollAmount, uint256 operationalAmount);
-    
+    event CoherenceUpdated(uint256 score, uint256 safety, uint256 harmony, uint256 demand, string level);
+    event CoherenceGatingToggled(bool enabled);
+    event TreasuryLinked(address treasury);
+
     constructor(
-        string memory name,
-        string memory symbol,
         uint256 initialSupply,
-        address _communityPool,
-        address _payrollTreasury,
-        address _operationalReserve
-    ) ERC20(name, symbol) {
-        require(_communityPool != address(0), "Invalid community pool address");
-        require(_payrollTreasury != address(0), "Invalid payroll treasury address");
-        require(_operationalReserve != address(0), "Invalid operational reserve address");
-        
-        communityPool = _communityPool;
-        payrollTreasury = _payrollTreasury;
-        operationalReserve = _operationalReserve;
-        
+        address _treasuryManager
+    ) ERC20("Solidarity Token", "SLDRT") {
+        require(_treasuryManager != address(0), "Invalid treasury");
+        treasuryManager = _treasuryManager;
+        coherenceScore = 6180; // Start at stable baseline (0.618)
+        coherenceGatingEnabled = false;
         _mint(msg.sender, initialSupply * 10**decimals());
-        currentDay = block.timestamp / 1 days;
     }
-    
+
     /**
-     * @dev Updates daily stability metrics
+     * @dev Push coherence score from off-chain ThreeBodyCoherence engine.
+     * Only owner (the deployer running the JS engine) can update.
      */
-    function updateStabilityMetrics(
-        uint256 _price,
-        uint256 _volume,
-        uint256 _liquidityDepth
+    function updateCoherence(
+        uint256 _score,
+        uint256 _safety,
+        uint256 _harmony,
+        uint256 _demand
     ) external onlyOwner {
-        uint256 day = block.timestamp / 1 days;
-        
-        // Calculate stability score using Pythagorean-based error correction
-        uint256 stabilityScore = calculateStabilityScore(_price, _volume, _liquidityDepth);
-        
-        dailyMetrics[day] = StabilityMetrics({
-            price: _price,
-            volume: _volume,
-            liquidityDepth: _liquidityDepth,
-            stabilityScore: stabilityScore,
-            timestamp: block.timestamp
-        });
-        
-        currentDay = day;
-        emit MetricsUpdated(day, stabilityScore);
-    }
-    
-    /**
-     * @dev Distributes incoming funds to treasury pools
-     */
-    function distributeTreasuryFunds() external payable nonReentrant {
-        require(msg.value > 0, "No funds to distribute");
-        
-        uint256 communityAmount = (msg.value * COMMUNITY_POOL_PERCENTAGE) / 100;
-        uint256 payrollAmount = (msg.value * PAYROLL_TREASURY_PERCENTAGE) / 100;
-        uint256 operationalAmount = msg.value - communityAmount - payrollAmount;
-        
-        // Transfer funds to respective pools
-        payable(communityPool).transfer(communityAmount);
-        payable(payrollTreasury).transfer(payrollAmount);
-        payable(operationalReserve).transfer(operationalAmount);
-        
-        emit TreasuryDistribution(communityAmount, payrollAmount, operationalAmount);
-    }
-    
-    /**
-     * @dev Calculates stability score using proprietary algorithm
-     */
-    function calculateStabilityScore(
-        uint256 _price,
-        uint256 _volume,
-        uint256 _liquidityDepth
-    ) internal pure returns (uint256) {
-        // Pythagorean-based error correction mechanism
-        // This is a simplified version - implement full algorithm based on whitepaper
-        uint256 normalized = sqrt(_price * _price + _volume * _volume + _liquidityDepth * _liquidityDepth);
-        return (normalized * 100) / 1000; // Scale to percentage
-    }
-    
-    /**
-     * @dev Square root function for calculations
-     */
-    function sqrt(uint256 x) internal pure returns (uint256) {
-        if (x == 0) return 0;
-        uint256 z = (x + 1) / 2;
-        uint256 y = x;
-        while (z < y) {
-            y = z;
-            z = (x / z + z) / 2;
+        require(_score <= 10000, "Score out of range");
+        coherenceScore = _score;
+
+        string memory level;
+        if (_score < CRITICAL_THRESHOLD) level = "critical";
+        else if (_score < STABLE_THRESHOLD) level = "degraded";
+        else if (_score < ELEVATED_THRESHOLD) level = "stable";
+        else level = "elevated";
+
+        // Store snapshot
+        if (coherenceHistory.length >= MAX_HISTORY) {
+            // Shift array (keep last MAX_HISTORY-1 + new one)
+            for (uint i = 0; i < coherenceHistory.length - 1; i++) {
+                coherenceHistory[i] = coherenceHistory[i + 1];
+            }
+            coherenceHistory.pop();
         }
-        return y;
+        coherenceHistory.push(CoherenceSnapshot({
+            score: _score,
+            safetyScore: _safety,
+            harmonyScore: _harmony,
+            demandScore: _demand,
+            timestamp: block.timestamp
+        }));
+
+        emit CoherenceUpdated(_score, _safety, _harmony, _demand, level);
     }
-    
+
     /**
-     * @dev Get current stability metrics
+     * @dev Get current coherence level as string
      */
-    function getCurrentMetrics() external view returns (StabilityMetrics memory) {
-        return dailyMetrics[currentDay];
+    function getCoherenceLevel() external view returns (string memory) {
+        if (coherenceScore < CRITICAL_THRESHOLD) return "critical";
+        if (coherenceScore < STABLE_THRESHOLD) return "degraded";
+        if (coherenceScore < ELEVATED_THRESHOLD) return "stable";
+        return "elevated";
+    }
+
+    /**
+     * @dev Get coherence history length
+     */
+    function getCoherenceHistoryLength() external view returns (uint256) {
+        return coherenceHistory.length;
+    }
+
+    /**
+     * @dev Toggle transfer gating by coherence
+     */
+    function setCoherenceGating(bool _enabled) external onlyOwner {
+        coherenceGatingEnabled = _enabled;
+        emit CoherenceGatingToggled(_enabled);
+    }
+
+    /**
+     * @dev Link to new treasury manager
+     */
+    function setTreasuryManager(address _treasury) external onlyOwner {
+        require(_treasury != address(0), "Invalid treasury");
+        treasuryManager = _treasury;
+        emit TreasuryLinked(_treasury);
+    }
+
+    /**
+     * @dev Override transfer hook to enforce coherence gating when enabled.
+     * Uses OZ v4 _beforeTokenTransfer pattern.
+     */
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
+        if (coherenceGatingEnabled && from != address(0) && to != address(0)) {
+            require(coherenceScore >= CRITICAL_THRESHOLD, "Transfers paused: coherence critical");
+        }
+        super._beforeTokenTransfer(from, to, amount);
     }
 }

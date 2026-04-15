@@ -1,0 +1,67 @@
+.about-tab {
+  padding: 1rem 0;
+  text-align: left;
+}
+
+.about-section {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 1.75rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  box-shadow: none;
+}
+
+.about-section h2 {
+  color: #3E3B34;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.about-section h3 {
+  color: #8B7D3C;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.15rem;
+}
+
+.about-lead {
+  font-size: 1.05rem;
+  color: #5A5750;
+  line-height: 1.6;
+}
+
+.about-section p {
+  color: #6B6860;
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+}
+
+.functions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.function-card {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  padding: 1.25rem;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.function-card h4 {
+  color: #3E3B34;
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+}
+
+.function-card p {
+  margin: 0;
+  font-size: 0.9rem;
+}

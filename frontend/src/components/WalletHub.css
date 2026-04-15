@@ -1,0 +1,120 @@
+.wallet-hub {
+  padding: 1rem 0;
+}
+
+.wallet-hub h2 {
+  color: #5A5750;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.wallet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.wallet-card {
+  border-radius: 10px;
+  padding: 1.5rem;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.wallet-dim {
+  background: rgba(200, 198, 192, 0.25);
+  border: 1px solid rgba(180, 178, 172, 0.3);
+  opacity: 0.65;
+  color: #8B8680;
+}
+
+.wallet-connected {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  border: 2px solid #D4AF37;
+  opacity: 1;
+  color: #3E3B34;
+  box-shadow: 0 2px 12px rgba(212, 175, 55, 0.15);
+}
+
+.wallet-status-dot-container {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.wallet-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-green {
+  background: #4CAF50;
+  box-shadow: 0 0 6px rgba(76, 175, 80, 0.5);
+}
+
+.dot-grey {
+  background: #B0ADA6;
+}
+
+.wallet-status-text {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.wallet-icon {
+  margin-bottom: 0.75rem;
+}
+
+.wallet-icon svg {
+  color: currentColor;
+}
+
+.wallet-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.wallet-details {
+  margin-bottom: 0.5rem;
+}
+
+.wallet-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+  font-size: 0.9rem;
+}
+
+.wallet-detail-label {
+  color: #8B8680;
+}
+
+.wallet-detail-value {
+  font-weight: 500;
+  color: #3E3B34;
+}
+
+.wallet-connect-btn {
+  width: 100%;
+  padding: 0.65rem;
+  background: linear-gradient(135deg, #D4AF37, #B8962E);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0;
+  transition: opacity 0.2s;
+}
+
+.wallet-connect-btn:hover {
+  opacity: 0.9;
+  background: linear-gradient(135deg, #D4AF37, #B8962E);
+}

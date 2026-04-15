@@ -1,0 +1,101 @@
+.user-profile {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.profile-card {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #D4AF37, #B8962E);
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.profile-name {
+  margin: 0 0 0.5rem 0;
+  color: #3E3B34;
+  font-size: 1.3rem;
+}
+
+.tier-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.tier-free {
+  background: rgba(212, 175, 55, 0.15);
+  color: #8B7D3C;
+}
+
+.tier-pro {
+  background: rgba(212, 175, 55, 0.3);
+  color: #7A6C2E;
+}
+
+.tier-business {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.4), rgba(232, 212, 139, 0.4));
+  color: #5A4F24;
+}
+
+.profile-details {
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.profile-label {
+  font-size: 0.85rem;
+  color: #8B8680;
+  font-weight: 500;
+}
+
+.profile-value {
+  font-size: 0.9rem;
+  color: #3E3B34;
+  font-weight: 500;
+}
+
+.logout-button {
+  width: 100%;
+  padding: 0.75rem;
+  background: transparent;
+  color: #C62828;
+  border: 1px solid rgba(198, 40, 40, 0.3);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 0;
+}
+
+.logout-button:hover {
+  background: rgba(198, 40, 40, 0.05);
+}

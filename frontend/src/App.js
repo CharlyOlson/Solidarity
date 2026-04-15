@@ -1,135 +1,145 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import apiClient from './api/client';
-import logo from './logo.svg';
-import DiscoveryTab from './components/DiscoveryTab';
-import AudioTab from './components/AudioTab';
-import SystemStatusTab from './components/SystemStatusTab';
+import LoginRegister from './components/LoginRegister';
+import News from './components/News';
+import Markets from './components/Markets';
+import About from './components/About';
+import UserProfile from './components/UserProfile';
+import OllamaHome from './components/OllamaHome';
+import WalletHub from './components/WalletHub';
+import HankoStamps from './components/HankoStamps';
 import DevicesTab from './components/DevicesTab';
-import MobileDeviceDashboard from './components/MobileDeviceDashboard';
-import GreekNodesTab from './components/GreekNodesTab';
+import Calculator from './components/Calculator';
+
+const BROWSE_TABS = [
+  { id: 'login', label: 'Login' },
+  { id: 'news', label: 'News' },
+  { id: 'markets', label: 'Markets' },
+  { id: 'about', label: 'About' },
+];
+
+const AUTH_TABS = [
+  { id: 'profile', label: 'Profile' },
+  { id: 'news', label: 'News' },
+  { id: 'markets', label: 'Markets' },
+  { id: 'about', label: 'About' },
+  { id: 'ai-chat', label: 'AI Chat' },
+  { id: 'wallets', label: 'Wallets' },
+  { id: 'hanko', label: 'Hanko Stamps' },
+  { id: 'devices', label: 'Devices' },
+  { id: 'calculator', label: 'Calculator' },
+];
 
 function App() {
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [systemStatus, setSystemStatus] = useState({ status: 'loading...' });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const [activeTab, setActiveTab] = useState('login');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    // Load system status on component mount
-    fetchSystemStatus();
+  const verifyToken = useCallback(async () => {
+    const token = localStorage.getItem('authToken');
+    if (!token) return;
+    try {
+      const response = await apiClient.client.get('/auth/verify');
+      setUser(response.data.user || response.data);
+      setIsAuthenticated(true);
+      setActiveTab('profile');
+    } catch (err) {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('refreshToken');
+    }
   }, []);
 
-  const fetchSystemStatus = async () => {
+  useEffect(() => {
+    verifyToken();
+  }, [verifyToken]);
+
+  const handleLogin = (userData) => {
+    setUser(userData);
+    setIsAuthenticated(true);
+    setActiveTab('profile');
+  };
+
+  const handleLogout = async () => {
     try {
-      const status = await apiClient.getSystemStatus();
-      setSystemStatus(status);
-    } catch (error) {
-      console.error('Failed to fetch system status:', error);
-      setSystemStatus({ 
-        status: 'error', 
-        message: 'Could not connect to server. Backend may not be running.' 
-      });
+      await apiClient.logout();
+    } catch (err) {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('refreshToken');
     }
+    setUser(null);
+    setIsAuthenticated(false);
+    setActiveTab('login');
+  };
+
+  const tabs = isAuthenticated ? AUTH_TABS : BROWSE_TABS;
+
+  const handleTabClick = (tabId) => {
+    setActiveTab(tabId);
+    setMobileMenuOpen(false);
   };
 
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>Solidarity Platform</h1>
-        
-        <nav className="App-nav">
-          <button 
-            className={activeTab === 'dashboard' ? 'active' : ''} 
-            onClick={() => setActiveTab('dashboard')}>
-            Dashboard
-          </button>
-          <button 
-            className={activeTab === 'greek-nodes' ? 'active' : ''} 
-            onClick={() => setActiveTab('greek-nodes')}>
-            🏛️ Greek Nodes
-          </button>
-          <button 
-            className={activeTab === 'discovery' ? 'active' : ''} 
-            onClick={() => setActiveTab('discovery')}>
-            Discovery
-          </button>
-          <button 
-            className={activeTab === 'audio' ? 'active' : ''} 
-            onClick={() => setActiveTab('audio')}>
-            Audio Commands
-          </button>
-          <button 
-            className={activeTab === 'devices' ? 'active' : ''} 
-            onClick={() => setActiveTab('devices')}>
-            Connected Devices
-          </button>
-          <button 
-            className={activeTab === 'mobile' ? 'active' : ''} 
-            onClick={() => setActiveTab('mobile')}>
-            Mobile Sync
-          </button>
-          <button 
-            className={activeTab === 'status' ? 'active' : ''} 
-            onClick={() => setActiveTab('status')}>
-            System Status
-          </button>
+        <div className="header-left">
+          <h1 className="app-title">Solidarity</h1>
+        </div>
+        <nav className="App-nav desktop-nav">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={activeTab === tab.id ? 'active' : ''}
+              onClick={() => handleTabClick(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
         </nav>
+        <div className="header-right">
+          {isAuthenticated && user && (
+            <span className="user-pill">{user.email || 'User'}</span>
+          )}
+          <button
+            className="hamburger"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Menu"
+          >
+            <span /><span /><span />
+          </button>
+        </div>
       </header>
 
+      {mobileMenuOpen && (
+        <nav className="mobile-nav">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={activeTab === tab.id ? 'active' : ''}
+              onClick={() => handleTabClick(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+      )}
+
       <main className="App-content">
-        {isLoading && (
-          <div className="loading-overlay">
-            <div className="loading-spinner"></div>
-            <p>Processing...</p>
-          </div>
+        {activeTab === 'login' && !isAuthenticated && (
+          <LoginRegister onLogin={handleLogin} />
         )}
-
-        {activeTab === 'dashboard' && (
-          <section className="dashboard-section">
-            <h2>System Dashboard</h2>
-            <div className="status-card">
-              <h3>System Status</h3>
-              <p className={`status ${systemStatus.status === 'online' ? 'online' : 'offline'}`}>
-                {systemStatus.status || 'Unknown'}
-              </p>
-              {systemStatus.message && <p>{systemStatus.message}</p>}
-              <button onClick={fetchSystemStatus}>Refresh Status</button>
-            </div>
-
-            <div className="quick-actions">
-              <h3>Quick Actions</h3>
-              <button onClick={() => setActiveTab('greek-nodes')}>🏛️ Manage Greek Letter Nodes</button>
-              <button onClick={() => setActiveTab('discovery')}>Run Discovery</button>
-              <button onClick={() => setActiveTab('audio')}>Execute Audio Command</button>
-              <button onClick={() => setActiveTab('mobile')}>Mobile Device Sync</button>
-              <button onClick={() => window.open('http://localhost:3000/api/docs', '_blank')}>API Documentation</button>
-            </div>
-          </section>
+        {activeTab === 'profile' && isAuthenticated && (
+          <UserProfile user={user} onLogout={handleLogout} />
         )}
-
-        {activeTab === 'greek-nodes' && (
-          <GreekNodesTab />
-        )}
-        {activeTab === 'discovery' && (
-          <DiscoveryTab />
-        )}
-
-        {activeTab === 'audio' && (
-          <AudioTab />
-        )}
-
-        {activeTab === 'devices' && (
-          <DevicesTab />
-        )}
-
-        {activeTab === 'mobile' && (
-          <MobileDeviceDashboard />
-        )}
-
-        {activeTab === 'status' && (
-          <SystemStatusTab />
-        )}
+        {activeTab === 'news' && <News />}
+        {activeTab === 'markets' && <Markets />}
+        {activeTab === 'about' && <About />}
+        {activeTab === 'ai-chat' && isAuthenticated && <OllamaHome />}
+        {activeTab === 'wallets' && isAuthenticated && <WalletHub />}
+        {activeTab === 'hanko' && isAuthenticated && <HankoStamps />}
+        {activeTab === 'devices' && isAuthenticated && <DevicesTab />}
+        {activeTab === 'calculator' && isAuthenticated && <Calculator />}
       </main>
     </div>
   );

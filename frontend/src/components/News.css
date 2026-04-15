@@ -1,0 +1,49 @@
+.news-tab {
+  padding: 1rem 0;
+}
+
+.news-tab h2 {
+  color: #5A5750;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.news-card {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 1.5rem;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  transition: border-color 0.2s;
+}
+
+.news-card:hover {
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+.news-date {
+  font-size: 0.8rem;
+  color: #8B7D3C;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.news-title {
+  font-size: 1.1rem;
+  color: #3E3B34;
+  margin: 0 0 0.75rem 0;
+}
+
+.news-description {
+  font-size: 0.9rem;
+  color: #6B6860;
+  line-height: 1.5;
+  margin: 0;
+}

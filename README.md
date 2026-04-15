@@ -76,13 +76,11 @@ Located in `contracts/`. Compiled with Solidity 0.8.20.
 | Contract | Role |
 |----------|------|
 | `TreasuryManager.sol` | Canonical distribution controller (immutable charter logic) |
-| `SolidarityToken.sol` | Platform utility token |
-| `SaiLToken.sol` | Secondary token for governance weighting |
-| `DataToCoilConverter.sol` | Harmonic data encoding |
+| `SolidarityToken.sol` | SLDRT utility token (deployed to Sepolia) |
 | `GovernanceModule.sol` | On-chain voting and proposal lifecycle |
 | `StabilityMetrics.sol` | φ-ratio health monitoring |
 
-> Total: 26 contracts. All constructor arguments use environment-variable-driven addresses — no hardcoded keys.
+All constructor arguments use environment-variable-driven addresses — no hardcoded keys.
 
 ---
 
@@ -157,7 +155,17 @@ cd frontend && npm install && npm start
 
 ---
 
-## Deployment
+## Live Deployment
+
+**Frontend + API:** [solidarity-clean-production.up.railway.app](https://solidarity-clean-production.up.railway.app)  
+**Network:** Sepolia testnet (chain 11155111)
+
+| Contract | Address |
+|----------|---------|
+| TreasuryManager | `0x362DC26b4b084778DB9525DF5A1d4A344C9E0C64` |
+| SolidarityToken (SLDRT) | `0xe12A8C0386429Eb6Db0101c358A8cc4b10e09d86` |
+
+SLDRT: 1,000,000 supply, coherence score 0.6180, 17 treasury slots assigned, 500 BP infrastructure reserve.
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for full deployment instructions, environment variable reference, and testnet/mainnet checklist.
 

@@ -246,8 +246,69 @@ const optionalAuth = (req, res, next) => {
 };
 
 // Auth routes
-const express = require('express');
 const authRouter = express.Router();
+
+// Register
+authRouter.post('/register', authLimiter, async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        error: 'Email and password required'
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        error: 'Password must be at least 6 characters'
+      });
+    }
+
+    // Check if user already exists
+    for (const user of authManager.users.values()) {
+      if (user.email === email) {
+        return res.status(409).json({
+          error: 'An account with this email already exists'
+        });
+      }
+    }
+
+    // Create new user
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const userId = `user-${Date.now()}`;
+    const newUser = {
+      id: userId,
+      email,
+      password: hashedPassword,
+      name: email.split('@')[0],
+      role: 'user',
+      permissions: ['audio:read', 'audio:write', 'financial:read'],
+      createdAt: new Date(),
+      lastLogin: new Date()
+    };
+
+    authManager.users.set(email, newUser);
+
+    const token = authManager.generateToken(newUser);
+    const refreshToken = authManager.generateRefreshToken(newUser);
+
+    const { password: _, ...safeUser } = newUser;
+
+    res.status(201).json({
+      success: true,
+      token,
+      refreshToken,
+      user: safeUser,
+      expiresIn: authManager.jwtExpiration
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: 'Registration failed',
+      message: error.message
+    });
+  }
+});
 
 // Login
 authRouter.post('/login', authLimiter, async (req, res) => {

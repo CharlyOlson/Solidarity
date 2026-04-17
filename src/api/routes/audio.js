@@ -8,8 +8,7 @@ const router = express.Router();
 const rateLimit = require('express-rate-limit');
 
 // Import audio processors
-const { SolidarityAudioProcessor } = require('../../solidarityAudioProcessor');
-const { executeAudioStudioCommand, getAudioSystemStatus } = require('../../enhancedAudioStudioCommands');
+const { audioCommands, executeAudioCommand: executeAudioStudioCommand } = require('../../enhancedAudioStudioCommands');
 
 // Rate limiting for audio processing (more restrictive due to CPU intensive operations)
 const audioLimiter = rateLimit({
@@ -21,15 +20,13 @@ const audioLimiter = rateLimit({
   }
 });
 
-// Initialize audio processor
-let audioProcessor = null;
-
-const getAudioProcessor = () => {
-  if (!audioProcessor) {
-    audioProcessor = new SolidarityAudioProcessor();
-  }
-  return audioProcessor;
-};
+// Audio system status helper
+const getAudioSystemStatus = () => ({
+  audio_engine_status: 'operational',
+  processing_mode: 'standard',
+  processing_time: Date.now(),
+  commands_available: Object.keys(audioCommands).length
+});
 
 // Get available audio commands
 router.get('/commands', (req, res) => {
@@ -137,8 +134,7 @@ router.get('/commands', (req, res) => {
 // Get audio system status
 router.get('/status', (req, res) => {
   try {
-    const processor = getAudioProcessor();
-    const status = processor.get_system_status ? processor.get_system_status() : getAudioSystemStatus();
+    const status = getAudioSystemStatus();
     
     // Optimize status for data mode
     if (req.dataMode === 'low') {

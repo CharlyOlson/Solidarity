@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
+import apiClient from '../api/client';
 
 /**
  * MobileDeviceDashboard Component
- * 
+ *
  * A React component for displaying and interacting with mobile devices
  * connected to the Solidarity Mobile Sync Server.
  */
@@ -22,13 +22,6 @@ const MobileDeviceDashboard = () => {
     deviceId: ''
   });
 
-  // Define server ports
-  const servers = {
-    iPhone: 'http://localhost:3001',
-    iPad: 'http://localhost:3002',
-    watch: 'http://localhost:3003'
-  };
-
   // Fetch server status on component mount
   useEffect(() => {
     fetchServerStatus();
@@ -41,7 +34,7 @@ const MobileDeviceDashboard = () => {
   const fetchServerStatus = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${servers.iPhone}/api/status`);
+      const response = await apiClient.client.get('/system/status');
       setServerStatus(response.data);
       // Update devices list from server response
       if (response.data.sync && response.data.sync.connectedDevices) {
@@ -49,7 +42,7 @@ const MobileDeviceDashboard = () => {
       }
       setError(null);
     } catch (err) {
-      setError('Failed to connect to Mobile Sync Server. Make sure it is running.');
+      setError('Failed to connect to server. Make sure it is running.');
       console.error('Error fetching server status:', err);
     } finally {
       setIsLoading(false);
@@ -57,15 +50,14 @@ const MobileDeviceDashboard = () => {
   };
 
   // Fetch files for a specific path
-  const fetchFiles = async (path = '') => {
+  const fetchFiles = async (filePath = '') => {
     if (!selectedDevice) return;
-    
+
     setIsLoading(true);
     try {
-      const serverUrl = servers[selectedDevice.deviceType] || servers.iPhone;
-      const response = await axios.get(`${serverUrl}/api/files/${path}`);
+      const response = await apiClient.client.get(`/files/${filePath}`);
       setFiles(response.data.files || []);
-      setCurrentPath(path);
+      setCurrentPath(filePath);
       setError(null);
     } catch (err) {
       setError(`Failed to fetch files: ${err.message}`);
@@ -97,26 +89,25 @@ const MobileDeviceDashboard = () => {
     setIsLoading(true);
     try {
       // Generate a device ID if not provided
-      const deviceId = newDeviceForm.deviceId || 
+      const deviceId = newDeviceForm.deviceId ||
         `${newDeviceForm.deviceType.toLowerCase()}-${Math.random().toString(36).substring(2, 10)}`;
-      
-      const serverUrl = servers[newDeviceForm.deviceType];
-      const response = await axios.post(`${serverUrl}/api/devices/register`, {
+
+      await apiClient.client.post('/devices/register', {
         deviceName: newDeviceForm.deviceName,
         deviceType: newDeviceForm.deviceType,
         deviceId
       });
-      
+
       // Refresh devices list
       fetchServerStatus();
-      
+
       // Reset form
       setNewDeviceForm({
         deviceName: '',
         deviceType: 'iPhone',
         deviceId: ''
       });
-      
+
       setError(null);
     } catch (err) {
       setError(`Failed to register device: ${err.message}`);
@@ -129,14 +120,13 @@ const MobileDeviceDashboard = () => {
   // Send heartbeat for a device
   const sendHeartbeat = async (device) => {
     if (!device || !device.deviceId) return;
-    
+
     setIsLoading(true);
     try {
-      const serverUrl = servers[device.deviceType] || servers.iPhone;
-      await axios.post(`${serverUrl}/api/devices/heartbeat`, {
+      await apiClient.client.post('/devices/heartbeat', {
         deviceId: device.deviceId
       });
-      
+
       // Refresh devices list
       fetchServerStatus();
       setError(null);

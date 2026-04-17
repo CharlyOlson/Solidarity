@@ -1,8 +1,8 @@
 // Solidarity Platform API Client
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
-const MOBILE_SYNC_BASE_URL = process.env.REACT_APP_MOBILE_SYNC_URL || 'http://localhost:3001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
+const MOBILE_SYNC_BASE_URL = process.env.REACT_APP_MOBILE_SYNC_URL || '/api';
 
 class SolidarityClient {
   constructor() {
@@ -104,10 +104,7 @@ class SolidarityClient {
 
   async registerMobileDevice(device) {
     try {
-      const deviceType = device.deviceType || 'iPhone';
-      const baseUrl = `http://localhost:${deviceType === 'iPhone' ? '3001' : deviceType === 'iPad' ? '3002' : '3003'}/api`;
-      
-      const response = await axios.post(`${baseUrl}/devices/register`, device);
+      const response = await this.client.post('/devices/register', device);
       return response.data;
     } catch (error) {
       console.error('Error registering mobile device:', error);
@@ -115,11 +112,9 @@ class SolidarityClient {
     }
   }
 
-  async sendDeviceHeartbeat(deviceId, deviceType = 'iPhone') {
+  async sendDeviceHeartbeat(deviceId) {
     try {
-      const baseUrl = `http://localhost:${deviceType === 'iPhone' ? '3001' : deviceType === 'iPad' ? '3002' : '3003'}/api`;
-      
-      const response = await axios.post(`${baseUrl}/devices/heartbeat`, { deviceId });
+      const response = await this.client.post('/devices/heartbeat', { deviceId });
       return response.data;
     } catch (error) {
       console.error('Error sending device heartbeat:', error);
@@ -127,11 +122,9 @@ class SolidarityClient {
     }
   }
 
-  async getMobileFiles(path = '', deviceType = 'iPhone') {
+  async getMobileFiles(filePath = '') {
     try {
-      const baseUrl = `http://localhost:${deviceType === 'iPhone' ? '3001' : deviceType === 'iPad' ? '3002' : '3003'}/api`;
-      
-      const response = await axios.get(`${baseUrl}/files/${path}`);
+      const response = await this.client.get(`/files/${filePath}`);
       return response.data;
     } catch (error) {
       console.error('Error getting mobile files:', error);
@@ -139,11 +132,9 @@ class SolidarityClient {
     }
   }
 
-  async syncMobileFile(path, content, deviceId, deviceType = 'iPhone') {
+  async syncMobileFile(filePath, content, deviceId) {
     try {
-      const baseUrl = `http://localhost:${deviceType === 'iPhone' ? '3001' : deviceType === 'iPad' ? '3002' : '3003'}/api`;
-      
-      const response = await axios.post(`${baseUrl}/files/${path}`, {
+      const response = await this.client.post(`/files/${filePath}`, {
         content,
         device: deviceId
       });

@@ -41,7 +41,7 @@ function App() {
     const token = localStorage.getItem('authToken');
     if (!token) return;
     try {
-      const response = await apiClient.client.get('/auth/verify');
+      const response = await apiClient.client.get('/auth/me');
       setUser(response.data.user || response.data);
       setIsAuthenticated(true);
       setActiveTab('profile');

@@ -4,6 +4,7 @@
  * Supports both low-data and high-data modes for optimal performance
  */
 
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -19,7 +20,6 @@ const authRoutes = require('./routes/auth');
 
 // Import middleware
 const auth = require('./middleware/auth');
-const validation = require('./middleware/validation');
 const errorHandler = require('./middleware/errorHandler');
 const dataOptimization = require('./middleware/dataOptimization');
 
@@ -109,6 +109,36 @@ app.use('/api/system', systemRoutes);
 app.use('/api/audio', auth.requireAuth, audioRoutes);
 app.use('/api/financial', auth.requireAuth, auth.requireFinancialPermission, financialRoutes);
 
+// Devices endpoint (used by DevicesTab)
+app.get('/api/devices', auth.optionalAuth, (req, res) => {
+  res.json([]);
+});
+
+// AI chat endpoint (used by OllamaHome)
+app.post('/api/ai/chat', auth.requireAuth, (req, res) => {
+  const { message } = req.body;
+  if (!message) {
+    return res.status(400).json({ error: 'Message is required' });
+  }
+  res.json({
+    response: 'AI chat service is not yet configured. Please set up an AI provider.',
+    model: 'none',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Greek nodes status (used by GreekNodesTab)
+app.get('/api/greek-nodes/status', auth.optionalAuth, (req, res) => {
+  res.json({
+    nodesStatus: {},
+    systemStatus: { systemHealth: 'operational', activeNodes: 0, totalOperations: 0, lastUpdate: new Date().toISOString() }
+  });
+});
+
+app.post('/api/greek-nodes/activate/:nodeKey', auth.requireAuth, (req, res) => {
+  res.json({ success: true, node: req.params.nodeKey, status: 'activated' });
+});
+
 // API documentation endpoint
 app.get('/api/docs', (req, res) => {
   res.json({
@@ -118,19 +148,35 @@ app.get('/api/docs', (req, res) => {
       auth: '/api/auth',
       audio: '/api/audio',
       financial: '/api/financial',
-      system: '/api/system'
+      system: '/api/system',
+      devices: '/api/devices',
+      ai: '/api/ai/chat',
+      greekNodes: '/api/greek-nodes'
     },
     documentation: '/docs',
     support: 'https://solidarity.com/support'
   });
 });
 
-// Catch-all for undefined routes
-app.use('*', (req, res) => {
+// Catch-all for unknown API routes
+app.all('/api/*', (req, res) => {
   res.status(404).json({
     error: 'Endpoint not found',
     suggestion: 'Check /api/docs for available endpoints',
     timestamp: new Date().toISOString()
+  });
+});
+
+// Serve frontend static files in production
+const frontendBuildPath = path.join(__dirname, '../../frontend/build');
+app.use(express.static(frontendBuildPath));
+
+// SPA catch-all: serve index.html for any non-API route
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
+    if (err) {
+      res.status(404).json({ error: 'Frontend not built. Run npm run build:frontend first.' });
+    }
   });
 });
 

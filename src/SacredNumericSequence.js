@@ -7,7 +7,7 @@
  * @version 3.2.1
  */
 
-const { SolidarityHarmonicGenerator } = require('../EnhancedHarmonicPhraseParser');
+const { SolidarityHarmonicGenerator } = require('./core/EnhancedHarmonicPhraseParser');
 
 class SacredNumericSequence {
     constructor(config = {}) {

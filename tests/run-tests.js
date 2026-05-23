@@ -6,6 +6,7 @@ import Henry7Step14ShoeWaltz from '../src/henry-7-step-14-shoe-waltz.js';
 import SolidarityProcessor from '../src/processor.js';
 import SoulEdXchang from '../src/soul-edxchang.js';
 import StonenSync from '../src/stonensync.js';
+import EnvironmentHandler from '../src/environment-handler.js';
 import CubitCalculationSystem from '../src/cubit-calculation.js';
 import SolidarityPlatform from '../src/solidarity-platform.js';
 import { logFatalError } from '../src/error-utils.js';
@@ -141,6 +142,49 @@ runner.test('StonenSync - Stone State Management', () => {
     
     runner.assert(result.updated, 'Stone should be updated');
     runner.assertEqual(result.stoneId, 'test_stone');
+});
+
+// EnvironmentHandler Tests
+runner.test('EnvironmentHandler - Default Environments', () => {
+    const handler = new EnvironmentHandler();
+    const environments = handler.getAllowedEnvironments();
+    
+    runner.assertEqual(environments.length, 4);
+    runner.assert(environments.includes('production'));
+    runner.assert(environments.includes('staging'));
+    runner.assert(environments.includes('development'));
+    runner.assert(environments.includes('testing'));
+});
+
+runner.test('EnvironmentHandler - Custom Environments', () => {
+    const customEnvs = ['prod', 'dev', 'qa'];
+    const handler = new EnvironmentHandler({ allowedEnvironments: customEnvs });
+    const environments = handler.getAllowedEnvironments();
+    
+    runner.assertEqual(environments.length, 3);
+    runner.assert(environments.includes('prod'));
+    runner.assert(environments.includes('dev'));
+    runner.assert(environments.includes('qa'));
+    runner.assert(!environments.includes('production'));
+});
+
+runner.test('EnvironmentHandler - Environment Validation', () => {
+    const handler = new EnvironmentHandler();
+    
+    runner.assert(handler.isAllowed('production'));
+    runner.assert(handler.isAllowed('staging'));
+    runner.assert(handler.isAllowed('development'));
+    runner.assert(handler.isAllowed('testing'));
+    runner.assert(!handler.isAllowed('invalid'));
+    
+    runner.assert(handler.validateEnvironment('production'));
+    
+    try {
+        handler.validateEnvironment('invalid');
+        runner.assert(false, 'Should have thrown an error');
+    } catch (error) {
+        runner.assert(error.message.includes('not allowed'));
+    }
 });
 
 // Cubit Calculation Tests

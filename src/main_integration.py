@@ -21,10 +21,12 @@ import os
 import numpy as np
 from typing import Dict, List, Tuple, Optional, Union
 
-# Add all source paths
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'harmonics'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'audio'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'temporal'))
+# Component packages live next to this file (src/harmonics, src/audio, src/temporal)
+_SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+for _name in ('harmonics', 'audio', 'temporal'):
+    _path = os.path.join(_SRC_DIR, _name)
+    if _path not in sys.path:
+        sys.path.append(_path)
 
 from core_harmonics import HarmonicProcessor
 from advanced_analysis import AdvancedHarmonicAnalyzer

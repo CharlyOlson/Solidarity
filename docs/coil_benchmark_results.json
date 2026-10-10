@@ -3,11 +3,10 @@
   "argv": [
    "benchmarks/coil_audio_benchmark.py"
   ],
-  "commit": "e55fb083b8d8e394cccbe171809344cf4e6ae61b",
+  "commit": "23dd4220e83c0dcf55345e75c5f44a8b76eeb52e",
   "dirty_files": [
-   "?? benchmarks/",
-   "?? src/analysis/",
-   "?? tests/test_coil_measurement.py"
+   "M benchmarks/coil_audio_benchmark.py",
+   " M src/analysis/coil_measurement.py"
   ],
   "node": "v22.23.3",
   "numpy": "2.5.3",
@@ -144,6 +143,7 @@
    "compressor+limiter": {
     "coil_preserved_within_1e-3": 20,
     "errors_or_unmeasurable": 0,
+    "exception_types": {},
     "median_rel_error_vs_truth": 2.5227951340031244e-06,
     "n": 20,
     "output_identical_to_input": 0
@@ -151,6 +151,7 @@
    "disabled(config={})": {
     "coil_preserved_within_1e-3": 20,
     "errors_or_unmeasurable": 0,
+    "exception_types": {},
     "median_rel_error_vs_truth": 2.5480852133460035e-06,
     "n": 20,
     "output_identical_to_input": 20
@@ -158,6 +159,7 @@
    "frequency_shifter(default 100 bins)": {
     "coil_preserved_within_1e-3": 0,
     "errors_or_unmeasurable": 0,
+    "exception_types": {},
     "median_rel_error_vs_truth": 0.4464340368632436,
     "n": 20,
     "output_identical_to_input": 0
@@ -165,6 +167,7 @@
    "spatial_transmission": {
     "coil_preserved_within_1e-3": 20,
     "errors_or_unmeasurable": 0,
+    "exception_types": {},
     "median_rel_error_vs_truth": 1.137357145671499e-05,
     "n": 20,
     "output_identical_to_input": 0
@@ -172,13 +175,14 @@
    "use_spatial_processing": {
     "coil_preserved_within_1e-3": 0,
     "errors_or_unmeasurable": 0,
+    "exception_types": {},
     "median_rel_error_vs_truth": 0.4635628359955774,
     "n": 20,
     "output_identical_to_input": 0
    }
   }
  },
- "runtime_s": 22.5,
+ "runtime_s": 22.4,
  "synthetic": {
   "aggregate": {
    "henry": {

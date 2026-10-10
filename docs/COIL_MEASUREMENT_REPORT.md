@@ -1,7 +1,7 @@
 # Coil Measurement Layer: Design, Inventory and Results
 
 Status: analysis-only, opt-in. Nothing here touches ledger, payment, token, contract or API paths.
-Base commit: `e55fb083b8d8e394cccbe171809344cf4e6ae61b` (results were generated with the new files uncommitted on top of it).
+Base commit: `e55fb083b8d8e394cccbe171809344cf4e6ae61b`; final results JSON was regenerated at `23dd422` plus the review-fix edits (numbers identical to the first run, confirming seeded reproducibility).
 Open PRs (14, incl. #25) were inspected; none merged, closed or overwritten.
 
 ## 1. What was added

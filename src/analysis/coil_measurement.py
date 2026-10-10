@@ -305,8 +305,8 @@ def gaussian_after_scale(mu: float, sigma: float, s) -> Tuple[float, float]:
 
 def integrate_density(pdf: Callable[[float], float], lo: float, hi: float, n: int = 20001) -> float:
     """Composite Simpson integral (n odd).  Deterministic; used for normalisation checks."""
-    if n % 2 == 0 or n < 3 or not lo < hi:
-        raise CoilValidationError("need odd n >= 3 and lo < hi")
+    if isinstance(n, bool) or not isinstance(n, int) or n % 2 == 0 or not 3 <= n <= MAX_SAMPLES + 1 or not lo < hi:
+        raise CoilValidationError(f"need odd int n in 3..{MAX_SAMPLES + 1} and lo < hi")
     xs = np.linspace(lo, hi, n)
     ys = np.array([pdf(float(x)) for x in xs])
     h = (hi - lo) / (n - 1)
@@ -323,6 +323,10 @@ def nearest_node_offset(x: float, nodes: Iterable[float] = SACRED_NODES) -> Tupl
     ns = sorted(float(n) for n in nodes)
     if not ns:
         raise CoilValidationError("nodes must be non-empty")
+    return _snap_sorted(x, ns)
+
+
+def _snap_sorted(x: float, ns: Sequence[float]) -> Tuple[float, float]:
     best = min(ns, key=lambda n: (abs(x - n), n))
     return best, x - best
 
@@ -345,7 +349,9 @@ def sample_coil_uncertainty(q: float, r: float, cov, *, n_samples: int, seed: in
     out: List[float] = []
     snaps: Dict[float, int] = {}
     rejected = 0
-    nodes = tuple(snap_nodes) if snap_nodes is not None else None
+    nodes = tuple(sorted(float(n) for n in snap_nodes)) if snap_nodes is not None else None
+    if nodes is not None and not nodes:
+        raise CoilValidationError("nodes must be non-empty")
     for qd, rd in draws:
         if rd <= 0:
             rejected += 1
@@ -358,7 +364,7 @@ def sample_coil_uncertainty(q: float, r: float, cov, *, n_samples: int, seed: in
                 continue
             val /= s
         if nodes is not None:
-            node, _ = nearest_node_offset(val, nodes)
+            node, _ = _snap_sorted(val, nodes)
             snaps[node] = snaps.get(node, 0) + 1
         out.append(val)
     arr = np.array(out)

@@ -12,6 +12,7 @@ import argparse
 import json
 import math
 import os
+import pathlib
 import platform
 import subprocess
 import sys
@@ -182,7 +183,7 @@ def processor_integration(layer, trials, seed):
         "use_spatial_processing": {"use_spatial_processing": True},
         "spatial_transmission": {"spatial_transmission": True},
     }
-    pstat = {k: dict(n=0, errors=0, noop=0, preserved=0, relerr=[]) for k in configs}
+    pstat = {k: dict(n=0, errors=0, noop=0, preserved=0, relerr=[], exc={}) for k in configs}
     for t in range(trials):
         rng = np.random.default_rng([seed, 4410, t])
         f1 = rng.uniform(150, 1000)
@@ -223,14 +224,16 @@ def processor_integration(layer, trials, seed):
                 c2 = float(coil_ratio(layer, l2, h2).coil)
                 st["preserved"] += int(abs(c2 - base) / base < 1e-3)
                 st["relerr"].append(abs(c2 - fam[idx]) / fam[idx])
-            except Exception:
+            except Exception as e:
                 st["errors"] += 1
+                st["exc"][type(e).__name__] = st["exc"].get(type(e).__name__, 0) + 1
     ha = [v for v in rows["harmonic_analyzer"] if v is not None]
     rows["harmonic_analyzer"] = {"n": trials, "no_two_cluster": trials - len(ha),
                                  "median_rel_error": float(np.median(ha)) if ha else None,
                                  "note": "hardcodes 44100 Hz; returns all bins >10% of max, not peaks"}
     rows["pipeline"] = {k: {"n": v["n"], "errors_or_unmeasurable": v["errors"],
                             "output_identical_to_input": v["noop"],
+                            "exception_types": v["exc"],
                             "coil_preserved_within_1e-3": v["preserved"],
                             "median_rel_error_vs_truth": float(np.median(v["relerr"])) if v["relerr"] else None}
                         for k, v in pstat.items()}
@@ -243,8 +246,9 @@ def processor_integration(layer, trials, seed):
         except Exception as e:
             direct[eff] = f"raises {type(e).__name__}"
     rows["direct_effect_calls"] = direct
-    rows["identical_processor_copies"] = open(os.path.join(ROOT, "src", "solidarityAudioProcessor.py"), "rb").read() == \
-        open(os.path.join(ROOT, "src", "audio", "solidarityAudioProcessor.py"), "rb").read()
+    rows["identical_processor_copies"] = (
+        pathlib.Path(ROOT, "src", "solidarityAudioProcessor.py").read_bytes()
+        == pathlib.Path(ROOT, "src", "audio", "solidarityAudioProcessor.py").read_bytes())
     return rows
 
 

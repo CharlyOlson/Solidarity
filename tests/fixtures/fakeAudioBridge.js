@@ -6,6 +6,9 @@
 const readline = require('readline');
 
 const mode = process.env.FAKE_BRIDGE_MODE || 'echo';
+if (process.env.FAKE_BRIDGE_SPAWN_LOG) {
+    require('fs').appendFileSync(process.env.FAKE_BRIDGE_SPAWN_LOG, `${process.pid}\n`);
+}
 const out = (obj) => process.stdout.write(JSON.stringify(obj) + '\n');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 

@@ -4,6 +4,8 @@
  * (tests/fixtures/fakeAudioBridge.js) so no Python, live API, RPC, account
  * or funds are needed.
  */
+const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const { EnhancedAudioProcessingWrapper } = require('../src/enhancedAudioProcessingWrapper');
 
@@ -189,6 +191,48 @@ describe('EnhancedAudioProcessingWrapper transport', () => {
         await wrapper.initialize();
         const res = await wrapper.processCompleteAudioPipeline([1, 2]);
         expect(res.result.length).toBe(2);
+    });
+
+    test('concurrent initialize() calls share one worker startup', async () => {
+        const log = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'bridge-')), 'spawns.log');
+        make('echo', { env: { FAKE_BRIDGE_MODE: 'echo', FAKE_BRIDGE_SPAWN_LOG: log } });
+        const [a, b, c] = await Promise.all([wrapper.initialize(), wrapper.initialize(), wrapper.initialize()]);
+        expect([a, b, c]).toEqual([true, true, true]);
+        expect(fs.readFileSync(log, 'utf8').trim().split('\n')).toHaveLength(1);
+        await expect(wrapper.initialize()).resolves.toBe(true); // already ready: still no new worker
+        expect(fs.readFileSync(log, 'utf8').trim().split('\n')).toHaveLength(1);
+    });
+
+    test('concurrent initialize() calls all reject when startup fails, and a retry is possible', async () => {
+        make('exit_before_ready');
+        const results = await Promise.allSettled([wrapper.initialize(), wrapper.initialize()]);
+        results.forEach((r) => expect(r.status).toBe('rejected'));
+        wrapper.config.env = { FAKE_BRIDGE_MODE: 'echo' };
+        await expect(wrapper.initialize()).resolves.toBe(true);
+    });
+
+    test('a dying old worker does not cancel the replacement worker\'s requests', async () => {
+        make('ignore_sigterm', { timeout: 400, killGraceMs: 600 });
+        await wrapper.initialize();
+        const oldPid = wrapper.pythonProcess.pid;
+        await expect(wrapper.getSystemStatus()).rejects.toThrow('Request timeout');
+        // Old worker is still alive (ignores SIGTERM) while we start its replacement
+        wrapper.config.env = { FAKE_BRIDGE_MODE: 'hang' };
+        wrapper.config.timeout = 5000;
+        await wrapper.initialize();
+        const newPid = wrapper.pythonProcess.pid;
+        expect(newPid).not.toBe(oldPid);
+        let settled = false;
+        const pending = wrapper.getSystemStatus();
+        pending.catch(() => {}).then(() => { settled = true; });
+        expect(await waitFor(() => !alive(oldPid), 4000)).toBe(true);
+        await new Promise((r) => setTimeout(r, 100));
+        expect(settled).toBe(false);
+        expect(wrapper.isReady).toBe(true);
+        expect(wrapper.getStats().pendingRequests).toBe(1);
+        const assertion = expect(pending).rejects.toThrow('Bridge shutting down');
+        await wrapper.shutdown();
+        await assertion;
     });
 
     describe('initialize failures', () => {

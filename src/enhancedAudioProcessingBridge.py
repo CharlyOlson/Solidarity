@@ -49,15 +49,26 @@ except ImportError as e:
         def process_complete_audio_pipeline(self, signal, config):
             return {"processed": True, "signal_length": len(signal)}
 
+def _json_key(key: Any) -> str:
+    """Dict keys must be str or integers; anything else is rejected, not coerced."""
+    if isinstance(key, (str, np.str_)):
+        return str(key)
+    if isinstance(key, (int, np.integer)) and not isinstance(key, (bool, np.bool_)):
+        return str(int(key))
+    raise TypeError(f"Unsupported dict key type for JSON: {type(key).__name__}")
+
+
 def to_jsonable(value: Any, counter: Optional[Dict[str, int]] = None) -> Any:
     """
     Convert supported values (nested dict/list/tuple, NumPy arrays and scalars,
     Python scalars) to strictly valid JSON types.
 
     Non-finite floats (NaN, +Inf, -Inf) have no JSON representation, so they are
-    replaced by None (JSON null) and counted in counter['non_finite'] so the
-    caller can report the substitution instead of emitting invalid JSON.
-    Unsupported types (e.g. complex, bytes, arbitrary objects) raise TypeError.
+    replaced by None (JSON null) and counted in counter['non_finite']; the
+    response encoder then refuses to report such a result as a success.
+    Unsupported types (complex, bytes, datetime64, structured/void dtypes,
+    arbitrary objects) raise TypeError. Dict keys that collide after string
+    conversion (e.g. 1 and '1') raise ValueError instead of losing data.
     """
     if counter is None:
         counter = {'non_finite': 0}
@@ -76,22 +87,32 @@ def to_jsonable(value: Any, counter: Optional[Dict[str, int]] = None) -> Any:
     if isinstance(value, np.str_):
         return str(value)
     if isinstance(value, np.ndarray):
-        if value.dtype.kind == 'f':
+        kind = value.dtype.kind
+        if kind in 'biuU':
+            return value.tolist()
+        if kind == 'f':
             finite = np.isfinite(value)
             if finite.all():
                 return value.tolist()
             counter['non_finite'] += int(value.size - np.count_nonzero(finite))
+            if value.ndim == 0:
+                return None
             masked = value.astype(object)
             masked[~finite] = None
             return masked.tolist()
-        if value.dtype.kind in 'biuU':
-            return value.tolist()
-        if value.dtype.kind == 'O':
+        if kind == 'O':
+            if value.ndim == 0:
+                return to_jsonable(value.item(), counter)
             return [to_jsonable(item, counter) for item in value.tolist()]
         raise TypeError(f"Unsupported NumPy dtype for JSON: {value.dtype}")
     if isinstance(value, dict):
-        return {str(to_jsonable(k, counter)) if not isinstance(k, str) else k:
-                to_jsonable(v, counter) for k, v in value.items()}
+        out: Dict[str, Any] = {}
+        for k, v in value.items():
+            name = _json_key(k)
+            if name in out:
+                raise ValueError(f"Conflicting dict keys after JSON conversion: {name!r}")
+            out[name] = to_jsonable(v, counter)
+        return out
     if isinstance(value, (list, tuple)):
         return [to_jsonable(item, counter) for item in value]
     raise TypeError(f"Object of type {type(value).__name__} is not JSON serializable")
@@ -488,7 +509,12 @@ class EnhancedAudioProcessingBridge:
             'timestamp': time.time()
         }
         if counter['non_finite']:
-            payload['non_finite_replaced'] = counter['non_finite']
+            # Never report a result containing NaN/Inf as a clean success
+            payload['success'] = False
+            payload['result'] = {}
+            payload['error'] = (f"Result contains {counter['non_finite']} non-finite "
+                                "value(s) (NaN/Infinity) and was rejected")
+            payload['non_finite_count'] = counter['non_finite']
         # allow_nan=False guarantees invalid JSON can never reach stdout
         return json.dumps(payload, allow_nan=False)
     

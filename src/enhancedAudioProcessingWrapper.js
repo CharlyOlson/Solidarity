@@ -56,7 +56,18 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
         if (this.pythonProcess && this.isReady) {
             return true;
         }
-        
+        // Concurrent callers share one startup instead of spawning two workers
+        if (this._initPromise) {
+            return this._initPromise;
+        }
+        const promise = this._startWorker();
+        this._initPromise = promise;
+        const clear = () => { if (this._initPromise === promise) this._initPromise = null; };
+        promise.then(clear, clear);
+        return promise;
+    }
+    
+    _startWorker() {
         return new Promise((resolve, reject) => {
             let settled = false;
             const settle = (error) => {
@@ -208,7 +219,7 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
                 this._failBridge(state, error);
             }
         } else if (response.request_id) {
-            this._handleProcessingResponse(response);
+            this._handleProcessingResponse(state, response);
         } else {
             this._failBridge(state, new Error('Malformed Python bridge output: unrecognized message'));
         }
@@ -243,8 +254,9 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
             this._state = null;
             this.pythonProcess = null;
             this.isReady = false;
+            // A stale worker's exit must not look like the current worker disconnecting
+            this.emit('disconnected');
         }
-        this.emit('disconnected');
     }
     
     /**
@@ -259,12 +271,14 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
         
         if (this._state === state) this.isReady = false;
         state.settleInit(error);
-        this._rejectAllPending(error);
+        this._rejectAllPending(error, state);
         this._terminateChild(state);
     }
     
-    _rejectAllPending(error) {
+    _rejectAllPending(error, state = null) {
         for (const [requestId, entry] of Array.from(this.pendingRequests)) {
+            // Only fail requests owned by the given worker (all when state is null)
+            if (state && entry.state !== state) continue;
             this.pendingRequests.delete(requestId);
             clearTimeout(entry.timer);
             this.stats.totalRequests++;
@@ -293,11 +307,11 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
     /**
      * Handle processing response from Python
      */
-    _handleProcessingResponse(response) {
+    _handleProcessingResponse(state, response) {
         const requestData = this.pendingRequests.get(response.request_id);
         
-        // Unknown/late responses (e.g. after a request timeout) are ignored
-        if (requestData) {
+        // Unknown/late responses and responses from a different worker are ignored
+        if (requestData && requestData.state === state) {
             const { resolve, reject, startTime, timer } = requestData;
             const responseTime = Date.now() - startTime;
             
@@ -346,7 +360,7 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
             }, this.config.timeout);
             
             // Store request for response handling
-            this.pendingRequests.set(requestId, { resolve, reject, startTime, timer });
+            this.pendingRequests.set(requestId, { resolve, reject, startTime, timer, state });
             
             // Send to Python process
             state.child.stdin.write(payload, (error) => {
@@ -651,7 +665,7 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
             // Mark failed first so the close handler does not re-report
             state.failed = true;
             state.settleInit(new Error('Bridge shutting down'));
-            this._rejectAllPending(new Error('Bridge shutting down'));
+            this._rejectAllPending(new Error('Bridge shutting down'), state);
             
             const exited = new Promise((resolve) => {
                 if (state.exited) resolve(); else state.exitWaiters.push(resolve);

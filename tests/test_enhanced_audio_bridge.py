@@ -24,6 +24,8 @@ try:
     import numpy as np
     import enhancedAudioProcessingBridge as bridge_module
 except ImportError as exc:  # pragma: no cover
+    if os.environ.get('REQUIRE_PYTHON_INTEGRATION') == '1':
+        raise  # fail loudly instead of reporting a skip
     raise unittest.SkipTest(f"numpy/bridge unavailable: {exc}")
 
 
@@ -68,13 +70,43 @@ class ToJsonableTests(unittest.TestCase):
                                '1': 'k'})
         self.assertEqual(json.loads(json.dumps(out, allow_nan=False)), out)
 
-    def test_non_finite_become_null_and_are_counted(self):
+    def test_non_finite_become_null_and_are_counted_by_converter(self):
         counter = {'non_finite': 0}
         out = bridge_module.to_jsonable(
             {'x': np.array([1.0, np.nan, np.inf, -np.inf]), 's': np.float64('nan'), 'p': float('inf')},
             counter)
         self.assertEqual(out, {'x': [1.0, None, None, None], 's': None, 'p': None})
         self.assertEqual(counter['non_finite'], 5)
+
+    def test_edge_case_numpy_objects(self):
+        self.assertEqual(bridge_module.to_jsonable(np.array(2.5)), 2.5)           # 0-d float
+        self.assertEqual(bridge_module.to_jsonable(np.array(3)), 3)               # 0-d int
+        self.assertEqual(bridge_module.to_jsonable(np.array([])), [])             # empty
+        self.assertEqual(bridge_module.to_jsonable(np.float16(0.5)), 0.5)
+        self.assertEqual(bridge_module.to_jsonable(np.array([[1, 2], [3, 4]], dtype=np.uint8)), [[1, 2], [3, 4]])
+        self.assertEqual(bridge_module.to_jsonable(np.array([np.array([1.0]), 'a'], dtype=object)), [[1.0], 'a'])
+        self.assertEqual(bridge_module.to_jsonable({np.int64(3): 1}), {'3': 1})
+        counter = {'non_finite': 0}
+        self.assertIsNone(bridge_module.to_jsonable(np.array(np.nan), counter))
+        self.assertEqual(counter['non_finite'], 1)
+        counter = {'non_finite': 0}
+        self.assertEqual(bridge_module.to_jsonable(np.array([[1.0, np.inf], [np.nan, 2.0]]), counter),
+                         [[1.0, None], [None, 2.0]])
+        self.assertEqual(counter['non_finite'], 2)
+
+    def test_conflicting_dict_keys_are_rejected(self):
+        with self.assertRaises(ValueError):
+            bridge_module.to_jsonable({1: 'a', '1': 'b'})
+        with self.assertRaises(ValueError):
+            bridge_module.to_jsonable({np.int64(1): 'a', '1': 'b'})
+
+    def test_unsupported_keys_and_dtypes_are_rejected(self):
+        for bad in ({(1, 2): 'x'}, {1.5: 'x'}, {None: 'x'}, {True: 'x'},
+                    np.array(['2020-01-01'], dtype='datetime64[D]'),
+                    np.array([(1, 2.0)], dtype=[('a', 'i4'), ('b', 'f8')]),
+                    np.array([b'x']), np.complex64(1 + 1j), np.timedelta64(1, 's')):
+            with self.assertRaises(TypeError, msg=repr(bad)):
+                bridge_module.to_jsonable(bad)
 
     def test_unsupported_types_raise(self):
         for bad in (np.array([1 + 2j]), object(), b'bytes', {1, 2}):
@@ -93,10 +125,27 @@ class ResponseEncodingTests(unittest.TestCase):
     def test_encoding_is_single_line_strict_json(self):
         line = self.encode({'signal': np.array([0.0, np.nan]), 'text': 'é\n'})
         self.assertNotIn('\n', line)
-        self.assertNotIn('NaN', line)
+        def reject_constant(token):
+            raise AssertionError(f'bare {token} literal in JSON')
+        json.loads(line, parse_constant=reject_constant)
         parsed = json.loads(line)
-        self.assertEqual(parsed['result']['signal'], [0.0, None])
-        self.assertEqual(parsed['non_finite_replaced'], 1)
+        self.assertFalse(parsed['success'])  # NaN/Inf must never be reported as success
+        self.assertEqual(parsed['result'], {})
+        self.assertIn('non-finite', parsed['error'])
+        self.assertEqual(parsed['non_finite_count'], 1)
+
+    def test_conflicting_keys_answer_with_error_response(self):
+        import io
+        original, sys.stdout = sys.stdout, io.StringIO()
+        try:
+            asyncio.run(self.bridge._send_response(bridge_module.AudioProcessingResponse(
+                success=True, result={1: 'a', '1': 'b'}, error=None, processing_time=0.0, request_id='k')))
+            out = sys.stdout.getvalue().splitlines()
+        finally:
+            sys.stdout = original
+        parsed = json.loads(out[0])
+        self.assertFalse(parsed['success'])
+        self.assertIn('Conflicting', parsed['error'])
 
     def test_unserializable_result_still_answers_request_with_error(self):
         captured = []

@@ -11,7 +11,15 @@ const { EnhancedAudioProcessingWrapper } = require('../src/enhancedAudioProcessi
 const PYTHON = process.env.PYTHON || 'python3';
 const probe = spawnSync(PYTHON, ['-c', 'import numpy'], { encoding: 'utf8' });
 const available = probe.status === 0;
+// Set REQUIRE_PYTHON_INTEGRATION=1 (e.g. in CI) so missing Python/NumPy fails instead of silently skipping
+const required = process.env.REQUIRE_PYTHON_INTEGRATION === '1';
 const maybe = available ? describe : describe.skip;
+
+if (!available && required) {
+    test('python3 with numpy is available (REQUIRE_PYTHON_INTEGRATION=1)', () => {
+        throw new Error(`Python integration prerequisites missing: ${probe.stderr || probe.error}`);
+    });
+}
 
 const sine = (n) => Array.from({ length: n }, (_, i) => 0.5 * Math.sin(2 * Math.PI * 440 * i / 44100));
 

@@ -2,11 +2,22 @@
  * Enhanced Audio Processing JavaScript Wrapper
  * Connects JavaScript ZIP phrase system with Python audio processors
  * Created by Scott Charles Olson (Charly)
+ *
+ * Transport protocol (Python bridge stdout): newline-delimited JSON, one
+ * complete message per line, UTF-8. Python's stdout carries protocol messages
+ * only; diagnostics go to stderr. Stdout chunks are arbitrary slices of that
+ * byte stream, so the wrapper buffers bytes and only decodes/parses once a
+ * full line has arrived. Pending partial data is bounded by maxResponseBytes.
  */
 
 const { spawn } = require('child_process');
 const path = require('path');
 const EventEmitter = require('events');
+const { StringDecoder } = require('string_decoder');
+
+const NEWLINE = 0x0a;
+const DEFAULT_MAX_RESPONSE_BYTES = 256 * 1024 * 1024;
+const DEFAULT_KILL_GRACE_MS = 2000;
 
 class EnhancedAudioProcessingWrapper extends EventEmitter {
     constructor(config = {}) {
@@ -17,6 +28,8 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
             bridgeScript: config.bridgeScript || path.join(__dirname, 'enhancedAudioProcessingBridge.py'),
             timeout: config.timeout || 30000,
             sampleRate: config.sampleRate || 44100,
+            maxResponseBytes: config.maxResponseBytes || DEFAULT_MAX_RESPONSE_BYTES,
+            killGraceMs: config.killGraceMs || DEFAULT_KILL_GRACE_MS,
             ...config
         };
         
@@ -35,84 +48,246 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
     }
     
     /**
-     * Initialize the Python audio processing bridge
+     * Initialize the Python audio processing bridge.
+     * Settles exactly once: ready, spawn error, early exit, fatal bridge
+     * error, protocol error or timeout (the child is terminated on failure).
      */
     async initialize() {
+        if (this.pythonProcess && this.isReady) {
+            return true;
+        }
+        
         return new Promise((resolve, reject) => {
+            let settled = false;
+            const settle = (error) => {
+                if (settled) return;
+                settled = true;
+                clearTimeout(timer);
+                if (this._init === state) this._init = null;
+                if (error) reject(error); else resolve(true);
+            };
+            
+            let child;
             try {
                 console.log('Starting Python audio processing bridge...');
-                
-                // Spawn Python process
-                this.pythonProcess = spawn(this.config.pythonExecutable, [this.config.bridgeScript], {
+                child = spawn(this.config.pythonExecutable, [this.config.bridgeScript], {
                     stdio: ['pipe', 'pipe', 'pipe'],
-                    cwd: path.dirname(this.config.bridgeScript)
+                    cwd: path.dirname(this.config.bridgeScript),
+                    env: { ...process.env, ...(this.config.env || {}) }
                 });
-                
-                // Handle process output
-                this.pythonProcess.stdout.on('data', (data) => {
-                    this._handlePythonOutput(data);
-                });
-                
-                // Handle process errors
-                this.pythonProcess.stderr.on('data', (data) => {
-                    console.error(`Python Bridge Error: ${data}`);
-                });
-                
-                // Handle process exit
-                this.pythonProcess.on('close', (code) => {
-                    console.log(`Python bridge process exited with code ${code}`);
-                    this.isReady = false;
-                    this.emit('disconnected');
-                });
-                
-                // Handle process errors
-                this.pythonProcess.on('error', (error) => {
-                    console.error(`Failed to start Python bridge: ${error}`);
-                    reject(error);
-                });
-                
-                // Wait for ready signal
-                this.once('ready', () => {
-                    console.log('Python audio processing bridge ready');
-                    resolve(true);
-                });
-                
-                // Set timeout
-                setTimeout(() => {
-                    if (!this.isReady) {
-                        reject(new Error('Python bridge initialization timeout'));
-                    }
-                }, this.config.timeout);
-                
             } catch (error) {
                 reject(error);
+                return;
             }
+            
+            const state = {
+                child,
+                settleInit: settle,
+                chunks: [],
+                chunkBytes: 0,
+                stderrDecoder: new StringDecoder('utf8'),
+                failed: false,
+                exited: false,
+                exitWaiters: []
+            };
+            const timer = setTimeout(() => {
+                this._failBridge(state, new Error('Python bridge initialization timeout'));
+            }, this.config.timeout);
+            
+            this.pythonProcess = child;
+            this._init = state;
+            this._state = state;
+            
+            child.stdout.on('data', (data) => this._handleStdoutChunk(state, data));
+            
+            child.stderr.on('data', (data) => {
+                const text = state.stderrDecoder.write(data);
+                if (text) {
+                    console.error(`Python Bridge Error: ${text}`);
+                    this.emit('stderr', text);
+                }
+            });
+            
+            // Broken stdin (e.g. EPIPE after the child died) must not crash the process
+            child.stdin.on('error', (error) => {
+                this._failBridge(state, new Error(`Python bridge stdin error: ${error.message}`));
+            });
+            
+            child.on('close', (code, signal) => this._handleClose(state, code, signal));
+            
+            child.on('error', (error) => {
+                console.error(`Failed to start Python bridge: ${error}`);
+                this._failBridge(state, error);
+            });
         });
     }
     
     /**
-     * Handle output from Python process
+     * Buffer raw stdout bytes and dispatch each complete newline-delimited
+     * message. Bytes are only decoded once a full line is available so
+     * multibyte UTF-8 sequences split across chunks stay intact.
      */
-    _handlePythonOutput(data) {
-        const lines = data.toString().split('\n').filter(line => line.trim());
+    _handleStdoutChunk(state, data) {
+        if (state.failed) return;
         
-        for (const line of lines) {
-            try {
-                const response = JSON.parse(line);
-                
-                if (response.status === 'ready') {
-                    this.isReady = true;
-                    this.emit('ready', response);
-                } else if (response.status === 'error') {
-                    this.emit('error', new Error(response.message));
-                } else if (response.request_id) {
-                    this._handleProcessingResponse(response);
-                }
-                
-            } catch (error) {
-                console.warn('Failed to parse Python output:', line);
+        let start = 0;
+        let index;
+        while ((index = data.indexOf(NEWLINE, start)) !== -1) {
+            const tail = data.subarray(start, index);
+            if (state.chunkBytes + tail.length > this.config.maxResponseBytes) {
+                this._failBridge(state, this._oversizeError());
+                return;
             }
+            let line = tail;
+            if (state.chunks.length) {
+                state.chunks.push(tail);
+                line = Buffer.concat(state.chunks, state.chunkBytes + tail.length);
+            }
+            state.chunks = [];
+            state.chunkBytes = 0;
+            start = index + 1;
+            
+            this._handleLine(state, line);
+            if (state.failed) return;
         }
+        
+        if (start < data.length) {
+            const rest = data.subarray(start);
+            if (state.chunkBytes + rest.length > this.config.maxResponseBytes) {
+                this._failBridge(state, this._oversizeError());
+                return;
+            }
+            state.chunks.push(Buffer.from(rest));
+            state.chunkBytes += rest.length;
+        }
+    }
+    
+    _oversizeError() {
+        return new Error(`Python bridge response exceeded ${this.config.maxResponseBytes} bytes without a message terminator`);
+    }
+    
+    /**
+     * Decode and dispatch one complete protocol line
+     */
+    _handleLine(state, lineBuffer) {
+        let response;
+        try {
+            const text = new TextDecoder('utf-8', { fatal: true }).decode(lineBuffer);
+            if (!text.trim()) return;
+            response = JSON.parse(text);
+        } catch (error) {
+            this._failBridge(state, new Error(`Malformed Python bridge output: ${error.message}`));
+            return;
+        }
+        
+        if (response === null || typeof response !== 'object' || Array.isArray(response)) {
+            this._failBridge(state, new Error('Malformed Python bridge output: message is not a JSON object'));
+            return;
+        }
+        
+        this._handlePythonMessage(state, response);
+    }
+    
+    /**
+     * Handle a parsed message from Python
+     */
+    _handlePythonMessage(state, response) {
+        if (response.status === 'ready') {
+            if (!this.isReady && this._state === state) {
+                this.isReady = true;
+                console.log('Python audio processing bridge ready');
+                state.settleInit(null);
+                this.emit('ready', response);
+            }
+        } else if (response.status === 'error') {
+            const error = new Error(response.message || 'Python bridge error');
+            if (this.isReady) {
+                // EventEmitter throws on unhandled 'error'; only emit when observed
+                if (this.listenerCount('error') > 0) this.emit('error', error);
+            } else {
+                this._failBridge(state, error);
+            }
+        } else if (response.request_id) {
+            this._handleProcessingResponse(response);
+        } else {
+            this._failBridge(state, new Error('Malformed Python bridge output: unrecognized message'));
+        }
+    }
+    
+    /**
+     * Child process exited: fail anything outstanding (truncated output included)
+     */
+    _handleClose(state, code, signal) {
+        state.exited = true;
+        const waiters = state.exitWaiters;
+        state.exitWaiters = [];
+        waiters.forEach((fn) => fn());
+        
+        const rest = state.stderrDecoder.end();
+        if (rest) {
+            console.error(`Python Bridge Error: ${rest}`);
+            this.emit('stderr', rest);
+        }
+        
+        console.log(`Python bridge process exited with code ${code}`);
+        
+        if (!state.failed) {
+            const truncated = state.chunkBytes > 0
+                ? ' (truncated output: incomplete final message)'
+                : '';
+            const detail = code === null ? `signal ${signal}` : `code ${code}`;
+            this._failBridge(state, new Error(`Python bridge process exited with ${detail}${truncated}`));
+        }
+        
+        if (this._state === state) {
+            this._state = null;
+            this.pythonProcess = null;
+            this.isReady = false;
+        }
+        this.emit('disconnected');
+    }
+    
+    /**
+     * Fail the bridge once: reject init and every pending request, then
+     * terminate the child. Safe to call repeatedly.
+     */
+    _failBridge(state, error) {
+        if (state.failed) return;
+        state.failed = true;
+        state.chunks = [];
+        state.chunkBytes = 0;
+        
+        if (this._state === state) this.isReady = false;
+        state.settleInit(error);
+        this._rejectAllPending(error);
+        this._terminateChild(state);
+    }
+    
+    _rejectAllPending(error) {
+        for (const [requestId, entry] of Array.from(this.pendingRequests)) {
+            this.pendingRequests.delete(requestId);
+            clearTimeout(entry.timer);
+            this.stats.totalRequests++;
+            this.stats.failedRequests++;
+            entry.reject(error);
+        }
+    }
+    
+    /**
+     * SIGTERM, then SIGKILL after killGraceMs if the child is still alive
+     */
+    _terminateChild(state) {
+        if (state.exited) return;
+        const { child } = state;
+        try { child.stdin.destroy(); } catch (_) { /* already closed */ }
+        try { child.kill(); } catch (_) { /* already dead */ }
+        const killer = setTimeout(() => {
+            if (!state.exited) {
+                try { child.kill('SIGKILL'); } catch (_) { /* already dead */ }
+            }
+        }, this.config.killGraceMs);
+        killer.unref();
+        state.exitWaiters.push(() => clearTimeout(killer));
     }
     
     /**
@@ -121,9 +296,13 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
     _handleProcessingResponse(response) {
         const requestData = this.pendingRequests.get(response.request_id);
         
+        // Unknown/late responses (e.g. after a request timeout) are ignored
         if (requestData) {
-            const { resolve, reject, startTime } = requestData;
+            const { resolve, reject, startTime, timer } = requestData;
             const responseTime = Date.now() - startTime;
+            
+            this.pendingRequests.delete(response.request_id);
+            clearTimeout(timer);
             
             // Update statistics
             this.stats.totalRequests++;
@@ -135,8 +314,6 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
                 this.stats.failedRequests++;
                 reject(new Error(response.error || 'Unknown processing error'));
             }
-            
-            this.pendingRequests.delete(response.request_id);
         }
     }
     
@@ -148,30 +325,35 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
             throw new Error('Python bridge not ready');
         }
         
+        const state = this._state;
+        const requestId = `req_${++this.requestId}_${Date.now()}`;
+        const payload = JSON.stringify({
+            operation,
+            parameters,
+            request_id: requestId,
+            timestamp: Date.now()
+        }) + '\n';
+        
         return new Promise((resolve, reject) => {
-            const requestId = `req_${++this.requestId}_${Date.now()}`;
             const startTime = Date.now();
             
-            const request = {
-                operation,
-                parameters,
-                request_id: requestId,
-                timestamp: Date.now()
-            };
-            
-            // Store request for response handling
-            this.pendingRequests.set(requestId, { resolve, reject, startTime });
-            
-            // Send to Python process
-            this.pythonProcess.stdin.write(JSON.stringify(request) + '\n');
-            
-            // Set timeout
-            setTimeout(() => {
+            // A running Python request cannot be cancelled, so a timeout
+            // terminates the bridge; initialize() can be called again.
+            const timer = setTimeout(() => {
                 if (this.pendingRequests.has(requestId)) {
-                    this.pendingRequests.delete(requestId);
-                    reject(new Error('Request timeout'));
+                    this._failBridge(state, new Error('Request timeout'));
                 }
             }, this.config.timeout);
+            
+            // Store request for response handling
+            this.pendingRequests.set(requestId, { resolve, reject, startTime, timer });
+            
+            // Send to Python process
+            state.child.stdin.write(payload, (error) => {
+                if (error) {
+                    this._failBridge(state, new Error(`Failed to send request to Python bridge: ${error.message}`));
+                }
+            });
         });
     }
     
@@ -462,18 +644,23 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
      * Shutdown the Python bridge
      */
     async shutdown() {
-        if (this.pythonProcess) {
+        const state = this._state;
+        if (state) {
             console.log('Shutting down Python audio processing bridge...');
             
-            // Clear pending requests
-            for (const [requestId, { reject }] of this.pendingRequests) {
-                reject(new Error('Bridge shutting down'));
-            }
-            this.pendingRequests.clear();
+            // Mark failed first so the close handler does not re-report
+            state.failed = true;
+            state.settleInit(new Error('Bridge shutting down'));
+            this._rejectAllPending(new Error('Bridge shutting down'));
             
-            // Kill Python process
-            this.pythonProcess.kill();
+            const exited = new Promise((resolve) => {
+                if (state.exited) resolve(); else state.exitWaiters.push(resolve);
+            });
+            this._terminateChild(state);
+            await exited;
+            
             this.pythonProcess = null;
+            this._state = null;
             this.isReady = false;
             
             console.log('Python bridge shutdown complete');

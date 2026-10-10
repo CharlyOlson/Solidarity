@@ -14,21 +14,26 @@ from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 import logging
 import time
+import math
+import contextlib
 
-# Configure logging
+# Configure logging. stdout is reserved for the JSON line protocol read by
+# enhancedAudioProcessingWrapper.js, so all diagnostics go to stderr.
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    stream=sys.stderr
 )
 logger = logging.getLogger(__name__)
 
 # Import all audio processing classes
 try:
-    from solidarityAudioProcessor import (
-        AudioTimeBuyer, AudioParameterController, AudioGradientTransferenceEngine,
-        Audio3DPositionalEncoder, ProfessionalAudioProcessor, AdvancedSpatialAudioProcessor,
-        SolidarityAudioProcessor, MasterSolidarityAudioSystem
-    )
+    with contextlib.redirect_stdout(sys.stderr):
+        from solidarityAudioProcessor import (
+            AudioTimeBuyer, AudioParameterController, AudioGradientTransferenceEngine,
+            Audio3DPositionalEncoder, ProfessionalAudioProcessor, AdvancedSpatialAudioProcessor,
+            SolidarityAudioProcessor, MasterSolidarityAudioSystem
+        )
 except ImportError as e:
     logger.error(f"Failed to import audio processors: {e}")
     # Create minimal implementations for testing
@@ -43,6 +48,53 @@ except ImportError as e:
             
         def process_complete_audio_pipeline(self, signal, config):
             return {"processed": True, "signal_length": len(signal)}
+
+def to_jsonable(value: Any, counter: Optional[Dict[str, int]] = None) -> Any:
+    """
+    Convert supported values (nested dict/list/tuple, NumPy arrays and scalars,
+    Python scalars) to strictly valid JSON types.
+
+    Non-finite floats (NaN, +Inf, -Inf) have no JSON representation, so they are
+    replaced by None (JSON null) and counted in counter['non_finite'] so the
+    caller can report the substitution instead of emitting invalid JSON.
+    Unsupported types (e.g. complex, bytes, arbitrary objects) raise TypeError.
+    """
+    if counter is None:
+        counter = {'non_finite': 0}
+    if value is None or isinstance(value, (bool, str)):
+        return value
+    if isinstance(value, (int, np.integer)) and not isinstance(value, np.bool_):
+        return int(value)
+    if isinstance(value, (float, np.floating)):
+        number = float(value)
+        if math.isfinite(number):
+            return number
+        counter['non_finite'] += 1
+        return None
+    if isinstance(value, np.bool_):
+        return bool(value)
+    if isinstance(value, np.str_):
+        return str(value)
+    if isinstance(value, np.ndarray):
+        if value.dtype.kind == 'f':
+            finite = np.isfinite(value)
+            if finite.all():
+                return value.tolist()
+            counter['non_finite'] += int(value.size - np.count_nonzero(finite))
+            masked = value.astype(object)
+            masked[~finite] = None
+            return masked.tolist()
+        if value.dtype.kind in 'biuU':
+            return value.tolist()
+        if value.dtype.kind == 'O':
+            return [to_jsonable(item, counter) for item in value.tolist()]
+        raise TypeError(f"Unsupported NumPy dtype for JSON: {value.dtype}")
+    if isinstance(value, dict):
+        return {str(to_jsonable(k, counter)) if not isinstance(k, str) else k:
+                to_jsonable(v, counter) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [to_jsonable(item, counter) for item in value]
+    raise TypeError(f"Object of type {type(value).__name__} is not JSON serializable")
 
 @dataclass
 class AudioProcessingRequest:
@@ -84,16 +136,9 @@ class EnhancedAudioProcessingBridge:
     def _initialize_audio_systems(self) -> Dict[str, Any]:
         """Initialize all audio processing systems"""
         try:
-            systems = {
-                'time_buyer': AudioTimeBuyer(self.sample_rate),
-                'parameter_controller': AudioParameterController(),
-                'gradient_engine': AudioGradientTransferenceEngine(),
-                'spatial_encoder': Audio3DPositionalEncoder(),
-                'professional_processor': ProfessionalAudioProcessor(),
-                'spatial_processor': AdvancedSpatialAudioProcessor(),
-                'solidarity_processor': SolidarityAudioProcessor(),
-                'master_system': MasterSolidarityAudioSystem()
-            }
+            # Third-party processors may print; keep stdout protocol-only
+            with contextlib.redirect_stdout(sys.stderr):
+                systems = self._build_audio_systems()
             
             logger.info("All audio systems initialized successfully")
             return systems
@@ -101,6 +146,19 @@ class EnhancedAudioProcessingBridge:
         except Exception as e:
             logger.error(f"Failed to initialize audio systems: {e}")
             return {}
+    
+    def _build_audio_systems(self) -> Dict[str, Any]:
+        """Construct all audio processors"""
+        return {
+            'time_buyer': AudioTimeBuyer(self.sample_rate),
+            'parameter_controller': AudioParameterController(),
+            'gradient_engine': AudioGradientTransferenceEngine(),
+            'spatial_encoder': Audio3DPositionalEncoder(),
+            'professional_processor': ProfessionalAudioProcessor(),
+            'spatial_processor': AdvancedSpatialAudioProcessor(),
+            'solidarity_processor': SolidarityAudioProcessor(),
+            'master_system': MasterSolidarityAudioSystem()
+        }
     
     async def start_processing_loop(self):
         """Start the main processing loop"""
@@ -123,6 +181,12 @@ class EnhancedAudioProcessingBridge:
             loop = asyncio.get_event_loop()
             line = await loop.run_in_executor(None, sys.stdin.readline)
             
+            if line == '':
+                # EOF: the parent closed stdin, so stop instead of spinning
+                logger.info("stdin closed, stopping")
+                self.running = False
+                return
+            
             if line.strip():
                 request_data = json.loads(line.strip())
                 await self._process_request(request_data)
@@ -144,7 +208,9 @@ class EnhancedAudioProcessingBridge:
             logger.info(f"Processing request {request_id}: {operation}")
             
             # Route to appropriate processing method
-            result = await self._route_operation(operation, parameters)
+            # Requests are handled serially, so the global redirect cannot capture other writers
+            with contextlib.redirect_stdout(sys.stderr):
+                result = await self._route_operation(operation, parameters)
             
             processing_time = time.time() - start_time
             
@@ -390,21 +456,41 @@ class EnhancedAudioProcessingBridge:
         }
     
     async def _send_response(self, response: AudioProcessingResponse):
-        """Send response back to JavaScript"""
+        """Send one complete response line (strict JSON) back to JavaScript"""
         try:
-            response_json = json.dumps({
-                'success': response.success,
-                'result': response.result,
-                'error': response.error,
-                'processing_time': response.processing_time,
-                'request_id': response.request_id,
-                'timestamp': time.time()
-            })
-            
-            print(response_json, flush=True)
-            
+            line = self._encode_response(response)
+        except Exception as e:
+            logger.error(f"Failed to serialize response {response.request_id}: {e}")
+            # Always answer the request so the caller does not wait for a timeout
+            line = self._encode_response(AudioProcessingResponse(
+                success=False,
+                result={},
+                error=f"Failed to serialize response: {e}",
+                processing_time=response.processing_time,
+                request_id=response.request_id
+            ))
+        
+        try:
+            sys.stdout.write(line + '\n')
+            sys.stdout.flush()
         except Exception as e:
             logger.error(f"Failed to send response: {e}")
+    
+    def _encode_response(self, response: AudioProcessingResponse) -> str:
+        """Serialize a response as a single-line, NaN/Infinity-free JSON document"""
+        counter = {'non_finite': 0}
+        payload = {
+            'success': response.success,
+            'result': to_jsonable(response.result, counter),
+            'error': response.error,
+            'processing_time': to_jsonable(response.processing_time, counter),
+            'request_id': response.request_id,
+            'timestamp': time.time()
+        }
+        if counter['non_finite']:
+            payload['non_finite_replaced'] = counter['non_finite']
+        # allow_nan=False guarantees invalid JSON can never reach stdout
+        return json.dumps(payload, allow_nan=False)
     
     def _update_processing_stats(self, processing_time: float):
         """Update processing statistics"""

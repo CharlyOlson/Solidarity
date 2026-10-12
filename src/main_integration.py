@@ -18,6 +18,7 @@ with time but the cogs switch function not entire sense of direction."
 
 import sys
 import os
+import time
 import numpy as np
 from typing import Dict, List, Tuple, Optional, Union
 
@@ -120,15 +121,20 @@ class SolidarityHarmonicSystem:
         Returns:
             Dict: Complete processing results
         """
+        pipeline_started = time.perf_counter()
+        stage_timings = {}
         results = {}
         
         # Step 1: Harmonic Analysis
+        stage_started = time.perf_counter()
         fundamental_freq = self.advanced_analyzer.harmonic_product_spectrum(audio_signal)
         harmonic_analysis = self.advanced_analyzer.analyze_harmonics_fft(
             audio_signal, fundamental_freq, 16
         )
+        stage_timings['initial_harmonic_analysis'] = time.perf_counter() - stage_started
         
         # Step 2: Audio Zoom (if microphone signals provided)
+        stage_started = time.perf_counter()
         if mic_signals is not None and target_beam_angle is not None:
             zoomed_audio = self.audio_zoom.delay_and_sum_beamformer(
                 mic_signals, target_beam_angle
@@ -142,8 +148,10 @@ class SolidarityHarmonicSystem:
         else:
             audio_to_process = audio_signal
             results['audio_zoom'] = {'zoomed': False}
+        stage_timings['audio_zoom'] = time.perf_counter() - stage_started
         
         # Step 3: Dynamic Processing
+        stage_started = time.perf_counter()
         if enable_compression:
             # Analyze dynamics first
             dynamics_analysis = self.dynamic_processor.analyze_dynamics(audio_to_process)
@@ -161,8 +169,10 @@ class SolidarityHarmonicSystem:
             }
         else:
             results['dynamic_processing'] = {'enabled': False}
+        stage_timings['dynamic_processing'] = time.perf_counter() - stage_started
         
         # Step 4: Temporal Control Processing
+        stage_started = time.perf_counter()
         if enable_temporal_control:
             # Define processing function for temporal control
             def harmonic_enhancement(signal):
@@ -190,8 +200,10 @@ class SolidarityHarmonicSystem:
         else:
             results['temporal_control'] = {'enabled': False}
             final_audio = audio_to_process
+        stage_timings['temporal_control'] = time.perf_counter() - stage_started
         
         # Step 5: Final Harmonic Analysis
+        stage_started = time.perf_counter()
         final_harmonic_analysis = self.advanced_analyzer.analyze_harmonics_fft(
             final_audio, fundamental_freq, 16
         )
@@ -200,6 +212,7 @@ class SolidarityHarmonicSystem:
         thd_analysis = self.advanced_analyzer.calculate_total_harmonic_distortion(
             final_audio, fundamental_freq
         )
+        stage_timings['final_harmonic_analysis'] = time.perf_counter() - stage_started
         
         # Update system state
         self.system_state['total_samples_processed'] += len(audio_signal)
@@ -225,6 +238,12 @@ class SolidarityHarmonicSystem:
             },
             'system_state': self.system_state.copy()
         })
+        results['pipeline_diagnostics'] = {
+            'sample_count': len(audio_signal),
+            'sample_rate_hz': self.sample_rate,
+            'stage_timings_seconds': stage_timings
+        }
+        stage_timings['total'] = time.perf_counter() - pipeline_started
         
         return results
     

@@ -12,7 +12,7 @@ import math
 from typing import Dict, List, Tuple, Optional, Union, Callable
 from enum import Enum
 import time
-from threading import Lock
+from threading import RLock
 import queue
 
 
@@ -50,7 +50,7 @@ class TemporalCogController:
         self.function_reversed = False
         
         # Lock mechanisms
-        self._lock = Lock()
+        self._lock = RLock()
         self.is_locked = False
         self.lock_position = 0.0
         self.lock_timestamp = 0.0

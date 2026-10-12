@@ -78,13 +78,14 @@ demo and by the new regression test. The JS bridge instead calls
 I inspected `CharlyOlson/Solidarity#25` at head
 `c6ae1236c6f306dde8d67ba4d53e808f85ba7f0f` (base
 `f52e042b47aad70824df1d25fa2b8b42bf6dd8ce`). It adds an opt-in, analysis-only
-Coil measurement module, its tests, synthetic benchmark and report. It changes
-neither `src/main_integration.py` nor the temporal controller, and its report
-identifies the timeout as an unresolved finding. Its changes are file-disjoint
-from #26/#27; no #25 code was merged into this stack or run here. The analysis
-module explicitly rejects financial kinds/units and is not connected to
-execution. No financial amounts, contracts, Henry/RJO/tunneling/Coil
-definitions, or undefined `transfer_gradient` behavior were changed. The
+Coil measurement module, its tests, synthetic benchmark and report in
+`src/analysis/`, `tests/test_coil_measurement.py`, `benchmarks/` and `docs/`.
+It changes neither `src/main_integration.py` nor the temporal controller, and
+its report identifies the timeout as an unresolved finding. Its changed files
+are disjoint from #26/#27; no #25 code was merged into this stack or run here.
+The analysis module explicitly rejects financial kinds/units and is not
+connected to execution. No financial amounts, contracts, Henry/RJO/tunneling/
+Coil definitions, or undefined `transfer_gradient` behavior were changed. The
 existing `transfer_gradient` test remains skipped because the method is absent.
 No twelve-node execution is claimed.
 
@@ -196,7 +197,8 @@ The #27 row names its initial plan SHA; the tested code commit is listed above.
 | `CharlyOlson/Solidarity#2` | `e468fbe906a26967ce935e2febd857cf516001ba` | `513380a08bcbfefb2b37edd139460f94b4d43fe0` | `contracts/SolidarityCore.sol`; no same-file overlap with #15's latest test change, but both need contract-level validation. Very stale base. |
 
 The prompt separately names `CharlyOlson/-Solidarity-Clean#26` as a dependency.
-It is not `CharlyOlson/Solidarity#26`. GitHub returned 404 for both the
-`-Solidarity-Clean` and `Solidarity-Clean` repository spellings, so its head,
-base and compatibility cannot be verified here; no dependency edge or merge
-order is inferred for it.
+It is a separate, unverified prerequisite reference, not
+`CharlyOlson/Solidarity#26` and not this stack's bridge dependency. GitHub
+returned 404 for both the `-Solidarity-Clean` and `Solidarity-Clean` repository
+spellings, so its head/base and dependency order cannot be verified; the
+owner must confirm that reference before claiming it is satisfied.

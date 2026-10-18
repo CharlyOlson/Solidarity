@@ -20,6 +20,8 @@ class TestAdvancedAudio(unittest.TestCase):
             import numpy as np
             cls.np = np
         except ImportError as e:
+            if os.environ.get("REQUIRE_PYTHON_INTEGRATION") == "1":
+                raise
             raise unittest.SkipTest(f"NumPy is not installed. Install with: pip install numpy. Error: {e}")
         
         # Add src directory to path
@@ -47,6 +49,8 @@ class TestAdvancedAudio(unittest.TestCase):
             cls.ProfessionalAudioProcessor = ProfessionalAudioProcessor
             cls.AdvancedSpatialAudioProcessor = AdvancedSpatialAudioProcessor
         except ImportError as e:
+            if os.environ.get("REQUIRE_PYTHON_INTEGRATION") == "1":
+                raise
             raise unittest.SkipTest(f"Failed to import advanced audio modules: {e}")
 
     def test_audio_time_buyer(self):

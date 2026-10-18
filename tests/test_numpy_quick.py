@@ -60,7 +60,9 @@ class TestNumPyQuick(unittest.TestCase):
         try:
             from solidarityAudioProcessor import MasterSolidarityAudioSystem
             self.assertIsNotNone(MasterSolidarityAudioSystem)
-        except ImportError:
+        except ImportError as exc:
+            if os.environ.get("REQUIRE_PYTHON_INTEGRATION") == "1":
+                self.fail(f"SolidarityAudioProcessor unavailable: {exc}")
             self.skipTest("SolidarityAudioProcessor module not found")
 
 if __name__ == "__main__":

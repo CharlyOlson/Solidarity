@@ -14,6 +14,8 @@ try:
     import numpy  # noqa: F401
     import scipy  # noqa: F401
 except ImportError as exc:
+    if os.environ.get('REQUIRE_PYTHON_INTEGRATION') == '1':
+        raise
     raise unittest.SkipTest(f'Audio dependencies unavailable: {exc}')
 
 RUN_PIPELINE = (

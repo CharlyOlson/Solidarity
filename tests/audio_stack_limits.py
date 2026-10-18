@@ -533,6 +533,7 @@ def run_main_cases(records, start_time, budget, case_timeout, rss_limit):
         {
             "case_id": f"main-professional-analyzer-rate-probe-{rate}",
             "phase": "rate_probe",
+            "size": 16384,
             "sample_rate": rate,
         }
         for rate in (16000, 44100, 48000)

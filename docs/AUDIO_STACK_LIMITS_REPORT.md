@@ -134,6 +134,9 @@ length); the setup and NumPy boolean serialization issues were fixed and
 focused probes passed before the final SHA was tested. Its incomplete output
 was discarded. No final sweep hit a timeout, RSS ceiling, orphan-process
 condition, or aggregate budget, and all planned sizes started.
+One CSV row preserves a trailing space from NumPy's raw multiline
+`ValueError` message for the two-dimensional main input; it is retained rather
+than normalized in this evidence artifact.
 
 ## Final limits results
 
@@ -299,9 +302,12 @@ GitHub Actions on the current PR head showed signed-commit, secret-scan and
 drift checks as `action_required` with zero jobs; `get_job_logs` returned zero
 failed jobs for those runs. They are not audio test results. No dedicated CI
 test workflow ran. The repository has no ESLint configuration, so no ESLint
-run is claimed. Parallel code review/CodeQL validation is run after the report
-and raw results are committed. Codacy MCP analysis was unavailable in this
-session.
+run is claimed. `parallel_validation` was invoked on the completed diff:
+CodeQL skipped the test/documentation/data-only changes as trivial; the code
+review backend could not load its configured model
+(`capi-prod-claude-sonnet-4.6` was not in the model registry), so no completed
+code-review conclusion is claimed. Codacy MCP analysis was unavailable in
+this session.
 
 Next session: start from current PR #29 head, verify its base remains
 `28a27af…`, and treat `c90625f…` as the final tested code-bearing SHA.

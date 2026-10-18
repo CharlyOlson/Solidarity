@@ -262,7 +262,9 @@ def worker_rate_probe(case):
         "reported_frequency_hz": dominant["frequency"],
         "frequency_ratio_to_expected": dominant["frequency"] / 440,
         "reported_harmonic_count": len(analysis),
-        "sample_rate_inconsistency_observed": abs(dominant["frequency"] - 440) > sample_rate / length,
+        "sample_rate_inconsistency_observed": bool(
+            abs(dominant["frequency"] - 440) > sample_rate / length
+        ),
         "implementation_note": "ProfessionalAudioProcessor.harmonic_analyzer uses a fixed 44100 Hz bin spacing",
     }
 

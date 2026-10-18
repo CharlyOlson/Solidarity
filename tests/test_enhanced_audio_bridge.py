@@ -205,6 +205,41 @@ class ProtocolSubprocessTests(unittest.TestCase):
         proc = run_bridge([], timeout=30)  # would spin forever before the EOF fix
         self.assertEqual(proc.returncode, 0)
 
+    def test_malformed_json_line_logs_and_recovers_for_next_request(self):
+        valid = json.dumps({
+            'operation': 'get_system_status',
+            'parameters': {},
+            'request_id': 'after-malformed',
+        })
+        proc = subprocess.run(
+            [sys.executable, BRIDGE],
+            input='{"operation":\n' + valid + '\n',
+            capture_output=True,
+            text=True,
+            timeout=10,
+            cwd=SRC,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr[-500:])
+        messages = [json.loads(line) for line in proc.stdout.splitlines()]
+        self.assertEqual(messages[0]['status'], 'ready')
+        self.assertEqual(messages[1]['request_id'], 'after-malformed')
+        self.assertTrue(messages[1]['success'])
+        self.assertIn('Invalid JSON received', proc.stderr)
+
+    def test_truncated_json_at_eof_logs_and_exits(self):
+        proc = subprocess.run(
+            [sys.executable, BRIDGE],
+            input='{"operation":"get_system_status","parameters":{}',
+            capture_output=True,
+            text=True,
+            timeout=10,
+            cwd=SRC,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr[-500:])
+        messages = [json.loads(line) for line in proc.stdout.splitlines()]
+        self.assertEqual([message['status'] for message in messages], ['ready'])
+        self.assertIn('Invalid JSON received', proc.stderr)
+
 
 if __name__ == '__main__':
     unittest.main()

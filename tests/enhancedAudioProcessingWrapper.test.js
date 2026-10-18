@@ -112,6 +112,19 @@ describe('EnhancedAudioProcessingWrapper transport', () => {
         expect(wrapper.getStats().failedRequests).toBe(1);
     });
 
+    test('stdin write failure rejects and clears the pending request', async () => {
+        make('hang');
+        await wrapper.initialize();
+        const pid = wrapper.pythonProcess.pid;
+        wrapper.pythonProcess.stdin.write = (_payload, callback) => {
+            queueMicrotask(() => callback(new Error('fixture write failure')));
+            return false;
+        };
+        await expect(wrapper.getSystemStatus()).rejects.toThrow(/Failed to send request.*fixture write failure/);
+        expect(wrapper.getStats().pendingRequests).toBe(0);
+        expect(await waitFor(() => !alive(pid))).toBe(true);
+    });
+
     test.each([
         ['malformed', /Malformed Python bridge output/],
         ['invalid_utf8', /Malformed Python bridge output/],
@@ -151,6 +164,26 @@ describe('EnhancedAudioProcessingWrapper transport', () => {
         const pid = wrapper.pythonProcess.pid;
         await expect(wrapper.getSystemStatus()).rejects.toThrow(/exceeded 1000 bytes/);
         expect(await waitFor(() => !alive(pid))).toBe(true);
+    });
+
+    test.each([127, 128, 129])('maxResponseBytes accepts/rejects complete %i-byte frames at cap 128', async (frameBytes) => {
+        make('frame_size', {
+            maxResponseBytes: 128,
+            env: { FAKE_BRIDGE_MODE: 'frame_size', FAKE_FRAME_BYTES: String(frameBytes) }
+        });
+        const stderr = [];
+        wrapper.on('stderr', (text) => stderr.push(text));
+        await wrapper.initialize();
+        if (frameBytes <= 128) {
+            const response = await wrapper.getSystemStatus();
+            expect(typeof response.result.padding).toBe('string');
+        } else {
+            await expect(wrapper.getSystemStatus()).rejects.toThrow(/exceeded 128 bytes/);
+            expect(await waitFor(() => wrapper.pythonProcess === null || !alive(wrapper.pythonProcess.pid))).toBe(true);
+        }
+        await waitFor(() => stderr.join('').includes(`frame-bytes=${frameBytes}`));
+        expect(stderr.join('')).toContain(`frame-bytes=${frameBytes}`);
+        expect(wrapper.getStats().pendingRequests).toBe(0);
     });
 
     test('request timeout rejects once, clears state and kills the child', async () => {

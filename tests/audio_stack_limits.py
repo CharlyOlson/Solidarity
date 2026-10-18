@@ -206,6 +206,9 @@ def worker_main(case):
         repetitions = int(case.get("concurrency_repetitions", 32))
         workers = int(case.get("concurrency_workers", 4))
         sample = np.ones(128, dtype=np.float64)
+        initial_state = controller.get_complete_temporal_state()
+        initial_cog_samples = initial_state["cog_controller"]["samples_processed"]
+        initial_lock_samples = initial_state["lock_stop_controller"]["current_time"]
 
         def run_once(_):
             return controller.process_with_temporal_control(sample, lambda values: values.copy())
@@ -215,14 +218,18 @@ def worker_main(case):
         state = controller.get_complete_temporal_state()
         cog_count = state["cog_controller"]["samples_processed"]
         lock_count = state["lock_stop_controller"]["current_time"]
+        expected_cog_samples = initial_cog_samples + repetitions * len(sample)
+        expected_lock_samples = initial_lock_samples + repetitions * len(sample)
         record["shared_controller_calls"] = len(values)
         record["shared_controller_workers"] = workers
         record["shared_controller_expected_samples"] = repetitions * len(sample)
+        record["shared_controller_initial_cog_samples"] = initial_cog_samples
+        record["shared_controller_initial_lock_samples"] = initial_lock_samples
         record["shared_controller_cog_samples"] = cog_count
         record["shared_controller_lock_samples"] = lock_count
         record["shared_controller_shape_ok"] = all(value.shape == sample.shape for value in values)
         record["shared_controller_state_consistent"] = (
-            cog_count == repetitions * len(sample) and lock_count == repetitions * len(sample)
+            cog_count == expected_cog_samples and lock_count == expected_lock_samples
         )
         if not record["shared_controller_state_consistent"] or not record["shared_controller_shape_ok"]:
             record["status"] = "fail"
@@ -571,7 +578,7 @@ def run_main_cases(records, start_time, budget, case_timeout, rss_limit):
             "shared_controller": True,
             "concurrency_repetitions": 64,
             "concurrency_workers": 8,
-            "valid_signal": False,
+            "valid_signal": True,
         }
     )
     for extra in extras:

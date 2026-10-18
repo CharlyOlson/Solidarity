@@ -93,6 +93,22 @@ rl.on('line', async (line) => {
         case 'oversize':
             process.stdout.write('x'.repeat(5000));
             break;
+        case 'frame_size': {
+            const targetBytes = Number(process.env.FAKE_FRAME_BYTES);
+            const response = ok({ padding: '' });
+            const baseBytes = Buffer.byteLength(JSON.stringify(response));
+            const paddingBytes = targetBytes - baseBytes;
+            if (!Number.isSafeInteger(targetBytes) || paddingBytes < 0) {
+                process.stderr.write(`invalid frame size: ${targetBytes}\n`);
+                process.exit(5);
+                break;
+            }
+            response.result.padding = 'x'.repeat(paddingBytes);
+            const frame = JSON.stringify(response);
+            process.stderr.write(`frame-bytes=${Buffer.byteLength(frame)}\n`);
+            process.stdout.write(frame + '\n');
+            break;
+        }
         case 'hang':
         case 'ignore_sigterm':
             break;

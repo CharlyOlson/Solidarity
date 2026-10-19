@@ -177,6 +177,7 @@ def worker_main(case):
         "input_dtype": str(signal_data.dtype),
         "input_contiguous": bool(signal_data.flags.c_contiguous),
         "sample_rate_hz": sample_rate,
+        "fundamental_frequency_hz": result["input"]["fundamental_frequency"],
         "enable_compression": enable_compression,
         "enable_temporal_control": enable_temporal,
         "output_shape": list(output.shape),
@@ -194,6 +195,9 @@ def worker_main(case):
         "stage_timings_seconds": diagnostics["stage_timings_seconds"],
         "worker_wall_seconds": wall_seconds,
     }
+    if kind == "tone" and signal_data.size < 20 and result["input"]["fundamental_frequency"] <= 0:
+        record["status"] = "observed_undefined_result"
+        record["classification"] = "short_tone_has_no_non_dc_hps_candidate"
 
     if case.get("repeatability"):
         fresh = SolidarityHarmonicSystem(sample_rate=sample_rate)
@@ -268,6 +272,7 @@ def worker_rate_probe(case):
 
     sys.path.insert(0, str(ROOT / "src"))
     from solidarityAudioProcessor import ProfessionalAudioProcessor
+    from main_integration import SolidarityHarmonicSystem
 
     sample_rate = int(case["sample_rate"])
     length = sample_rate

@@ -7,6 +7,7 @@ Created by Scott Charles Olson (Charly)
 
 import json
 import sys
+import os
 import numpy as np
 import asyncio
 import threading
@@ -16,8 +17,6 @@ import logging
 import time
 import math
 import contextlib
-import argparse
-
 try:
     from .sample_rate import UNSET, resolve_sample_rate_hz, sample_rate_from_config
 except ImportError:
@@ -588,6 +587,21 @@ async def main(sample_rate_hz=UNSET):
     finally:
         logger.info("Audio processing bridge shutdown complete")
 
+
+def _sample_rate_from_environment():
+    values = {}
+    for environment_name, config_name in (
+        ("SOLIDARITY_SAMPLE_RATE_HZ", "sample_rate_hz"),
+        ("AUDIO_SAMPLE_RATE", "sample_rate"),
+    ):
+        value = os.environ.get(environment_name)
+        if value is not None:
+            if not value.isdecimal():
+                raise ValueError(f"{environment_name} must be a positive integer")
+            values[config_name] = int(value)
+    return resolve_sample_rate_hz(**values) if values else UNSET
+
+
 if __name__ == "__main__":
     # Handle different execution modes
     if len(sys.argv) > 1 and sys.argv[1] == 'test':
@@ -598,7 +612,4 @@ if __name__ == "__main__":
     elif len(sys.argv) > 1 and sys.argv[1] == 'demo':
         logger.info("Running demo mode...")
     else:
-        parser = argparse.ArgumentParser()
-        parser.add_argument("--sample-rate-hz", type=int, default=UNSET)
-        args = parser.parse_args()
-        asyncio.run(main(sample_rate_hz=args.sample_rate_hz))
+        asyncio.run(main(sample_rate_hz=_sample_rate_from_environment()))

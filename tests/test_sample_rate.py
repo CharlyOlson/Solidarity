@@ -28,7 +28,7 @@ class SampleRateValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Conflicting sample-rate"):
             MasterSolidarityAudioSystem(sample_rate_hz=48000, sample_rate=44100)
 
-    def test_processor_and_hps_detect_sine_tones_at_configured_rates(self):
+    def test_processor_and_fft_analyzer_detect_tones_at_configured_rates(self):
         for sample_rate_hz in (16000, 44100, 48000):
             with self.subTest(sample_rate_hz=sample_rate_hz):
                 sample_count = sample_rate_hz

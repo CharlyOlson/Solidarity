@@ -5,6 +5,7 @@
 
 const path = require('path');
 const fs = require('fs');
+const { resolveSampleRateHz } = require('../sampleRate');
 
 class SystemConfig {
   constructor() {
@@ -80,8 +81,10 @@ class SystemConfig {
 
   // Audio Processing Configuration
   get audio() {
+    const sampleRateHz = resolveSampleRateHz();
     return {
-      sampleRate: parseInt(process.env.AUDIO_SAMPLE_RATE) || 44100,
+      sample_rate_hz: sampleRateHz,
+      sampleRate: sampleRateHz,
       bufferSize: parseInt(process.env.AUDIO_BUFFER_SIZE) || 1024,
       maxDuration: parseInt(process.env.AUDIO_MAX_DURATION) || 300, // 5 minutes
       compressionLevel: parseInt(process.env.AUDIO_COMPRESSION_LEVEL) || 6,

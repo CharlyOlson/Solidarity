@@ -394,6 +394,7 @@ class MasterSolidarityAudioSystem:
     def get_professional_audio_status(self):
         """Get complete system status"""
         return {
+            'sample_rate_hz': self.sample_rate_hz,
             'audio_time_buyer': {'pi_precision': self.time_buyer.pi_precision},
             'parameter_controller': {'registered_parameters': len(self.parameter_controller.parameters)},
             'professional_mode': True

@@ -249,7 +249,7 @@ class SolidarityHarmonicSystem:
         })
         results['pipeline_diagnostics'] = {
             'sample_count': len(audio_signal),
-            'sample_rate_hz': self.sample_rate,
+            'sample_rate_hz': self.sample_rate_hz,
             'stage_timings_seconds': stage_timings
         }
         stage_timings['total'] = time.perf_counter() - pipeline_started

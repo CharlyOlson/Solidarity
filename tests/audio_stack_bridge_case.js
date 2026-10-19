@@ -380,16 +380,42 @@ async function fakeFaults() {
             await wrapper.shutdown();
         }
     }
+    const unterminatedWrapper = new EnhancedAudioProcessingWrapper({
+        pythonExecutable: process.execPath,
+        bridgeScript: FIXTURE,
+        env: { FAKE_BRIDGE_MODE: 'oversize' },
+        timeout: 2000,
+        maxResponseBytes: 128,
+    });
+    let unterminatedFrameError = '';
+    try {
+        await unterminatedWrapper.initialize();
+        try { await unterminatedWrapper.getSystemStatus(); } catch (error) {
+            unterminatedFrameError = error.message;
+        }
+    } finally {
+        await unterminatedWrapper.shutdown();
+    }
+    const unterminatedFrame = {
+        configured_cap_bytes: 128,
+        rejected: /unterminated frame exceeded the response limit of 128 bytes/.test(unterminatedFrameError),
+        error: unterminatedFrameError,
+        pending_after: unterminatedWrapper.getStats().pendingRequests,
+    };
     return {
         status: observations.every((item) => item.succeeded_as_expected && item.pending_after === 0)
             && Boolean(writeFailureRecord.error.match(/Failed to send request.*fixture write failure/))
-            && frameBoundary.every((item) => item.accepted === (item.complete_frame_bytes <= 128) && item.pending_after === 0)
+            && frameBoundary.every((item) => item.accepted === (item.complete_frame_bytes <= 128)
+                && item.pending_after === 0
+                && (item.complete_frame_bytes <= 128 || /complete frame exceeded the response limit/.test(item.error)))
+            && unterminatedFrame.rejected && unterminatedFrame.pending_after === 0
             ? 'ok' : 'fail',
         path: 'js_python_bridge',
         phase: 'fault_injection',
         fault_observations: observations,
         write_failure: writeFailureRecord,
         max_response_boundary: frameBoundary,
+        unterminated_response_limit: unterminatedFrame,
     };
 }
 

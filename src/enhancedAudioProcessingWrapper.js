@@ -14,34 +14,11 @@ const { spawn } = require('child_process');
 const path = require('path');
 const EventEmitter = require('events');
 const { StringDecoder } = require('string_decoder');
+const { resolveSampleRateHz } = require('./sampleRate');
 
 const NEWLINE = 0x0a;
 const DEFAULT_MAX_RESPONSE_BYTES = 256 * 1024 * 1024;
 const DEFAULT_KILL_GRACE_MS = 2000;
-const DEFAULT_SAMPLE_RATE_HZ = 44100;
-const MIN_SAMPLE_RATE_HZ = 8000;
-const MAX_SAMPLE_RATE_HZ = 192000;
-
-function resolveSampleRateHz(config) {
-    const hasCanonical = Object.prototype.hasOwnProperty.call(config, 'sample_rate_hz');
-    const hasLegacy = Object.prototype.hasOwnProperty.call(config, 'sampleRate');
-    const validate = (value, name) => {
-        if (typeof value !== 'number' || !Number.isSafeInteger(value)
-            || value < MIN_SAMPLE_RATE_HZ || value > MAX_SAMPLE_RATE_HZ) {
-            throw new TypeError(
-                `${name} must be an integer between ${MIN_SAMPLE_RATE_HZ} and ${MAX_SAMPLE_RATE_HZ} Hz`
-            );
-        }
-        return value;
-    };
-    if (!hasCanonical && !hasLegacy) return DEFAULT_SAMPLE_RATE_HZ;
-    const canonical = hasCanonical ? validate(config.sample_rate_hz, 'sample_rate_hz') : undefined;
-    const legacy = hasLegacy ? validate(config.sampleRate, 'sampleRate') : undefined;
-    if (hasCanonical && hasLegacy && canonical !== legacy) {
-        throw new TypeError('Conflicting sample-rate values were provided for sample_rate_hz and sampleRate');
-    }
-    return hasCanonical ? canonical : legacy;
-}
 
 class EnhancedAudioProcessingWrapper extends EventEmitter {
     constructor(config = {}) {
@@ -106,14 +83,14 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
             let child;
             try {
                 console.log('Starting Python audio processing bridge...');
-                child = spawn(this.config.pythonExecutable, [
-                    this.config.bridgeScript,
-                    '--sample-rate-hz',
-                    String(this.config.sample_rate_hz)
-                ], {
+                child = spawn(this.config.pythonExecutable, [this.config.bridgeScript], {
                     stdio: ['pipe', 'pipe', 'pipe'],
                     cwd: path.dirname(this.config.bridgeScript),
-                    env: { ...process.env, ...(this.config.env || {}) }
+                    env: {
+                        ...process.env,
+                        ...(this.config.env || {}),
+                        SOLIDARITY_SAMPLE_RATE_HZ: String(this.config.sample_rate_hz)
+                    }
                 });
             } catch (error) {
                 reject(error);

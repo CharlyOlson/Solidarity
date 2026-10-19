@@ -87,6 +87,26 @@ describe('EnhancedAudioProcessingWrapper transport', () => {
         })).toThrow(/Conflicting sample-rate values/);
     });
 
+    test('uses AUDIO_SAMPLE_RATE when no wrapper rate is supplied and rejects conflicts', () => {
+        const previous = process.env.AUDIO_SAMPLE_RATE;
+        process.env.AUDIO_SAMPLE_RATE = '16000';
+        try {
+            expect(new EnhancedAudioProcessingWrapper().config.sample_rate_hz).toBe(16000);
+            expect(() => new EnhancedAudioProcessingWrapper({ sampleRate: 48000 }))
+                .toThrow(/Conflicting sample-rate values/);
+            process.env.AUDIO_SAMPLE_RATE = '16000Hz';
+            expect(() => new EnhancedAudioProcessingWrapper()).toThrow(/AUDIO_SAMPLE_RATE/);
+            process.env.AUDIO_SAMPLE_RATE = '16000';
+            expect(() => new EnhancedAudioProcessingWrapper({
+                sampleRate: 16000,
+                env: { SOLIDARITY_SAMPLE_RATE_HZ: '48000' }
+            })).toThrow(/Conflicting sample-rate values/);
+        } finally {
+            if (previous === undefined) delete process.env.AUDIO_SAMPLE_RATE;
+            else process.env.AUDIO_SAMPLE_RATE = previous;
+        }
+    });
+
     test('4000+ sample request is delivered intact', async () => {
         make('echo');
         await wrapper.initialize();

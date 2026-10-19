@@ -16,6 +16,12 @@ import logging
 import time
 import math
 import contextlib
+import argparse
+
+try:
+    from .sample_rate import UNSET, resolve_sample_rate_hz, sample_rate_from_config
+except ImportError:
+    from sample_rate import UNSET, resolve_sample_rate_hz, sample_rate_from_config
 
 # Configure logging. stdout is reserved for the JSON line protocol read by
 # enhancedAudioProcessingWrapper.js, so all diagnostics go to stderr.
@@ -43,7 +49,7 @@ except ImportError as e:
             self.pi_precision = pi_precision
             
     class MasterSolidarityAudioSystem:
-        def __init__(self):
+        def __init__(self, sample_rate_hz=44100):
             pass
             
         def process_complete_audio_pipeline(self, signal, config):
@@ -140,8 +146,12 @@ class EnhancedAudioProcessingBridge:
     Handles real-time audio processing with ZIP phrase integration
     """
     
-    def __init__(self, sample_rate: int = 44100):
-        self.sample_rate = sample_rate
+    def __init__(self, sample_rate=UNSET, *, sample_rate_hz=UNSET):
+        self.sample_rate_hz = resolve_sample_rate_hz(
+            sample_rate_hz=sample_rate_hz,
+            sample_rate=sample_rate,
+        )
+        self.sample_rate = self.sample_rate_hz
         self.audio_systems = self._initialize_audio_systems()
         self.processing_queue = asyncio.Queue()
         self.running = False
@@ -152,7 +162,7 @@ class EnhancedAudioProcessingBridge:
             'average_processing_time': 0.0
         }
         
-        logger.info(f"Enhanced Audio Processing Bridge initialized (Sample Rate: {sample_rate}Hz)")
+        logger.info(f"Enhanced Audio Processing Bridge initialized (Sample Rate: {self.sample_rate_hz}Hz)")
     
     def _initialize_audio_systems(self) -> Dict[str, Any]:
         """Initialize all audio processing systems"""
@@ -175,10 +185,10 @@ class EnhancedAudioProcessingBridge:
             'parameter_controller': AudioParameterController(),
             'gradient_engine': AudioGradientTransferenceEngine(),
             'spatial_encoder': Audio3DPositionalEncoder(),
-            'professional_processor': ProfessionalAudioProcessor(),
-            'spatial_processor': AdvancedSpatialAudioProcessor(),
+            'professional_processor': ProfessionalAudioProcessor(sample_rate_hz=self.sample_rate_hz),
+            'spatial_processor': AdvancedSpatialAudioProcessor(sample_rate_hz=self.sample_rate_hz),
             'solidarity_processor': SolidarityAudioProcessor(),
-            'master_system': MasterSolidarityAudioSystem()
+            'master_system': MasterSolidarityAudioSystem(sample_rate_hz=self.sample_rate_hz)
         }
     
     async def start_processing_loop(self):
@@ -225,6 +235,16 @@ class EnhancedAudioProcessingBridge:
         try:
             operation = request_data.get('operation', 'unknown')
             parameters = request_data.get('parameters', {})
+            requested_rates = [
+                sample_rate_from_config(values)
+                for values in (parameters, parameters.get('config'))
+                if isinstance(values, dict)
+            ]
+            requested_rates = [rate for rate in requested_rates if rate is not UNSET]
+            if requested_rates and any(rate != self.sample_rate_hz for rate in requested_rates):
+                raise ValueError(
+                    f"Request sample_rate_hz conflicts with configured sample_rate_hz {self.sample_rate_hz}"
+                )
             
             logger.info(f"Processing request {request_id}: {operation}")
             
@@ -472,6 +492,7 @@ class EnhancedAudioProcessingBridge:
             },
             'processing_stats': self.stats,
             'sample_rate': self.sample_rate,
+            'sample_rate_hz': self.sample_rate_hz,
             'running': self.running,
             'systems_available': len([s for s in self.audio_systems.values() if s is not None])
         }
@@ -535,13 +556,13 @@ class EnhancedAudioProcessingBridge:
         logger.info("Audio processing bridge stopped")
 
 # Main execution
-async def main():
+async def main(sample_rate_hz=UNSET):
     """Main entry point for the audio processing bridge"""
     logger.info("Starting Enhanced Solidarity Audio Processing Bridge...")
     
     try:
         # Create and start the bridge
-        bridge = EnhancedAudioProcessingBridge()
+        bridge = EnhancedAudioProcessingBridge(sample_rate_hz=sample_rate_hz)
         
         # Send ready signal to JavaScript
         ready_message = {
@@ -569,17 +590,15 @@ async def main():
 
 if __name__ == "__main__":
     # Handle different execution modes
-    if len(sys.argv) > 1:
-        if sys.argv[1] == 'test':
-            # Run in test mode
-            logger.info("Running in test mode...")
-            bridge = EnhancedAudioProcessingBridge()
-            status = bridge._get_system_status()
-            print(json.dumps(status, indent=2))
-        elif sys.argv[1] == 'demo':
-            # Run demo
-            logger.info("Running demo mode...")
-            # Add demo functionality here
+    if len(sys.argv) > 1 and sys.argv[1] == 'test':
+        logger.info("Running in test mode...")
+        bridge = EnhancedAudioProcessingBridge()
+        status = bridge._get_system_status()
+        print(json.dumps(status, indent=2))
+    elif len(sys.argv) > 1 and sys.argv[1] == 'demo':
+        logger.info("Running demo mode...")
     else:
-        # Normal operation mode
-        asyncio.run(main())
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--sample-rate-hz", type=int, default=UNSET)
+        args = parser.parse_args()
+        asyncio.run(main(sample_rate_hz=args.sample_rate_hz))

@@ -24,6 +24,8 @@ from typing import Dict, List, Tuple, Optional, Union
 
 # Component packages live next to this file (src/harmonics, src/audio, src/temporal)
 _SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+if _SRC_DIR not in sys.path:
+    sys.path.insert(0, _SRC_DIR)
 for _name in ('harmonics', 'audio', 'temporal'):
     _path = os.path.join(_SRC_DIR, _name)
     if _path not in sys.path:
@@ -34,6 +36,7 @@ from advanced_analysis import AdvancedHarmonicAnalyzer
 from dynamic_processing import DynamicProcessor
 from audio_zoom import AudioZoom
 from temporal_control import CombinedTemporalController, CogMode
+from sample_rate import UNSET, resolve_sample_rate_hz
 
 
 class SolidarityHarmonicSystem:
@@ -44,29 +47,34 @@ class SolidarityHarmonicSystem:
     with temporal control, audio processing, and advanced analysis.
     """
     
-    def __init__(self, sample_rate: int = 44100):
+    def __init__(self, sample_rate=UNSET, *, sample_rate_hz=UNSET):
         """
         Initialize the complete harmonic processing system
         
         Args:
             sample_rate (int): System sample rate in Hz
         """
-        self.sample_rate = sample_rate
+        self.sample_rate_hz = resolve_sample_rate_hz(
+            sample_rate_hz=sample_rate_hz,
+            sample_rate=sample_rate,
+        )
+        self.sample_rate = self.sample_rate_hz
         
         # Initialize all subsystems
-        self.harmonic_processor = HarmonicProcessor(sample_rate)
-        self.advanced_analyzer = AdvancedHarmonicAnalyzer(sample_rate)
-        self.dynamic_processor = DynamicProcessor(sample_rate=sample_rate)
-        self.temporal_controller = CombinedTemporalController(sample_rate)
+        self.harmonic_processor = HarmonicProcessor(self.sample_rate_hz)
+        self.advanced_analyzer = AdvancedHarmonicAnalyzer(sample_rate_hz=self.sample_rate_hz)
+        self.dynamic_processor = DynamicProcessor(sample_rate=self.sample_rate_hz)
+        self.temporal_controller = CombinedTemporalController(self.sample_rate_hz)
         
         # Default microphone array for audio zoom (linear array)
         default_mics = [(-0.1, 0.0), (-0.05, 0.0), (0.0, 0.0), (0.05, 0.0), (0.1, 0.0)]
-        self.audio_zoom = AudioZoom(default_mics, sample_rate)
+        self.audio_zoom = AudioZoom(default_mics, self.sample_rate_hz)
         
         # System state
         self.system_state = {
             'initialized': True,
-            'sample_rate': sample_rate,
+            'sample_rate': self.sample_rate_hz,
+            'sample_rate_hz': self.sample_rate_hz,
             'total_samples_processed': 0,
             'fiscal_time': 0.0,
             'processing_time': 0.0
@@ -225,6 +233,7 @@ class SolidarityHarmonicSystem:
             'input': {
                 'length': len(audio_signal),
                 'sample_rate': self.sample_rate,
+                'sample_rate_hz': self.sample_rate_hz,
                 'fundamental_frequency': fundamental_freq
             },
             'harmonic_analysis': {

@@ -21,6 +21,7 @@ function seededNoise(length, seed) {
 }
 
 function makeSignal(length, kind, seed) {
+    const phase = (seed % 360) * Math.PI / 180;
     if (kind === 'two_dimensional') {
         return Array.from({ length }, (_, row) => [row / 10, -row / 10]);
     }
@@ -33,15 +34,15 @@ function makeSignal(length, kind, seed) {
     if (kind === 'noise') return seededNoise(length, seed);
     if (kind === 'tiny' || kind === 'large') {
         const amplitude = kind === 'tiny' ? 1e-200 : 1e150;
-        return Array.from({ length }, (_, i) => amplitude * Math.sin(2 * Math.PI * 440 * i / 44100));
+        return Array.from({ length }, (_, i) => amplitude * Math.sin(2 * Math.PI * 440 * i / 44100 + phase));
     }
     if (kind === 'mixed') {
         return Array.from({ length }, (_, i) => (
-            0.35 * Math.sin(2 * Math.PI * 440 * i / 44100)
-            + 0.15 * Math.sin(2 * Math.PI * 880 * i / 44100)
+            0.35 * Math.sin(2 * Math.PI * 440 * i / 44100 + phase)
+            + 0.15 * Math.sin(2 * Math.PI * 880 * i / 44100 + 2 * phase)
         ));
     }
-    return Array.from({ length }, (_, i) => 0.5 * Math.sin(2 * Math.PI * 440 * i / 44100));
+    return Array.from({ length }, (_, i) => 0.5 * Math.sin(2 * Math.PI * 440 * i / 44100 + phase));
 }
 
 function shapeOf(value) {
@@ -257,13 +258,27 @@ async function sampleRate(testCase) {
     try {
         await wrapper.initialize();
         const response = await wrapper.getSystemStatus();
+        const tone = await wrapper.processHarmonicSeries(
+            [{ frequency: 440, amplitude: 1 }],
+            { duration: 1 }
+        );
+        const detectedFrequency = tone.result.harmonic_analysis.harmonic_0.frequency;
+        const frequencyToleranceHz = testCase.sample_rate / testCase.sample_rate;
+        const rateMatches = response.result.sample_rate_hz === testCase.sample_rate
+            && response.result.sample_rate === testCase.sample_rate;
+        const computationMatches = Math.abs(detectedFrequency - 440) <= frequencyToleranceHz;
         return {
-            status: response.success ? 'ok' : 'fail',
+            status: response.success && rateMatches && computationMatches ? 'ok' : 'fail',
             path: 'js_python_bridge',
             phase: 'sample_rate',
             wrapper_configured_sample_rate_hz: testCase.sample_rate,
             bridge_reported_sample_rate_hz: response.result.sample_rate,
-            wrapper_rate_propagated: response.result.sample_rate === testCase.sample_rate,
+            bridge_reported_sample_rate_hz_canonical: response.result.sample_rate_hz,
+            wrapper_rate_propagated: rateMatches,
+            expected_frequency_hz: 440,
+            computed_frequency_hz: detectedFrequency,
+            frequency_tolerance_hz: frequencyToleranceHz,
+            computation_matches: computationMatches,
         };
     } finally {
         await wrapper.shutdown();

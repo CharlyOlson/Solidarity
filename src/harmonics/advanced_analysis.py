@@ -13,6 +13,16 @@ from scipy import signal
 from scipy.fft import fft, fftfreq, ifft
 from typing import Dict, List, Tuple, Optional, Union
 import warnings
+import os
+import sys
+
+try:
+    from ..sample_rate import UNSET, resolve_sample_rate_hz
+except ImportError:
+    _SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if _SRC_DIR not in sys.path:
+        sys.path.insert(0, _SRC_DIR)
+    from sample_rate import UNSET, resolve_sample_rate_hz
 
 
 class AdvancedHarmonicAnalyzer:
@@ -20,9 +30,13 @@ class AdvancedHarmonicAnalyzer:
     Advanced harmonic analysis using FFT, HPS, THD calculation, and pitch detection
     """
     
-    def __init__(self, sample_rate: int = 44100):
-        self.sample_rate = sample_rate
-        self.nyquist = sample_rate // 2
+    def __init__(self, sample_rate=UNSET, *, sample_rate_hz=UNSET):
+        self.sample_rate_hz = resolve_sample_rate_hz(
+            sample_rate_hz=sample_rate_hz,
+            sample_rate=sample_rate,
+        )
+        self.sample_rate = self.sample_rate_hz
+        self.nyquist = self.sample_rate_hz // 2
         
     def analyze_harmonics_fft(self, signal_data: np.ndarray, fundamental_freq: float, 
                             max_harmonics: int = 20) -> Dict:

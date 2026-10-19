@@ -18,19 +18,44 @@ const { StringDecoder } = require('string_decoder');
 const NEWLINE = 0x0a;
 const DEFAULT_MAX_RESPONSE_BYTES = 256 * 1024 * 1024;
 const DEFAULT_KILL_GRACE_MS = 2000;
+const DEFAULT_SAMPLE_RATE_HZ = 44100;
+const MIN_SAMPLE_RATE_HZ = 8000;
+const MAX_SAMPLE_RATE_HZ = 192000;
+
+function resolveSampleRateHz(config) {
+    const hasCanonical = Object.prototype.hasOwnProperty.call(config, 'sample_rate_hz');
+    const hasLegacy = Object.prototype.hasOwnProperty.call(config, 'sampleRate');
+    const validate = (value, name) => {
+        if (typeof value !== 'number' || !Number.isSafeInteger(value)
+            || value < MIN_SAMPLE_RATE_HZ || value > MAX_SAMPLE_RATE_HZ) {
+            throw new TypeError(
+                `${name} must be an integer between ${MIN_SAMPLE_RATE_HZ} and ${MAX_SAMPLE_RATE_HZ} Hz`
+            );
+        }
+        return value;
+    };
+    if (!hasCanonical && !hasLegacy) return DEFAULT_SAMPLE_RATE_HZ;
+    const canonical = hasCanonical ? validate(config.sample_rate_hz, 'sample_rate_hz') : undefined;
+    const legacy = hasLegacy ? validate(config.sampleRate, 'sampleRate') : undefined;
+    if (hasCanonical && hasLegacy && canonical !== legacy) {
+        throw new TypeError('Conflicting sample-rate values were provided for sample_rate_hz and sampleRate');
+    }
+    return hasCanonical ? canonical : legacy;
+}
 
 class EnhancedAudioProcessingWrapper extends EventEmitter {
     constructor(config = {}) {
         super();
-        
+        const sampleRateHz = resolveSampleRateHz(config);
         this.config = {
             pythonExecutable: config.pythonExecutable || 'python',
             bridgeScript: config.bridgeScript || path.join(__dirname, 'enhancedAudioProcessingBridge.py'),
             timeout: config.timeout || 30000,
-            sampleRate: config.sampleRate || 44100,
             maxResponseBytes: config.maxResponseBytes || DEFAULT_MAX_RESPONSE_BYTES,
             killGraceMs: config.killGraceMs || DEFAULT_KILL_GRACE_MS,
-            ...config
+            ...config,
+            sample_rate_hz: sampleRateHz,
+            sampleRate: sampleRateHz
         };
         
         this.pythonProcess = null;
@@ -81,7 +106,11 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
             let child;
             try {
                 console.log('Starting Python audio processing bridge...');
-                child = spawn(this.config.pythonExecutable, [this.config.bridgeScript], {
+                child = spawn(this.config.pythonExecutable, [
+                    this.config.bridgeScript,
+                    '--sample-rate-hz',
+                    String(this.config.sample_rate_hz)
+                ], {
                     stdio: ['pipe', 'pipe', 'pipe'],
                     cwd: path.dirname(this.config.bridgeScript),
                     env: { ...process.env, ...(this.config.env || {}) }
@@ -146,7 +175,7 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
         while ((index = data.indexOf(NEWLINE, start)) !== -1) {
             const tail = data.subarray(start, index);
             if (state.chunkBytes + tail.length > this.config.maxResponseBytes) {
-                this._failBridge(state, this._oversizeError());
+                this._failBridge(state, this._oversizeError(true));
                 return;
             }
             let line = tail;
@@ -165,7 +194,7 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
         if (start < data.length) {
             const rest = data.subarray(start);
             if (state.chunkBytes + rest.length > this.config.maxResponseBytes) {
-                this._failBridge(state, this._oversizeError());
+                this._failBridge(state, this._oversizeError(false));
                 return;
             }
             state.chunks.push(Buffer.from(rest));
@@ -173,8 +202,11 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
         }
     }
     
-    _oversizeError() {
-        return new Error(`Python bridge response exceeded ${this.config.maxResponseBytes} bytes without a message terminator`);
+    _oversizeError(terminated) {
+        const detail = terminated
+            ? 'complete frame exceeded the response limit'
+            : 'unterminated frame exceeded the response limit';
+        return new Error(`Python bridge ${detail} of ${this.config.maxResponseBytes} bytes`);
     }
     
     /**

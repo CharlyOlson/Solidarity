@@ -61,6 +61,32 @@ describe('EnhancedAudioProcessingWrapper transport', () => {
         expect(wrapper.getStats()).toMatchObject({ successfulRequests: 1, pendingRequests: 0, isReady: true });
     });
 
+    test('sample_rate_hz is canonical and sampleRate remains a compatible alias', () => {
+        expect(new EnhancedAudioProcessingWrapper().config).toMatchObject({
+            sample_rate_hz: 44100,
+            sampleRate: 44100
+        });
+        expect(new EnhancedAudioProcessingWrapper({ sampleRate: 48000 }).config).toMatchObject({
+            sample_rate_hz: 48000,
+            sampleRate: 48000
+        });
+        expect(new EnhancedAudioProcessingWrapper({ sample_rate_hz: 16000 }).config.sampleRate).toBe(16000);
+    });
+
+    test.each([0, -1, 7999, 192001, true, NaN, Infinity, '44100', null, undefined])(
+        'rejects invalid sample rate %p',
+        (rate) => {
+            expect(() => new EnhancedAudioProcessingWrapper({ sample_rate_hz: rate })).toThrow(/sample_rate_hz/);
+        }
+    );
+
+    test('rejects conflicting canonical and legacy sample rates', () => {
+        expect(() => new EnhancedAudioProcessingWrapper({
+            sample_rate_hz: 48000,
+            sampleRate: 44100
+        })).toThrow(/Conflicting sample-rate values/);
+    });
+
     test('4000+ sample request is delivered intact', async () => {
         make('echo');
         await wrapper.initialize();
@@ -158,11 +184,11 @@ describe('EnhancedAudioProcessingWrapper transport', () => {
         await expect(wrapper.getSystemStatus()).rejects.toThrow('Python bridge not ready');
     });
 
-    test('response exceeding maxResponseBytes without terminator fails safely', async () => {
+    test('unterminated response exceeding maxResponseBytes fails safely', async () => {
         make('oversize', { maxResponseBytes: 1000 });
         await wrapper.initialize();
         const pid = wrapper.pythonProcess.pid;
-        await expect(wrapper.getSystemStatus()).rejects.toThrow(/exceeded 1000 bytes/);
+        await expect(wrapper.getSystemStatus()).rejects.toThrow(/unterminated frame exceeded the response limit of 1000 bytes/);
         expect(await waitFor(() => !alive(pid))).toBe(true);
     });
 
@@ -178,7 +204,7 @@ describe('EnhancedAudioProcessingWrapper transport', () => {
             const response = await wrapper.getSystemStatus();
             expect(typeof response.result.padding).toBe('string');
         } else {
-            await expect(wrapper.getSystemStatus()).rejects.toThrow(/exceeded 128 bytes/);
+            await expect(wrapper.getSystemStatus()).rejects.toThrow(/complete frame exceeded the response limit of 128 bytes/);
             expect(await waitFor(() => wrapper.pythonProcess === null || !alive(wrapper.pythonProcess.pid))).toBe(true);
         }
         await waitFor(() => stderr.join('').includes(`frame-bytes=${frameBytes}`));

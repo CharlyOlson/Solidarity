@@ -288,9 +288,9 @@ def worker_rate_probe(case):
     )
     pipeline_analysis = system.advanced_analyzer.analyze_harmonics_fft(signal_data, 440, 1)[1]
     tolerance = sample_rate / length
-    processor_matches = abs(dominant["frequency"] - 440) <= tolerance
-    analyzer_matches = abs(pipeline_analysis["actual_frequency"] - 440) <= tolerance
-    status_matches = system.get_complete_system_status()["system"]["sample_rate_hz"] == sample_rate
+    processor_matches = bool(abs(dominant["frequency"] - 440) <= tolerance)
+    analyzer_matches = bool(abs(pipeline_analysis["actual_frequency"] - 440) <= tolerance)
+    status_matches = bool(system.get_complete_system_status()["system"]["sample_rate_hz"] == sample_rate)
     return {
         "status": "ok" if processor_matches and analyzer_matches and status_matches else "fail",
         "path": "main_integration",

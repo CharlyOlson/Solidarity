@@ -1,14 +1,33 @@
 """Regression tests for audio stress-process supervision."""
 
+import json
 import sys
 import unittest
 
-from tests.audio_stack_limits import MAX_CAPTURE_BYTES, MAX_RSS_BYTES, planned_sizes, supervised_run
+from tests.audio_stack_limits import (
+    MAX_CAPTURE_BYTES,
+    MAX_RSS_BYTES,
+    planned_sizes,
+    supervised_run,
+    worker_rate_probe,
+)
 
 
 class AudioStackHarnessTests(unittest.TestCase):
     def test_short_length_schedule_covers_zero_through_sixteen(self):
         self.assertTrue(set(range(17)).issubset(planned_sizes()))
+
+    def test_rate_probe_assertions_are_serializable_and_pass_at_all_rates(self):
+        for sample_rate_hz in (16000, 44100, 48000):
+            with self.subTest(sample_rate_hz=sample_rate_hz):
+                result = worker_rate_probe({"sample_rate": sample_rate_hz})
+                json.dumps(result, allow_nan=False)
+                self.assertEqual(result["status"], "ok")
+                self.assertEqual(result["system_status_sample_rate_hz"], sample_rate_hz)
+                self.assertLessEqual(
+                    abs(result["reported_frequency_hz"] - 440),
+                    result["frequency_tolerance_hz"],
+                )
 
     def test_supervisor_drains_both_pipes_before_process_exit(self):
         output_bytes = 1024 * 1024

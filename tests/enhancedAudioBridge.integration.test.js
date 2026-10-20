@@ -81,5 +81,39 @@ maybe('JS wrapper with real Python bridge', () => {
     test('system status reports ready systems', async () => {
         const res = await wrapper.getSystemStatus();
         expect(res.result.sample_rate).toBe(44100);
+        expect(res.result.sample_rate_hz).toBe(44100);
+    });
+
+    test.each([16000, 44100, 48000])(
+        'configured %i Hz is reported and used to analyze a 440 Hz tone',
+        async (sampleRateHz) => {
+            const configured = new EnhancedAudioProcessingWrapper({
+                pythonExecutable: PYTHON,
+                timeout: 60000,
+                sample_rate_hz: sampleRateHz
+            });
+            try {
+                await configured.initialize();
+                const status = await configured.getSystemStatus();
+                expect(status.result.sample_rate_hz).toBe(sampleRateHz);
+                expect(status.result.sample_rate).toBe(sampleRateHz);
+
+                const tone = await configured.processHarmonicSeries(
+                    [{ frequency: 440, amplitude: 1 }],
+                    { duration: 1 }
+                );
+                const detectedFrequency = tone.result.harmonic_analysis.harmonic_0.frequency;
+                expect(Math.abs(detectedFrequency - 440)).toBeLessThanOrEqual(sampleRateHz / sampleRateHz);
+            } finally {
+                await configured.shutdown();
+            }
+        },
+        70000
+    );
+
+    test('request sample rate conflicting with bridge configuration is rejected', async () => {
+        const signal = sine(1024);
+        await expect(wrapper.processCompleteAudioPipeline(signal, { sample_rate_hz: 48000 }))
+            .rejects.toThrow(/conflicts with configured sample_rate_hz 44100/);
     });
 });

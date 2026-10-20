@@ -7,6 +7,11 @@ import numpy as np
 import math
 import time
 
+try:
+    from .sample_rate import UNSET, resolve_sample_rate_hz, sample_rate_from_config
+except ImportError:
+    from sample_rate import UNSET, resolve_sample_rate_hz, sample_rate_from_config
+
 class AudioTimeBuyer:
     """Time buyer π-based pacing allocation"""
     def __init__(self, sample_rate=44100, pi_precision=16):
@@ -146,13 +151,17 @@ class Audio3DPositionalEncoder:
 
 class ProfessionalAudioProcessor:
     """Professional audio processor with advanced effects"""
-    def __init__(self):
-        pass
+    def __init__(self, sample_rate=UNSET, *, sample_rate_hz=UNSET):
+        self.sample_rate_hz = resolve_sample_rate_hz(
+            sample_rate_hz=sample_rate_hz,
+            sample_rate=sample_rate,
+        )
+        self.sample_rate = self.sample_rate_hz
         
     def harmonic_analyzer(self, signal):
         """Analyze harmonics in signal"""
         fft = np.fft.fft(signal)
-        freqs = np.fft.fftfreq(len(signal), 1/44100)
+        freqs = np.fft.fftfreq(len(signal), 1/self.sample_rate_hz)
         
         # Find peaks (simplified)
         magnitude = np.abs(fft)
@@ -170,8 +179,7 @@ class ProfessionalAudioProcessor:
         
     def delay_processor(self, signal, delay_time=0.1, feedback=0.3):
         """Apply delay effect"""
-        sample_rate = 44100
-        delay_samples = int(delay_time * sample_rate)
+        delay_samples = int(delay_time * self.sample_rate_hz)
         output = signal.copy()
         
         for i in range(delay_samples, len(signal)):
@@ -196,7 +204,7 @@ class ProfessionalAudioProcessor:
         output = signal.copy()
         
         for delay in delays:
-            delay_samples = int(delay * 44100)
+            delay_samples = int(delay * self.sample_rate_hz)
             for i in range(delay_samples, len(signal)):
                 output[i] += signal[i - delay_samples] * room_size * (1 - damping)
                 
@@ -226,8 +234,12 @@ class ProfessionalAudioProcessor:
 
 class AdvancedSpatialAudioProcessor:
     """Advanced spatial transmission effects"""
-    def __init__(self):
-        pass
+    def __init__(self, sample_rate=UNSET, *, sample_rate_hz=UNSET):
+        self.sample_rate_hz = resolve_sample_rate_hz(
+            sample_rate_hz=sample_rate_hz,
+            sample_rate=sample_rate,
+        )
+        self.sample_rate = self.sample_rate_hz
         
     def spatial_transmission_effect(self, signal, transmission_probability=0.2):
         """Apply spatial transmission effect"""
@@ -256,7 +268,7 @@ class AdvancedSpatialAudioProcessor:
         
     def spatial_coherence_processor(self, signal, coherence_time=0.1):
         """Process spatial coherence"""
-        coherence_samples = int(coherence_time * 44100)
+        coherence_samples = int(coherence_time * self.sample_rate_hz)
         output = signal.copy()
         
         for i in range(coherence_samples, len(signal)):
@@ -317,13 +329,18 @@ class SolidarityAudioProcessor:
 
 class MasterSolidarityAudioSystem:
     """Master system integrating all components"""
-    def __init__(self):
-        self.time_buyer = AudioTimeBuyer()
+    def __init__(self, sample_rate=UNSET, *, sample_rate_hz=UNSET):
+        self.sample_rate_hz = resolve_sample_rate_hz(
+            sample_rate_hz=sample_rate_hz,
+            sample_rate=sample_rate,
+        )
+        self.sample_rate = self.sample_rate_hz
+        self.time_buyer = AudioTimeBuyer(self.sample_rate_hz)
         self.parameter_controller = AudioParameterController(self.time_buyer)
         self.gradient_engine = AudioGradientTransferenceEngine()
         self.spatial_encoder = Audio3DPositionalEncoder()
-        self.professional_processor = ProfessionalAudioProcessor()
-        self.spatial_processor = AdvancedSpatialAudioProcessor()
+        self.professional_processor = ProfessionalAudioProcessor(sample_rate_hz=self.sample_rate_hz)
+        self.spatial_processor = AdvancedSpatialAudioProcessor(sample_rate_hz=self.sample_rate_hz)
         try:
             self.solidarity_processor = SolidarityAudioProcessor()
         except Exception as e:
@@ -334,6 +351,11 @@ class MasterSolidarityAudioSystem:
         """Process audio through complete pipeline"""
         if signal is None or config is None:
             raise ValueError("Signal and config must not be None")
+        requested_rate = sample_rate_from_config(config)
+        if requested_rate is not UNSET and requested_rate != self.sample_rate_hz:
+            raise ValueError(
+                f"Request sample_rate_hz conflicts with configured sample_rate_hz {self.sample_rate_hz}"
+            )
         
         processed = signal.copy()
         
@@ -372,6 +394,7 @@ class MasterSolidarityAudioSystem:
     def get_professional_audio_status(self):
         """Get complete system status"""
         return {
+            'sample_rate_hz': self.sample_rate_hz,
             'audio_time_buyer': {'pi_precision': self.time_buyer.pi_precision},
             'parameter_controller': {'registered_parameters': len(self.parameter_controller.parameters)},
             'professional_mode': True

@@ -165,6 +165,43 @@ class ResponseEncodingTests(unittest.TestCase):
         self.assertIn('serialize', parsed['error'])
 
 
+class SampleRateBridgeTests(unittest.TestCase):
+    def test_rate_is_validated_and_propagated_to_audio_systems(self):
+        bridge = bridge_module.EnhancedAudioProcessingBridge(sample_rate_hz=16000)
+        self.assertEqual(bridge.sample_rate_hz, 16000)
+        self.assertEqual(bridge.sample_rate, 16000)
+        self.assertEqual(bridge._get_system_status()['sample_rate_hz'], 16000)
+        self.assertEqual(bridge.audio_systems['professional_processor'].sample_rate_hz, 16000)
+        self.assertEqual(bridge.audio_systems['master_system'].sample_rate_hz, 16000)
+
+    def test_invalid_or_conflicting_bridge_rates_are_rejected(self):
+        for value in (None, True, float('nan'), float('inf'), '16000'):
+            with self.subTest(value=value):
+                with self.assertRaises(ValueError):
+                    bridge_module.EnhancedAudioProcessingBridge(sample_rate_hz=value)
+        with self.assertRaisesRegex(ValueError, 'Conflicting sample-rate'):
+            bridge_module.EnhancedAudioProcessingBridge(sample_rate_hz=48000, sample_rate=44100)
+
+    def test_conflicting_request_rate_is_returned_as_an_explicit_error(self):
+        bridge = bridge_module.EnhancedAudioProcessingBridge(sample_rate_hz=44100)
+        import io
+        original, sys.stdout = sys.stdout, io.StringIO()
+        try:
+            asyncio.run(bridge._process_request({
+                'operation': 'complete_audio_pipeline',
+                'parameters': {
+                    'signal': sine(128),
+                    'config': {'sample_rate_hz': 48000},
+                },
+                'request_id': 'conflicting-rate',
+            }))
+            response = json.loads(sys.stdout.getvalue().splitlines()[0])
+        finally:
+            sys.stdout = original
+        self.assertFalse(response['success'])
+        self.assertIn('conflicts with configured sample_rate_hz 44100', response['error'])
+
+
 class ProtocolSubprocessTests(unittest.TestCase):
     def test_pipeline_short_and_large_signals_match_direct_execution(self):
         sizes = (100, 4500)

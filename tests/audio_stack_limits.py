@@ -8,6 +8,7 @@ import json
 import math
 import os
 import platform
+import selectors
 import signal
 import subprocess
 import sys
@@ -20,7 +21,8 @@ ROOT = Path(__file__).resolve().parents[1]
 NODE_CASE = ROOT / "tests" / "audio_stack_bridge_case.js"
 MAX_WALL_SECONDS = 60
 MAX_AGGREGATE_SECONDS = 30 * 60
-MAX_RSS_BYTES = 2 * 1024**3
+MAX_RSS_BYTES = 1024**3
+MAX_CAPTURE_BYTES = 4 * 1024**2
 STRESS_SIZES = (128, 1024, 4500, 20000, 50000, 100000, 250000, 500000, 1000000)
 SIGNAL_KINDS = ("silence", "dc", "impulse", "tone", "mixed", "noise", "tiny", "large")
 PRIME_SIZES = (5, 7, 11, 13, 17, 31, 127, 257, 509, 1021, 4093)
@@ -34,7 +36,7 @@ def _is_prime(value):
 
 
 def planned_sizes():
-    sizes = {0, 1, 2, 3, *PRIME_SIZES, *STRESS_SIZES}
+    sizes = {*range(17), *PRIME_SIZES, *STRESS_SIZES}
     for exponent in range(20):
         power = 1 << exponent
         for value in (power - 1, power, power + 1):
@@ -91,6 +93,7 @@ def worker_signal(np, case):
         return values
 
     index = np.arange(size, dtype=np.float64)
+    phase = 2 * np.pi * (seed % 360) / 360
     if kind == "silence":
         return np.zeros(size, dtype=np.float64)
     if kind == "dc":
@@ -101,16 +104,16 @@ def worker_signal(np, case):
             values[size // 2] = 1.0
         return values
     if kind == "tone":
-        return 0.5 * np.sin(2 * np.pi * 440 * index / 44100)
+        return 0.5 * np.sin(2 * np.pi * 440 * index / 44100 + phase)
     if kind == "mixed":
-        return (0.35 * np.sin(2 * np.pi * 440 * index / 44100)
-                + 0.15 * np.sin(2 * np.pi * 880 * index / 44100))
+        return (0.35 * np.sin(2 * np.pi * 440 * index / 44100 + phase)
+                + 0.15 * np.sin(2 * np.pi * 880 * index / 44100 + 2 * phase))
     if kind == "noise":
         return np.random.default_rng(seed).standard_normal(size)
     if kind == "tiny":
-        return 1e-200 * np.sin(2 * np.pi * 440 * index / 44100)
+        return 1e-200 * np.sin(2 * np.pi * 440 * index / 44100 + phase)
     if kind == "large":
-        return 1e150 * np.sin(2 * np.pi * 440 * index / 44100)
+        return 1e150 * np.sin(2 * np.pi * 440 * index / 44100 + phase)
     raise ValueError(f"Unknown signal kind: {kind}")
 
 
@@ -149,11 +152,21 @@ def worker_main(case):
 
     diagnostics = result["pipeline_diagnostics"]
     non_finite_metrics = []
+    invalid_non_finite_metrics = []
+    thd_analysis = result.get("harmonic_analysis", {}).get("thd", {})
     for section_name, section in result.get("harmonic_analysis", {}).items():
         if isinstance(section, dict):
             for name, value in section.items():
                 if isinstance(value, (int, float, np.number)) and not np.isfinite(value):
                     non_finite_metrics.append(f"{section_name}.{name}")
+                    meaningful_negative_infinity = (
+                        section_name == "thd"
+                        and name == "thd_db"
+                        and np.isneginf(value)
+                        and thd_analysis.get("fundamental_power") == 0
+                    )
+                    if not meaningful_negative_infinity:
+                        invalid_non_finite_metrics.append(f"{section_name}.{name}")
 
     record = {
         "status": "ok",
@@ -164,6 +177,7 @@ def worker_main(case):
         "input_dtype": str(signal_data.dtype),
         "input_contiguous": bool(signal_data.flags.c_contiguous),
         "sample_rate_hz": sample_rate,
+        "fundamental_frequency_hz": result["input"]["fundamental_frequency"],
         "enable_compression": enable_compression,
         "enable_temporal_control": enable_temporal,
         "output_shape": list(output.shape),
@@ -176,10 +190,22 @@ def worker_main(case):
             else bool(np.allclose(output, expected, atol=1e-12, rtol=1e-9, equal_nan=True))
         ),
         "non_finite_metric_fields": non_finite_metrics,
+        "invalid_non_finite_metric_fields": invalid_non_finite_metrics,
         "total_samples_processed": result["system_state"]["total_samples_processed"],
         "stage_timings_seconds": diagnostics["stage_timings_seconds"],
         "worker_wall_seconds": wall_seconds,
     }
+    dynamic_processing = result.get("dynamic_processing", {})
+    record["dynamic_processing_enabled"] = dynamic_processing.get("enabled")
+    record["compression_flag_honored"] = dynamic_processing.get("enabled") is enable_compression
+    if enable_compression and signal_data.ndim == 1 and signal_data.size and output.shape == signal_data.shape:
+        uncompressed = signal_data * (1.1 if enable_temporal else 1.0)
+        record["compression_changed_output"] = bool(not np.allclose(output, uncompressed, atol=1e-12, rtol=1e-9))
+        record["compression_output_max_abs"] = float(np.max(np.abs(output)))
+        record["uncompressed_reference_max_abs"] = float(np.max(np.abs(uncompressed)))
+    if kind == "tone" and signal_data.size < 20 and result["input"]["fundamental_frequency"] <= 0:
+        record["status"] = "observed_undefined_result"
+        record["classification"] = "short_tone_has_no_non_dc_hps_candidate"
 
     if case.get("repeatability"):
         fresh = SolidarityHarmonicSystem(sample_rate=sample_rate)
@@ -235,13 +261,18 @@ def worker_main(case):
             record["status"] = "fail"
 
     if case.get("valid_signal", True):
-        checks = [
+        output_checks = [
             output.shape == signal_data.shape,
             bool(np.isfinite(output).all()),
             not mutation,
             record["reference_within_tolerance"] is not False,
+            record["compression_flag_honored"],
+            not enable_compression or signal_data.size == 0 or record.get("compression_changed_output") is True,
         ]
-        if checks and not all(checks):
+        analysis_checks = [not invalid_non_finite_metrics]
+        record["output_checks_passed"] = all(output_checks)
+        record["analysis_checks_passed"] = all(analysis_checks)
+        if not (record["output_checks_passed"] and record["analysis_checks_passed"]):
             record["status"] = "fail"
     else:
         record["status"] = "observed_unspecified_input"
@@ -253,33 +284,88 @@ def worker_rate_probe(case):
 
     sys.path.insert(0, str(ROOT / "src"))
     from solidarityAudioProcessor import ProfessionalAudioProcessor
+    from main_integration import SolidarityHarmonicSystem
 
     sample_rate = int(case["sample_rate"])
-    length = 16384
+    length = sample_rate
     signal_data = np.sin(2 * np.pi * 440 * np.arange(length) / sample_rate)
-    analysis = ProfessionalAudioProcessor().harmonic_analyzer(signal_data)
+    processor = ProfessionalAudioProcessor(sample_rate_hz=sample_rate)
+    analysis = processor.harmonic_analyzer(signal_data)
     dominant = max(analysis.values(), key=lambda entry: entry["magnitude"])
+    system = SolidarityHarmonicSystem(sample_rate_hz=sample_rate)
+    pipeline_result = system.process_audio_with_complete_pipeline(
+        signal_data,
+        enable_compression=False,
+        enable_temporal_control=False,
+    )
+    pipeline_analysis = system.advanced_analyzer.analyze_harmonics_fft(signal_data, 440, 1)[1]
+    tolerance = sample_rate / length
+    processor_matches = bool(abs(dominant["frequency"] - 440) <= tolerance)
+    analyzer_matches = bool(abs(pipeline_analysis["actual_frequency"] - 440) <= tolerance)
+    status_matches = bool(system.get_complete_system_status()["system"]["sample_rate_hz"] == sample_rate)
     return {
-        "status": "ok",
+        "status": "ok" if processor_matches and analyzer_matches and status_matches else "fail",
         "path": "main_integration",
         "size": length,
         "signal_kind": "440_hz_tone",
         "sample_rate_hz": sample_rate,
         "expected_frequency_hz": 440,
         "reported_frequency_hz": dominant["frequency"],
+        "processor_rate_matches": processor_matches,
+        "pipeline_analyzer_frequency_hz": pipeline_analysis["actual_frequency"],
+        "pipeline_analyzer_rate_matches": analyzer_matches,
+        "system_status_sample_rate_hz": system.get_complete_system_status()["system"]["sample_rate_hz"],
+        "system_status_rate_matches": status_matches,
+        "pipeline_output_sample_count": len(pipeline_result["output"]["processed_audio"]),
+        "frequency_tolerance_hz": tolerance,
         "frequency_ratio_to_expected": dominant["frequency"] / 440,
         "reported_harmonic_count": len(analysis),
-        "sample_rate_inconsistency_observed": bool(
-            abs(dominant["frequency"] - 440) > sample_rate / length
+        "sample_rate_inconsistency_observed": not (processor_matches and analyzer_matches and status_matches),
+        "implementation_note": "Rate assertions use one-second tones and one FFT-bin tolerance",
+    }
+
+
+def worker_overflow_probe(case):
+    import warnings
+    import numpy as np
+
+    sys.path.insert(0, str(ROOT / "src"))
+    from harmonics.advanced_analysis import AdvancedHarmonicAnalyzer
+
+    sample_rate = 44100
+    length = 16384
+    signal_data = 1e100 * np.sin(2 * np.pi * 440 * np.arange(length) / sample_rate)
+    analyzer = AdvancedHarmonicAnalyzer(sample_rate_hz=sample_rate)
+    with warnings.catch_warnings(record=True) as captured:
+        warnings.simplefilter("always", RuntimeWarning)
+        estimate = analyzer.harmonic_product_spectrum(signal_data)
+    silence_thd = analyzer.calculate_total_harmonic_distortion(np.zeros(1024), 0)
+    overflow_warnings = [str(item.message) for item in captured if "overflow" in str(item.message).lower()]
+    return {
+        "status": "observed_numerical_overflow" if overflow_warnings else "no_overflow_observed",
+        "path": "main_integration",
+        "phase": "harmonic_product_overflow",
+        "sample_rate_hz": sample_rate,
+        "sample_count": length,
+        "input_amplitude": 1e100,
+        "input_finite": bool(np.isfinite(signal_data).all()),
+        "estimated_frequency_hz": estimate,
+        "overflow_warnings": overflow_warnings,
+        "defined_negative_infinite_thd_db": bool(
+            silence_thd["fundamental_power"] == 0 and np.isneginf(silence_thd["thd_db"])
         ),
-        "implementation_note": "ProfessionalAudioProcessor.harmonic_analyzer uses a fixed 44100 Hz bin spacing",
     }
 
 
 def worker_entry(case):
     try:
         if case.get("kind") == "main":
-            record = worker_rate_probe(case) if case.get("phase") == "rate_probe" else worker_main(case)
+            if case.get("phase") == "rate_probe":
+                record = worker_rate_probe(case)
+            elif case.get("phase") == "harmonic_product_overflow":
+                record = worker_overflow_probe(case)
+            else:
+                record = worker_main(case)
         else:
             raise ValueError(f"Unknown worker kind: {case.get('kind')}")
         print(json.dumps(record, allow_nan=False, separators=(",", ":")))
@@ -352,44 +438,84 @@ def supervised_run(command, env, timeout_seconds, memory_limit_bytes, remaining_
         env=env,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        text=True,
         start_new_session=True,
     )
+    selector = selectors.DefaultSelector()
+    captures = {"stdout": bytearray(), "stderr": bytearray()}
+    total_output_bytes = {"stdout": 0, "stderr": 0}
+    truncated_streams = set()
+    for name, stream in (("stdout", process.stdout), ("stderr", process.stderr)):
+        os.set_blocking(stream.fileno(), False)
+        selector.register(stream, selectors.EVENT_READ, name)
     peak_rss = 0
+    rss_sampling_available = False
     timed_out = False
     memory_limited = False
-    while process.poll() is None:
+    output_limited = False
+    cleanup_deadline = None
+    while process.poll() is None or selector.get_map():
         rss = _rss_for_group(process.pid)
         if rss is not None:
+            rss_sampling_available = True
             peak_rss = max(peak_rss, rss)
-            if rss > memory_limit_bytes:
+            if rss > memory_limit_bytes and not memory_limited:
                 memory_limited = True
                 _terminate_group(process)
-                break
+                cleanup_deadline = time.monotonic() + 3
         elapsed = time.monotonic() - started
-        if elapsed >= timeout_seconds:
+        if elapsed >= timeout_seconds and not timed_out and (process.poll() is None or selector.get_map()):
             timed_out = True
             _terminate_group(process)
+            cleanup_deadline = time.monotonic() + 3
+        if cleanup_deadline is not None and time.monotonic() >= cleanup_deadline:
+            for key in list(selector.get_map().values()):
+                selector.unregister(key.fileobj)
+                key.fileobj.close()
             break
-        time.sleep(0.05)
+        for key, _ in selector.select(0.05):
+            try:
+                chunk = os.read(key.fd, 65536)
+            except BlockingIOError:
+                continue
+            if not chunk:
+                selector.unregister(key.fileobj)
+                key.fileobj.close()
+                continue
+            name = key.data
+            total_output_bytes[name] += len(chunk)
+            captures[name].extend(chunk)
+            if len(captures[name]) > MAX_CAPTURE_BYTES:
+                del captures[name][:-MAX_CAPTURE_BYTES]
+                truncated_streams.add(name)
+            if total_output_bytes[name] > MAX_CAPTURE_BYTES and not output_limited:
+                output_limited = True
+                _terminate_group(process)
+                cleanup_deadline = time.monotonic() + 3
+    selector.close()
+    process.wait()
     remaining_group_rss = _rss_for_group(process.pid) or 0
     orphan_processes = remaining_group_rss > 0
     if orphan_processes:
         _terminate_group(process)
-    stdout, stderr = process.communicate()
     elapsed = time.monotonic() - started
     record = {
         "wall_seconds": round(elapsed, 6),
         "return_code": process.returncode,
         "peak_process_group_rss_bytes_sampled": peak_rss,
         "rss_limit_bytes": memory_limit_bytes,
+        "rss_sampling_available": rss_sampling_available,
         "wall_limit_seconds": round(timeout_seconds, 3),
         "timed_out": timed_out,
         "memory_limit_triggered": memory_limited,
+        "output_limit_triggered": output_limited,
+        "output_capture_limit_bytes_per_stream": MAX_CAPTURE_BYTES,
+        "stdout_bytes_drained": total_output_bytes["stdout"],
+        "stderr_bytes_drained": total_output_bytes["stderr"],
+        "truncated_output_streams": sorted(truncated_streams),
         "orphan_processes_detected": orphan_processes,
         "remaining_process_group_rss_bytes": remaining_group_rss,
-        "stdout": stdout,
-        "stderr": stderr[-6000:],
+        "stdout": captures["stdout"].decode("utf-8", errors="replace"),
+        "stderr": captures["stderr"].decode("utf-8", errors="replace")[-6000:],
     }
     return record
 
@@ -424,7 +550,7 @@ def run_and_record(case, output_records, start_time, budget_seconds, case_timeou
         remaining,
     )
     worker_records = []
-    if supervised["stdout"].strip():
+    if supervised["stdout"].strip() and "stdout" not in supervised["truncated_output_streams"]:
         try:
             worker_records.append(json.loads(supervised["stdout"].strip().splitlines()[-1]))
         except json.JSONDecodeError:
@@ -445,6 +571,8 @@ def run_and_record(case, output_records, start_time, budget_seconds, case_timeou
         )
     elif supervised["orphan_processes_detected"]:
         combined["harness_status"] = "orphan_processes"
+    elif supervised["output_limit_triggered"]:
+        combined["harness_status"] = "output_limit"
     elif supervised["return_code"] != 0:
         combined["harness_status"] = "process_failure"
     if worker_records:
@@ -456,7 +584,8 @@ def run_and_record(case, output_records, start_time, budget_seconds, case_timeou
         combined["harness_status"] = "observed_failure"
     output_records.append(combined)
     return combined["harness_status"] not in (
-        "timeout", "memory_limit", "process_failure", "orphan_processes", "aggregate_budget_interrupted"
+        "timeout", "memory_limit", "process_failure", "orphan_processes",
+        "aggregate_budget_interrupted", "output_limit"
     )
 
 
@@ -546,6 +675,40 @@ def run_main_cases(records, start_time, budget, case_timeout, rss_limit):
             "sample_rate": rate,
         }
         for rate in (16000, 44100, 48000)
+    )
+    extras.append(
+        {
+            "case_id": f"main-overflow-probe-1e100",
+            "phase": "harmonic_product_overflow",
+            "size": 16384,
+            "signal_kind": "large_finite_tone",
+        }
+    )
+    extras.extend(
+        {
+            "case_id": f"main-seeded-{kind}-{size}",
+            "phase": "seeded_stress",
+            "size": size,
+            "signal_kind": kind,
+            "enable_compression": False,
+            "enable_temporal_control": True,
+        }
+        for kind in ("tone", "mixed", "noise")
+        for size in (1024, 20000, 50000, 100000, 250000, 500000, 1000000)
+    )
+    extras.extend(
+        {
+            "case_id": f"main-compression-{kind}-{size}-t{temporal}",
+            "phase": "compression_stress",
+            "size": size,
+            "signal_kind": kind,
+            "enable_compression": True,
+            "enable_temporal_control": bool(temporal),
+        }
+        for kind in ("tone", "mixed", "noise")
+        for size in (1024, 20000, 100000, 250000, 1000000)
+        for temporal in (1, 0)
+        if temporal or size in (20000, 250000)
     )
     extras.extend(
         {
@@ -677,6 +840,18 @@ def run_bridge_cases(records, start_time, budget, case_timeout, rss_limit):
         "phase": "fault_injection",
         "case_id": "bridge-fault-injection-fixture-set",
     })
+    extras.extend(
+        {
+            "kind": "bridge",
+            "path": "js_python_bridge",
+            "phase": "seeded_stress",
+            "case_id": f"bridge-seeded-{kind}-{size}",
+            "size": size,
+            "signal_kind": kind,
+        }
+        for kind in ("tone", "mixed", "noise")
+        for size in (1024, 20000, 50000, 100000, 250000, 500000, 1000000)
+    )
     for extra in extras:
         extra.setdefault("size", 128)
         extra.setdefault("signal_kind", "tone")
@@ -819,7 +994,7 @@ def main():
         "csv_results": str(csv_path),
     }, indent=2))
     return 1 if any(item.get("harness_status") in (
-        "timeout", "memory_limit", "process_failure", "orphan_processes", "observed_failure"
+        "timeout",         "memory_limit", "process_failure", "orphan_processes", "output_limit", "observed_failure"
     ) for item in records) else 0
 
 

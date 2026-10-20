@@ -14,6 +14,7 @@ const { spawn } = require('child_process');
 const path = require('path');
 const EventEmitter = require('events');
 const { StringDecoder } = require('string_decoder');
+const { resolveSampleRateHz } = require('./sampleRate');
 
 const NEWLINE = 0x0a;
 const DEFAULT_MAX_RESPONSE_BYTES = 256 * 1024 * 1024;
@@ -22,15 +23,16 @@ const DEFAULT_KILL_GRACE_MS = 2000;
 class EnhancedAudioProcessingWrapper extends EventEmitter {
     constructor(config = {}) {
         super();
-        
+        const sampleRateHz = resolveSampleRateHz(config);
         this.config = {
             pythonExecutable: config.pythonExecutable || 'python',
             bridgeScript: config.bridgeScript || path.join(__dirname, 'enhancedAudioProcessingBridge.py'),
             timeout: config.timeout || 30000,
-            sampleRate: config.sampleRate || 44100,
             maxResponseBytes: config.maxResponseBytes || DEFAULT_MAX_RESPONSE_BYTES,
             killGraceMs: config.killGraceMs || DEFAULT_KILL_GRACE_MS,
-            ...config
+            ...config,
+            sample_rate_hz: sampleRateHz,
+            sampleRate: sampleRateHz
         };
         
         this.pythonProcess = null;
@@ -84,7 +86,11 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
                 child = spawn(this.config.pythonExecutable, [this.config.bridgeScript], {
                     stdio: ['pipe', 'pipe', 'pipe'],
                     cwd: path.dirname(this.config.bridgeScript),
-                    env: { ...process.env, ...(this.config.env || {}) }
+                    env: {
+                        ...process.env,
+                        ...(this.config.env || {}),
+                        SOLIDARITY_SAMPLE_RATE_HZ: String(this.config.sample_rate_hz)
+                    }
                 });
             } catch (error) {
                 reject(error);
@@ -146,7 +152,7 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
         while ((index = data.indexOf(NEWLINE, start)) !== -1) {
             const tail = data.subarray(start, index);
             if (state.chunkBytes + tail.length > this.config.maxResponseBytes) {
-                this._failBridge(state, this._oversizeError());
+                this._failBridge(state, this._oversizeError(true));
                 return;
             }
             let line = tail;
@@ -165,7 +171,7 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
         if (start < data.length) {
             const rest = data.subarray(start);
             if (state.chunkBytes + rest.length > this.config.maxResponseBytes) {
-                this._failBridge(state, this._oversizeError());
+                this._failBridge(state, this._oversizeError(false));
                 return;
             }
             state.chunks.push(Buffer.from(rest));
@@ -173,8 +179,11 @@ class EnhancedAudioProcessingWrapper extends EventEmitter {
         }
     }
     
-    _oversizeError() {
-        return new Error(`Python bridge response exceeded ${this.config.maxResponseBytes} bytes without a message terminator`);
+    _oversizeError(terminated) {
+        const detail = terminated
+            ? 'complete frame exceeded the response limit'
+            : 'unterminated frame exceeded the response limit';
+        return new Error(`Python bridge ${detail} of ${this.config.maxResponseBytes} bytes`);
     }
     
     /**

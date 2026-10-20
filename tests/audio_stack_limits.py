@@ -538,8 +538,6 @@ def run_and_record(case, output_records, start_time, budget_seconds, case_timeou
         remaining,
     )
     worker_records = []
-    if supervised["output_limit_triggered"]:
-        combined["harness_status"] = "output_limit"
     if supervised["stdout"].strip() and "stdout" not in supervised["truncated_output_streams"]:
         try:
             worker_records.append(json.loads(supervised["stdout"].strip().splitlines()[-1]))

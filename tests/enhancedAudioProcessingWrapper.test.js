@@ -107,6 +107,21 @@ describe('EnhancedAudioProcessingWrapper transport', () => {
         }
     });
 
+    test('honors inherited SOLIDARITY_SAMPLE_RATE_HZ and rejects invalid or conflicting values', () => {
+        const previous = process.env.SOLIDARITY_SAMPLE_RATE_HZ;
+        process.env.SOLIDARITY_SAMPLE_RATE_HZ = '16000';
+        try {
+            expect(new EnhancedAudioProcessingWrapper().config.sample_rate_hz).toBe(16000);
+            expect(() => new EnhancedAudioProcessingWrapper({ sampleRate: 48000 }))
+                .toThrow(/Conflicting sample-rate values/);
+            process.env.SOLIDARITY_SAMPLE_RATE_HZ = '16000Hz';
+            expect(() => new EnhancedAudioProcessingWrapper()).toThrow(/SOLIDARITY_SAMPLE_RATE_HZ/);
+        } finally {
+            if (previous === undefined) delete process.env.SOLIDARITY_SAMPLE_RATE_HZ;
+            else process.env.SOLIDARITY_SAMPLE_RATE_HZ = previous;
+        }
+    });
+
     test('4000+ sample request is delivered intact', async () => {
         make('echo');
         await wrapper.initialize();

@@ -22,6 +22,7 @@ function resolveSampleRateHz(config = {}) {
 
     const environmentValues = [
         ['AUDIO_SAMPLE_RATE', process.env.AUDIO_SAMPLE_RATE],
+        ['SOLIDARITY_SAMPLE_RATE_HZ', process.env.SOLIDARITY_SAMPLE_RATE_HZ],
         ['env.AUDIO_SAMPLE_RATE', config.env && config.env.AUDIO_SAMPLE_RATE],
         ['env.SOLIDARITY_SAMPLE_RATE_HZ', config.env && config.env.SOLIDARITY_SAMPLE_RATE_HZ]
     ];

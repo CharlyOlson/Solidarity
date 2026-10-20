@@ -2,12 +2,15 @@
 
 import json
 import sys
+import time
 import unittest
+from unittest import mock
 
 from tests.audio_stack_limits import (
     MAX_CAPTURE_BYTES,
     MAX_RSS_BYTES,
     planned_sizes,
+    run_and_record,
     supervised_run,
     worker_rate_probe,
 )
@@ -66,6 +69,24 @@ class AudioStackHarnessTests(unittest.TestCase):
         self.assertTrue(result["output_limit_triggered"])
         self.assertLessEqual(len(result["stdout"]), MAX_CAPTURE_BYTES)
         self.assertTrue(result["timed_out"] is False)
+
+    def test_run_and_record_classifies_output_limit(self):
+        supervised = {
+            "output_limit_triggered": True,
+            "memory_limit_triggered": False,
+            "timed_out": False,
+            "orphan_processes_detected": False,
+            "return_code": -9,
+            "wall_limit_seconds": 5,
+            "truncated_output_streams": ["stdout"],
+            "stdout": "x",
+            "stderr": "",
+        }
+        records = []
+        case = {"path": "node_case", "name": "output_limit_regression"}
+        with mock.patch("tests.audio_stack_limits.supervised_run", return_value=supervised):
+            run_and_record(case, records, time.monotonic(), 100, 5, MAX_RSS_BYTES)
+        self.assertEqual(records[0]["harness_status"], "output_limit")
 
 
 if __name__ == "__main__":

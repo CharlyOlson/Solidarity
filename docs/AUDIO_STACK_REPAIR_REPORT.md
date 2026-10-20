@@ -307,3 +307,85 @@ results:
 
 SHA-256: JSON `3dbd60e6a69bb9bc9aacc66ea6259fc2e54421af85c2542b7fb25461fb58a5d1`;
 CSV `89abe2163aa525f9bef7b993f19d94d7e64d497ba59098a257be773f5ad5fa3a`.
+
+## Addendum: rerun on the current code-bearing commit
+
+This addendum is an evidence-only successor. It does not alter the earlier
+results above or the preserved `final/` raw data.
+
+**Tested code-bearing commit:** `8f6645f4d0b7b3f9cac8c08ddcbe9a7e4dadd2e2`,
+tree `49b7244c8b301eaf1589e980e7cacf8500d04558`, run from a clean disposable
+`git worktree` (`worktree_dirty_at_start: false`). Commits after it contain
+only this addendum and the raw results.
+
+**Identity and stack.** Head before this work was `82fa73e`; ancestry and tree
+were verified, and planning commit `fbe5258` has the same tree as its parent
+`a16471d`. Dependency order verified from PR metadata:
+Solidarity #26 (`3eba563`, base `main` `f52e042`) → #27 (`28a27af`) →
+#29 (`a16471d`) → #30 (this PR). These are CharlyOlson/Solidarity PRs, not
+-Solidarity-Clean. Only PR metadata, diffs and checks were inspected; no
+agent-session transcripts were accessible or reviewed.
+
+**Changes since `c1b46f6`.** `src/sampleRate.js` now honors inherited
+`SOLIDARITY_SAMPLE_RATE_HZ`; the output-limit harness crash was fixed; both
+have regression tests. This rerun adds harness-only changes (no `src/`
+change): large compression-enabled stress cases, recorded evidence that
+compression ran (`dynamic_processing_enabled`, `compression_flag_honored`,
+`compression_changed_output`), and separate `output_checks_passed` and
+`analysis_checks_passed` verdicts. Earlier large cases ran with compression
+disabled; compression had only been exercised at 1024 samples.
+
+**Environment.** Python 3.12.3, numpy 1.26.4, scipy 1.13.1 (from
+`requirements-audio.txt` in a fresh venv), Node v22.23.3, npm 10.9.9, Jest
+29.7.0 (`npm ci`), 4 CPUs, ~16 GiB RAM.
+
+**Commands and counts** (`REQUIRE_PYTHON_INTEGRATION=1`):
+
+| Command | Result |
+| --- | --- |
+| `npx jest --coverage=false` | 5 suites, 60 tests passed, 0 skipped |
+| `python -m unittest discover -s tests -p "test_*.py"` | 51 run, 2 failures, 2 skipped |
+| `SOLIDARITY_AUDIO_STRESS=1 python tests/audio_stack_limits.py --path all --budget-seconds 1800 --case-timeout-seconds 60` | 274 records, all `harness_status: ok`, 219 s |
+
+**Pre-existing failures and skips, investigated** (unchanged, not weakened):
+
+- `test_discovery_files_exist`: fails because `comprehensive-discovery.js` now
+  lives at `src/core/` and `setup_python_env.py` was removed (commit
+  `333b4a9`). This is repository drift, not OneDrive.
+- `test_onedrive_detection`: fails because the sandbox has no OneDrive
+  directory (environmental).
+- Skip: `transfer_gradient` is not implemented (out of scope).
+- Skip: `simple-discovery-test.js` moved to `demos/`.
+
+**Stress results.** 253 case IDs shared with the earlier run had identical
+statuses. 21 new compression cases (tone, mixed, noise; up to 1,000,000
+samples; temporal on and off) all report compression enabled, changed output,
+and passed both output and analysis checks (1M samples: about 1.4 s worker
+time). Both paths reached 1,000,000 samples with no timeout or memory limit
+reached; no size escalation was stopped. Largest wall time of any case was
+17.4 s; sampled peak process-group RSS was 489 MiB.
+
+**Preserved findings (unchanged).** Short inputs and the large-amplitude
+harmonic-product overflow (`observed_numerical_overflow`) are still recorded
+as observations; negative-infinite THD dB for silence is distinguished from the
+invalid NaN/Infinity fields seen only for the NaN/Infinity input cases. No new
+signal schema, minimum length or DSP change was introduced.
+
+**Limits.** The 60 s per-case cap and aggregate budget are enforced by the
+external supervisor (process-group termination). The memory ceiling (1 GiB) is
+**sampled** from /proc RSS, not kernel-enforced; cgroup `memory.max` was
+`max`. The bridge's `complete_audio_pipeline` has no compression flag, so
+compression-enabled coverage is main_integration only. Results come from one
+runner and one run; no distribution or platform-wide claim is made.
+
+**Workflows.** Pull-request runs on this branch (Secret Scan, Drift Detector,
+Require Signed Commits) are `action_required` and unapproved, so they have not
+executed. The "Copilot cloud agent" runs succeeded but are the agent session,
+not dedicated audio CI. No approvals were bypassed.
+
+**Raw results:**
+
+- [Rerun JSON](../tests/results/audio-stack-repair/rerun-8f6645f/audio_stack_limits.json)
+- [Rerun CSV](../tests/results/audio-stack-repair/rerun-8f6645f/audio_stack_limits.csv)
+
+SHA-256: JSON `5f68c273d8d66f96451f245fb243cd2ab18f26d7cfb8056f2bbbba88a779de1d`; CSV `0c48ddddb2048e66509fba32e8f1886401a1c85b23cdd33d935a4f8f1cc44402`.

@@ -11,6 +11,7 @@ from tests.audio_stack_limits import (
     MAX_RSS_BYTES,
     planned_sizes,
     run_and_record,
+    worker_main,
     supervised_run,
     worker_rate_probe,
 )
@@ -69,6 +70,21 @@ class AudioStackHarnessTests(unittest.TestCase):
         self.assertTrue(result["output_limit_triggered"])
         self.assertLessEqual(len(result["stdout"]), MAX_CAPTURE_BYTES)
         self.assertTrue(result["timed_out"] is False)
+
+    def test_compression_cases_record_that_compression_ran_and_changed_output(self):
+        base = {"size": 2048, "signal_kind": "tone", "seed": 7, "sample_rate": 44100,
+                "enable_temporal_control": True, "valid_signal": True}
+        enabled = worker_main({**base, "enable_compression": True})
+        disabled = worker_main({**base, "enable_compression": False})
+        self.assertEqual(enabled["status"], "ok")
+        self.assertIs(enabled["dynamic_processing_enabled"], True)
+        self.assertTrue(enabled["compression_flag_honored"])
+        self.assertTrue(enabled["compression_changed_output"])
+        self.assertLess(enabled["compression_output_max_abs"], enabled["uncompressed_reference_max_abs"])
+        self.assertTrue(enabled["output_checks_passed"])
+        self.assertTrue(enabled["analysis_checks_passed"])
+        self.assertIs(disabled["dynamic_processing_enabled"], False)
+        self.assertNotIn("compression_changed_output", disabled)
 
     def test_run_and_record_classifies_output_limit(self):
         supervised = {

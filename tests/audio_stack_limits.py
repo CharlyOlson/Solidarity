@@ -195,6 +195,14 @@ def worker_main(case):
         "stage_timings_seconds": diagnostics["stage_timings_seconds"],
         "worker_wall_seconds": wall_seconds,
     }
+    dynamic_processing = result.get("dynamic_processing", {})
+    record["dynamic_processing_enabled"] = dynamic_processing.get("enabled")
+    record["compression_flag_honored"] = dynamic_processing.get("enabled") is enable_compression
+    if enable_compression and signal_data.ndim == 1 and signal_data.size and output.shape == signal_data.shape:
+        uncompressed = signal_data * (1.1 if enable_temporal else 1.0)
+        record["compression_changed_output"] = bool(not np.allclose(output, uncompressed, atol=1e-12, rtol=1e-9))
+        record["compression_output_max_abs"] = float(np.max(np.abs(output)))
+        record["uncompressed_reference_max_abs"] = float(np.max(np.abs(uncompressed)))
     if kind == "tone" and signal_data.size < 20 and result["input"]["fundamental_frequency"] <= 0:
         record["status"] = "observed_undefined_result"
         record["classification"] = "short_tone_has_no_non_dc_hps_candidate"
@@ -253,14 +261,18 @@ def worker_main(case):
             record["status"] = "fail"
 
     if case.get("valid_signal", True):
-        checks = [
+        output_checks = [
             output.shape == signal_data.shape,
             bool(np.isfinite(output).all()),
             not mutation,
             record["reference_within_tolerance"] is not False,
-            not invalid_non_finite_metrics,
+            record["compression_flag_honored"],
+            not enable_compression or signal_data.size == 0 or record.get("compression_changed_output") is True,
         ]
-        if checks and not all(checks):
+        analysis_checks = [not invalid_non_finite_metrics]
+        record["output_checks_passed"] = all(output_checks)
+        record["analysis_checks_passed"] = all(analysis_checks)
+        if not (record["output_checks_passed"] and record["analysis_checks_passed"]):
             record["status"] = "fail"
     else:
         record["status"] = "observed_unspecified_input"
@@ -683,6 +695,20 @@ def run_main_cases(records, start_time, budget, case_timeout, rss_limit):
         }
         for kind in ("tone", "mixed", "noise")
         for size in (1024, 20000, 50000, 100000, 250000, 500000, 1000000)
+    )
+    extras.extend(
+        {
+            "case_id": f"main-compression-{kind}-{size}-t{temporal}",
+            "phase": "compression_stress",
+            "size": size,
+            "signal_kind": kind,
+            "enable_compression": True,
+            "enable_temporal_control": bool(temporal),
+        }
+        for kind in ("tone", "mixed", "noise")
+        for size in (1024, 20000, 100000, 250000, 1000000)
+        for temporal in (1, 0)
+        if temporal or size in (20000, 250000)
     )
     extras.extend(
         {

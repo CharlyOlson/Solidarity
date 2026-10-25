@@ -115,3 +115,7 @@ Thumbs.db
 # Hardhat build output
 artifacts/
 cache/
+
+# security suite build output
+cache-security/
+artifacts-security/

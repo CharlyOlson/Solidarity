@@ -173,6 +173,7 @@
     "nyc": "^15.1.0",
     "prettier": "^2.8.8",
     "rimraf": "^5.0.0",
+    "solc": "0.8.20",
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.2",
